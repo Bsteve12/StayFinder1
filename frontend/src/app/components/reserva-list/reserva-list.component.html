@@ -1,0 +1,74 @@
+<div class="producto-list-container">
+  <div class="header">
+    <h1 class="logo">StayFinder</h1>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar productos..." (input)="onBuscar($event)" [value]="terminoBusqueda" aria-label="Buscar productos" />
+      <button class="btn-buscar" (click)="limpiarFiltros()">Limpiar</button>
+    </div>
+
+    @if (productos.length > 0) {
+      <div class="estadisticas">
+        <span class="contador">Total: {{ productos.length }} productos</span>
+        @if (productosEnCarrito.length > 0) {
+          <span class="carrito-contador">🛒 {{ productosEnCarrito.length }} en carrito</span>
+        }
+      </div>
+    }
+  </div>
+  
+  @if (loading) {
+    <div class="loading">
+      <p>Cargando productos...</p>
+      <div class="spinner"></div>
+    </div>
+  } @else if (error) {
+    <div class="error">
+      <p>Error al cargar los productos. Por favor, inténtalo de nuevo.</p>
+      <button (click)="cargarProductos()" class="btn-reintentar">Reintentar</button>
+    </div>
+  } @else if (productos.length === 0) {
+    <div class="no-productos">
+      <p>No hay productos disponibles.</p>
+      <button (click)="cargarProductos()" class="btn-reintentar">Recargar</button>
+    </div>
+  } @else {
+    <div class="filtros">
+      @if (productos.length > 3) {
+        <div class="filtro-precio">
+          <label>Filtrar por precio:</label>
+          <select (change)="filtrarPorPrecio($event)">
+            <option value="">Todos</option>
+            <option value="bajo">Menos de €500</option>
+            <option value="medio">€500 - €1000</option>
+            <option value="alto">Más de €1000</option>
+          </select>
+        </div>
+      }
+    </div>
+    
+    @if (productosFiltrados.length === 0 && productos.length > 0) {
+      <div class="no-resultados">
+        <p>No se encontraron productos con los filtros aplicados.</p>
+        <button (click)="limpiarFiltros()" class="btn-limpiar">Limpiar filtros</button>
+      </div>
+    } @else {
+      <div class="productos-grid">
+        @for (producto of productosFiltrados; track producto.id) {
+          <app-producto-card 
+            [producto]="producto"
+            (productoAgregado)="agregarAlCarrito($event)">
+          </app-producto-card>
+        }
+      </div>
+    }
+    
+    @if (productosEnCarrito.length > 0) {
+      <div class="resumen-carrito">
+        <h3>Resumen del carrito</h3>
+        <p>Total: {{ calcularTotal() | currency:'EUR':'symbol':'1.2-2' }}</p>
+        <button class="btn-comprar">Proceder al pago</button>
+      </div>
+    }
+  }
+</div>
