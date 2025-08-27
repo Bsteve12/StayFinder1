@@ -21,6 +21,8 @@ public class Reserva {
     @NotNull(message = "El precio no puede ser nulo")
     @Min(value = 0, message = "El precio debe ser mayor o igual a 0")
     private Double precio;
+     
+     private String descripcion;
 
     private String imagen;
 
@@ -64,5 +66,12 @@ public class Reserva {
 
     public void setImagen(String imagen) {
         this.imagen = imagen;
+    }
+      public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }

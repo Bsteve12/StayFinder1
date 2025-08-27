@@ -1,13 +1,13 @@
-package com.devsenior.bceballos.product;
+package com.stayFinder.proyectoFinal;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GestionDeProductosApplication {
+public class GestionDeReservaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GestionDeProductosApplication.class, args);
+		SpringApplication.run(GestionDeReservaApplication.class, args);
 	}
 
 }

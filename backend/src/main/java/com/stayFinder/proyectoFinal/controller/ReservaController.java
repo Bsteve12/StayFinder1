@@ -1,7 +1,7 @@
 package com.stayFinder.proyectoFinal.controller;
 
 import com.stayFinder.proyectoFinal.entity.Reserva;
-import com.stayFinder.proyectoFinal.services.ProductoService;
+import com.stayFinder.proyectoFinal.services.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,28 +10,30 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/productos")
+@RequestMapping("/api/reserva")
 @CrossOrigin(origins = "http://localhost:4200")
-
 public class ReservaController {
 
     @Autowired
-    private ProductoService productoService;
+    private ReservaService reservaService;
 
-    @GetMapping // GET localhost:8080/api/reserva
-    public List<Reserva> getAllProductos() {
+    // GET localhost:8080/api/reserva
+    @GetMapping
+    public List<Reserva> getAllReservas() {
         return reservaService.findAll();
     }
 
-    @GetMapping("/{id}") // GET localhost:8080/api/reserva/{id}
+    // GET localhost:8080/api/reserva/{id}
+    @GetMapping("/{id}")
     public ResponseEntity<Reserva> getReservaById(@PathVariable Long id) {
-        Optional<Reserva> producto = reservaService.findById(id);
+        Optional<Reserva> reserva = reservaService.findById(id);
         return reserva.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    // POST localhost:8080/api/reserva
     @PostMapping
-    public ResponseEntity<Reserva> createProducto(@RequestBody Reserva reserva) {
+    public ResponseEntity<Reserva> createReserva(@RequestBody Reserva reserva) {
         try {
             Reserva nuevaReserva = reservaService.save(reserva);
             return ResponseEntity.ok(nuevaReserva);
@@ -40,14 +42,15 @@ public class ReservaController {
         }
     }
 
+    // PUT localhost:8080/api/reserva/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<Reserva> updateProducto(@PathVariable Long id, @RequestBody Reserva reserva) {
+    public ResponseEntity<Reserva> updateReserva(@PathVariable Long id, @RequestBody Reserva reserva) {
         Optional<Reserva> existente = reservaService.findById(id);
         if (existente.isPresent()) {
             reserva.setId(id);
             try {
                 Reserva actualizada = reservaService.save(reserva);
-                return ResponseEntity.ok(actualizado);
+                return ResponseEntity.ok(actualizada); // 🔥 corregido
             } catch (IllegalArgumentException e) {
                 return ResponseEntity.badRequest().build();
             }
@@ -56,6 +59,7 @@ public class ReservaController {
         }
     }
 
+    // DELETE localhost:8080/api/reserva/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReserva(@PathVariable Long id) {
         Optional<Reserva> existente = reservaService.findById(id);
