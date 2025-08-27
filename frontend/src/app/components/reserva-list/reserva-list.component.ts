@@ -9,12 +9,12 @@ import { Reserva } from '../../models/reserva';
   standalone: true,
   imports: [CommonModule, ReservaCardComponent],
   templateUrl: './reserva-list.component.html',
-  styleUrl: './reserva-list.component.css'
+  styleUrls: ['./reserva-list.component.css']
 })
 export class ReservaListComponent implements OnInit {
-  reserva: Reserva[] = [];
-  reservaFiltrados: Reserva[] = [];
-  reservaEnCarrito: Reserva[] = [];
+  reservas: Reserva[] = [];
+  reservasFiltradas: Reserva[] = [];
+  reservasEnCarrito: Reserva[] = [];
   loading = true;
   error = false;
   filtroActual = '';
@@ -27,13 +27,13 @@ export class ReservaListComponent implements OnInit {
   }
 
   cargarReservas(): void {
-    this.reservaService.getReserva().subscribe({
-      next: (reservas) =>  {
+    this.reservaService.getReservas().subscribe({
+      next: (reservas: Reserva[]) => {   // ✅ tipado para evitar TS7006
         this.reservas = reservas;
         this.reservasFiltradas = reservas;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {           // ✅ tipado para evitar TS7006
         console.error('Error al cargar reservas:', error);
         this.error = true;
         this.loading = false;
@@ -54,17 +54,18 @@ export class ReservaListComponent implements OnInit {
   }
 
   agregarAlCarrito(reserva: Reserva): void {
-    if (!this.reservasEnCarrito.find(p => p.id === reserva.id)) {
+    if (!this.reservasEnCarrito.find((p: Reserva) => p.id === reserva.id)) { // ✅ tipado del callback
       this.reservasEnCarrito.push(reserva);
     }
   }
 
   calcularTotal(): number {
-    return this.reservasEnCarrito.reduce((total, reserva) => total + reserva.precio, 0);
+    return this.reservasEnCarrito.reduce((total: number, reserva: Reserva) => total + reserva.precio, 0); // ✅ tipos
   }
+
   trackById(index: number, reserva: Reserva): number {
     return reserva.id;
-}
+  }
 
   onBuscar(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -73,18 +74,18 @@ export class ReservaListComponent implements OnInit {
   }
 
   private aplicarFiltros(): void {
-    let lista = [...this.reservas];
+    let lista: Reserva[] = [...this.reservas];
 
     if (this.filtroActual === 'bajo') {
-      lista = lista.filter(p => p.precio < 500);
+      lista = lista.filter((p: Reserva) => p.precio < 500);
     } else if (this.filtroActual === 'medio') {
-      lista = lista.filter(p => p.precio >= 500 && p.precio <= 1000);
+      lista = lista.filter((p: Reserva) => p.precio >= 500 && p.precio <= 1000);
     } else if (this.filtroActual === 'alto') {
-      lista = lista.filter(p => p.precio > 1000);
+      lista = lista.filter((p: Reserva) => p.precio > 1000);
     }
 
     if (this.terminoBusqueda.trim().length > 0) {
-      lista = lista.filter(p => p.nombre?.toLowerCase().includes(this.terminoBusqueda));
+      lista = lista.filter((p: Reserva) => p.nombre?.toLowerCase().includes(this.terminoBusqueda));
     }
 
     this.reservasFiltradas = lista;

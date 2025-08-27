@@ -5,9 +5,9 @@ import { ReservaListComponent } from './components/reserva-list/reserva-list.com
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, ReservaListComponent],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
-export class App {
+export class AppComponent {
   protected readonly title = signal('Brandon');
 }

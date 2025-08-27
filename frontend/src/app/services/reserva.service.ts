@@ -1,32 +1,31 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Producto } from '../models/reserva';
 import { HttpClient } from '@angular/common/http';
+import { Reserva } from '../models/reserva';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductoService {
+export class ReservaService {
 
-  constructor(private http: HttpClient) {
+  private apiUrl = 'http://localhost:8080/api/reserva'; // Asegúrate que coincide con tu backend
 
-    
-   }
+  constructor(private http: HttpClient) { }
 
-  // ✅ Corregido: tipamos productos como Producto[]
-  getProductoById(id: number): Observable<Producto | undefined> {
-    return this.getProductos().pipe(
-      map((productos: Producto[]) => productos.find((p: Producto) => p.id === id))
+  // Obtener todas las reservas
+  getReservas(): Observable<Reserva[]> {
+    return this.http.get<Reserva[]>(this.apiUrl);
+  }
+
+  // Obtener una reserva por ID
+  getReservaById(id: number): Observable<Reserva | undefined> {
+    // Puedes usar esta opción si quieres filtrar en frontend
+    return this.getReservas().pipe(
+      map((reservas: Reserva[]) => reservas.find((r: Reserva) => r.id === id))
     );
-  }
-  // Se actualizan los productos para que sean alojamientos reales en Colombia, con imágenes y precios en COP
-  getProductos(): Observable<Producto[]> {
-   
-    
-    return this.http.get<Producto[]>('http://localhost:8080/api/productos'); 
-  
-  }
 
-  
+    // O si tu backend soporta GET por ID, usar:
+    // return this.http.get<Reserva>(`${this.apiUrl}/${id}`);
+  }
 }

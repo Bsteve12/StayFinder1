@@ -1,18 +1,18 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Producto } from '../../models/producto';
+import { Reserva } from '../../models/reserva';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-producto-card',
+  selector: 'app-reserva-card',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './producto-card.component.html',
-  styleUrl: './producto-card.component.css'
+  templateUrl: './reserva-card.component.html',
+  styleUrls: ['./reserva-card.component.css']
 })
-export class ProductoCardComponent {
-  @Input() producto!: Producto;
-  @Output() productoAgregado = new EventEmitter<Producto>();
+export class ReservaCardComponent {
+  @Input() reserva!: Reserva;
+  @Output() reservaAgregado = new EventEmitter<Reserva>();
 
   esFavorito = false;
   enCarrito = false;
@@ -27,14 +27,14 @@ export class ProductoCardComponent {
     event.stopPropagation();
     this.enCarrito = !this.enCarrito;
     if (this.enCarrito) {
-      this.productoAgregado.emit(this.producto);
+      this.reservaAgregado.emit(this.reserva);
     }
   }
 
   // 👇 ESTE es el método que hace la navegación
   goToDetail(): void {
-    if (!this.producto || this.producto.id == null) return;
-    console.log('Navegando al detalle de producto con ID:', this.producto.id); // 👈 para debug
-    this.router.navigate(['/producto', this.producto.id]);
+    if (!this.reserva || this.reserva.id == null) return;
+    console.log('Navegando al detalle de producto con ID:', this.reserva.id); // 👈 para debug
+    this.router.navigate(['/reserva', this.reserva.id]);
   }
 }

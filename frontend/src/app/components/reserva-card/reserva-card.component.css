@@ -1,4 +1,4 @@
-.producto-card {
+.reserva-card {
   background: white;
   border-radius: 14px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
@@ -7,12 +7,12 @@
   cursor: pointer;
 }
 
-.producto-card:hover {
+.reserva-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
 }
 
-.producto-imagen {
+.reserva-imagen {
   position: relative;
   width: 100%;
   height: 160px;
@@ -23,14 +23,14 @@
   background: #f8f9ff;
 }
 
-.producto-imagen img {
+.reserva-imagen img {
   width: 80%;
   height: 80%;
   object-fit: contain;
   transition: transform 0.3s ease;
 }
 
-.producto-card:hover .producto-imagen img {
+.reserva-card:hover .producto-imagen img {
   transform: scale(1.04);
 }
 
@@ -70,11 +70,11 @@
   100% { transform: scale(1); }
 }
 
-.producto-info {
+.reserva-info {
   padding: 16px;
 }
 
-.producto-nombre {
+.reserva-nombre {
   margin: 0 0 6px 0;
   font-size: 1.05rem;
   font-weight: 700;
@@ -82,7 +82,7 @@
   line-height: 1.3;
 }
 
-.producto-precio {
+.reserva-precio {
   margin: 0 0 10px 0;
   font-size: 1.05rem;
   font-weight: 700;

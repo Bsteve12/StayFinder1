@@ -1,17 +1,20 @@
-<div class="producto-list-container">
+<div class="reserva-list-container">
   <div class="header">
     <h1 class="logo">StayFinder</h1>
 
     <div class="search-bar">
-      <input type="text" placeholder="Buscar productos..." (input)="onBuscar($event)" [value]="terminoBusqueda" aria-label="Buscar productos" />
+      <input type="text" placeholder="Buscar reservas..." 
+             (input)="onBuscar($event)" 
+             [value]="terminoBusqueda" 
+             aria-label="Buscar reservas" />
       <button class="btn-buscar" (click)="limpiarFiltros()">Limpiar</button>
     </div>
 
-    @if (productos.length > 0) {
+    @if (reservas.length > 0) {
       <div class="estadisticas">
-        <span class="contador">Total: {{ productos.length }} productos</span>
-        @if (productosEnCarrito.length > 0) {
-          <span class="carrito-contador">🛒 {{ productosEnCarrito.length }} en carrito</span>
+        <span class="contador">Total: {{ reservas.length }} reservas</span>
+        @if (reservasEnCarrito.length > 0) {
+          <span class="carrito-contador">🛒 {{ reservasEnCarrito.length }} en carrito</span>
         }
       </div>
     }
@@ -19,22 +22,22 @@
   
   @if (loading) {
     <div class="loading">
-      <p>Cargando productos...</p>
+      <p>Cargando reservas...</p>
       <div class="spinner"></div>
     </div>
   } @else if (error) {
     <div class="error">
-      <p>Error al cargar los productos. Por favor, inténtalo de nuevo.</p>
-      <button (click)="cargarProductos()" class="btn-reintentar">Reintentar</button>
+      <p>Error al cargar las reservas. Por favor, inténtalo de nuevo.</p>
+      <button (click)="cargarReservas()" class="btn-reintentar">Reintentar</button>
     </div>
-  } @else if (productos.length === 0) {
+  } @else if (reservas.length === 0) {
     <div class="no-productos">
-      <p>No hay productos disponibles.</p>
-      <button (click)="cargarProductos()" class="btn-reintentar">Recargar</button>
+      <p>No hay reservas disponibles.</p>
+      <button (click)="cargarReservas()" class="btn-reintentar">Recargar</button>
     </div>
   } @else {
     <div class="filtros">
-      @if (productos.length > 3) {
+      @if (reservas.length > 3) {
         <div class="filtro-precio">
           <label>Filtrar por precio:</label>
           <select (change)="filtrarPorPrecio($event)">
@@ -47,23 +50,23 @@
       }
     </div>
     
-    @if (productosFiltrados.length === 0 && productos.length > 0) {
+    @if (reservasFiltradas.length === 0 && reservas.length > 0) {
       <div class="no-resultados">
-        <p>No se encontraron productos con los filtros aplicados.</p>
+        <p>No se encontraron reservas con los filtros aplicados.</p>
         <button (click)="limpiarFiltros()" class="btn-limpiar">Limpiar filtros</button>
       </div>
     } @else {
-      <div class="productos-grid">
-        @for (producto of productosFiltrados; track producto.id) {
-          <app-producto-card 
-            [producto]="producto"
-            (productoAgregado)="agregarAlCarrito($event)">
-          </app-producto-card>
+      <div class="reservas-grid">
+        @for (reserva of reservasFiltradas; track reserva.id) {
+          <app-reserva-card 
+            [reserva]="reserva"
+            (reservaAgregado)="agregarAlCarrito($event)">
+          </app-reserva-card>
         }
       </div>
     }
     
-    @if (productosEnCarrito.length > 0) {
+    @if (reservasEnCarrito.length > 0) {
       <div class="resumen-carrito">
         <h3>Resumen del carrito</h3>
         <p>Total: {{ calcularTotal() | currency:'EUR':'symbol':'1.2-2' }}</p>

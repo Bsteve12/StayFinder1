@@ -1,17 +1,17 @@
 import { Routes } from '@angular/router';
-import { ProductoListComponent } from './components/producto-list/producto-list.component';
-import { ProductoDetailComponent } from './components/producto-detail/producto-detail.component';
+import { ReservaListComponent } from './components/reserva-list/reserva-list.component';
+import { ReservaDetailComponent } from './components/reserva-detail/reserva-detail.component';
 
 export const routes: Routes = [
   // Redirige la raíz (http://localhost:4200) a /productos
-  { path: '', pathMatch: 'full', redirectTo: 'productos' },
+  { path: '', pathMatch: 'full', redirectTo: 'reservas' },
 
   // Página principal de productos
-  { path: 'productos', component: ProductoListComponent, title: 'Nuestros Productos' },
+  { path: 'reservas', component: ReservaListComponent, title: 'Nuestros Productos' },
 
   // Página de detalle de producto por ID
-  { path: 'producto/:id', component: ProductoDetailComponent, title: 'Detalle de producto' },
+  { path: 'reserva/:id', component: ReservaDetailComponent, title: 'Detalle de la reserva' },
 
   // Redirige cualquier ruta inválida a /productos
-  { path: '**', redirectTo: 'productos' }
+  { path: '**', redirectTo: 'reservas' }
 ];
