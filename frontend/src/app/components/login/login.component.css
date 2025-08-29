@@ -1,0 +1,10 @@
+
+.forgot-link {
+    margin: -15px 0 15px;
+}
+
+.forgot-link a {
+    font-size: 14.5px;
+    color: #333;
+    text-decoration: underline
+}

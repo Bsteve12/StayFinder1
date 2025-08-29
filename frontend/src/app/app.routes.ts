@@ -1,22 +1,16 @@
 import { Routes } from '@angular/router';
 import { ReservaListComponent } from './components/reserva-list/reserva-list.component';
 import { ReservaDetailComponent } from './components/reserva-detail/reserva-detail.component';
-import { LoginComponent } from './components/auth/login/login.component';
-import { RegisterComponent } from './components/auth/register/register.component';
+import { GroupAuthComponent } from './components/group-auth/group-auth.component';
 import { PasswordComponent } from './components/password/password.component';
 
 export const routes: Routes = [
-  // Redirige la raíz (http://localhost:4200) a /login
-  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  // Redirige la raíz (http://localhost:4200) a /auth
+  { path: '', pathMatch: 'full', redirectTo: 'auth' },
 
-  // Página de inicio de sesión
-  { path: 'login', component: LoginComponent, title: 'Iniciar Sesión' },
-
-  // Página de registro
-  { path: 'register', component: RegisterComponent, title: 'Registrarse' },
-
-  // Página de recuperación de contraseña
   { path: 'password', component: PasswordComponent, title: 'Recuperar Contraseña' },
+
+  { path: 'auth', component: GroupAuthComponent, title: 'Iniciar Sesión' },
 
   // Página principal de productos
   { path: 'reservas', component: ReservaListComponent, title: 'Nuestros Productos' },
@@ -25,5 +19,5 @@ export const routes: Routes = [
   { path: 'reserva/:id', component: ReservaDetailComponent, title: 'Detalle de la reserva' },
 
   // Redirige cualquier ruta inválida a /login
-  { path: '**', redirectTo: '/auth/login', pathMatch: 'full' }
+  { path: '**', redirectTo: 'auth', pathMatch: 'full' }
 ];

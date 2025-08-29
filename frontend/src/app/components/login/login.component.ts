@@ -1,5 +1,4 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { AuthService } from '../shared/services/auth.service';
 
 
 @Component({
