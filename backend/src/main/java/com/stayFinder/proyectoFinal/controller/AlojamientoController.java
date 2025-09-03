@@ -1,53 +1,42 @@
 package com.stayFinder.proyectoFinal.controller;
 
-import com.stayFinder.proyectoFinal.entity.Alojamiento;
-import com.stayFinder.proyectoFinal.services.AlojamientoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.stayFinder.proyectoFinal.dto.AlojamientoRequestDTO;
+import com.stayFinder.proyectoFinal.dto.AlojamientoResponseDTO;
+import com.stayFinder.proyectoFinal.services.Interfaces.AlojamientoServiceInterface;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/alojamientos")
+@RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200")
 public class AlojamientoController {
 
-    @Autowired
-    private AlojamientoService alojamientoService;
-
-    @GetMapping
-    public List<Alojamiento> getAll() {
-        return alojamientoService.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Alojamiento> getById(@PathVariable Long id) {
-        Optional<Alojamiento> alojamiento = alojamientoService.findById(id);
-        return alojamiento.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
+    private final AlojamientoServiceInterface alojamientoService;
 
     @PostMapping
-    public Alojamiento create(@RequestBody Alojamiento alojamiento) {
-        return alojamientoService.save(alojamiento);
+    public ResponseEntity<AlojamientoResponseDTO> crear(@RequestBody AlojamientoRequestDTO req,
+                                                        @RequestParam Long ownerId) {
+        return ResponseEntity.ok(alojamientoService.crear(req, ownerId));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Alojamiento> update(@PathVariable Long id, @RequestBody Alojamiento alojamiento) {
-        return alojamientoService.findById(id)
-                .map(a -> {
-                    alojamiento.setId(id);
-                    return ResponseEntity.ok(alojamientoService.save(alojamiento));
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<AlojamientoResponseDTO> editar(@PathVariable Long id,
+                                                         @RequestBody AlojamientoRequestDTO req,
+                                                         @RequestParam Long ownerId) {
+        return ResponseEntity.ok(alojamientoService.editar(id, req, ownerId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (alojamientoService.findById(id).isPresent()) {
-            alojamientoService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> eliminar(@PathVariable Long id,
+                                         @RequestParam Long ownerId) {
+        alojamientoService.eliminar(id, ownerId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AlojamientoResponseDTO> obtener(@PathVariable Long id) {
+        return ResponseEntity.ok(alojamientoService.obtenerPorId(id));
     }
 }

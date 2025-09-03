@@ -1,7 +1,6 @@
 package com.stayFinder.proyectoFinal.entity;
 
 import com.stayFinder.proyectoFinal.entity.enums.EstadoPublicacion;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -18,9 +17,15 @@ public class Publicacion {
     @Enumerated(EnumType.STRING)
     private EstadoPublicacion estado;
 
+    // Relación con Usuario (quien crea la publicación)
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario; // Relación con Usuario
+    private Usuario usuario;
+
+    // Relación con Alojamiento
+    @OneToOne
+    @JoinColumn(name = "alojamiento_id", referencedColumnName = "id")
+    private Alojamiento alojamiento;
 
     // Getters y setters
     public Long getId() { return id; }
@@ -37,4 +42,7 @@ public class Publicacion {
 
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+
+    public Alojamiento getAlojamiento() { return alojamiento; }
+    public void setAlojamiento(Alojamiento alojamiento) { this.alojamiento = alojamiento; }
 }

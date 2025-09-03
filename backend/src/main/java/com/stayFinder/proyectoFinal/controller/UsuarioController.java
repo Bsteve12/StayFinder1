@@ -4,7 +4,7 @@ import com.stayFinder.proyectoFinal.dto.CreateUserDTO;
 import com.stayFinder.proyectoFinal.dto.LoginRequestDTO;
 import com.stayFinder.proyectoFinal.dto.LoginResponse;
 import com.stayFinder.proyectoFinal.entity.Reserva;
-import com.stayFinder.proyectoFinal.services.ReservaService;
+import com.stayFinder.proyectoFinal.services.implementations.ReservaServiceImpl;
 import com.stayFinder.proyectoFinal.services.Interfaces.UserServiceInterface;
 
 import jakarta.validation.Valid;
