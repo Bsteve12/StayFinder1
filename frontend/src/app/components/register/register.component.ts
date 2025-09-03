@@ -9,6 +9,8 @@ export class RegisterComponent {
   username: string = '';
   email: string = '';
   password: string = '';
+  phone: number | null = null;
+  birthdate: Date | null = null;
 
   @Output() login = new EventEmitter<void>();
 
