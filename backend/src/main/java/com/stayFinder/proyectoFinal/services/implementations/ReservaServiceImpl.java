@@ -83,5 +83,23 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         Reserva reservaObject = reserva.get();
         return reservaObject;
     }
+
+    @Override
+    public Optional<Reserva> findById(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    }
+
+    @Override
+    public Object save(Reserva reserva) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+    }
     
 }
