@@ -3,18 +3,13 @@ import com.stayFinder.proyectoFinal.dto.ControllerGeneralResponseDTO;
 import com.stayFinder.proyectoFinal.dto.CreateUserDTO;
 import com.stayFinder.proyectoFinal.dto.LoginRequestDTO;
 import com.stayFinder.proyectoFinal.dto.LoginResponse;
-import com.stayFinder.proyectoFinal.entity.Reserva;
-import com.stayFinder.proyectoFinal.services.implementations.ReservaServiceImpl;
-import com.stayFinder.proyectoFinal.services.Interfaces.UserServiceInterface;
+import com.stayFinder.proyectoFinal.services.userService.interfaces.UserServiceInterface;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Optional;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;

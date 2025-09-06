@@ -3,10 +3,9 @@ package com.stayFinder.proyectoFinal.controller;
 import com.stayFinder.proyectoFinal.dto.SolicitudOwnerDTO;
 import com.stayFinder.proyectoFinal.dto.RespuestaSolicitudDTO;
 import com.stayFinder.proyectoFinal.entity.SolicitudOwner;
-import com.stayFinder.proyectoFinal.services.Interfaces.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.stayFinder.proyectoFinal.services.solicitudOwnerService.interfaces.SolicitudOwnerServiceInterface;
 import java.util.List;
 
 @RestController

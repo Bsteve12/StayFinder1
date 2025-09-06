@@ -2,7 +2,7 @@ package com.stayFinder.proyectoFinal.controller;
 
 import com.stayFinder.proyectoFinal.entity.Usuario;
 
-import com.stayFinder.proyectoFinal.services.Interfaces.UserServiceInterface;
+import com.stayFinder.proyectoFinal.services.userService.interfaces.UserServiceInterface;
 import com.stayFinder.proyectoFinal.dto.LoginRequestDTO;
 import org.springframework.web.bind.annotation.*;
 

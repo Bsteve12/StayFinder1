@@ -1,4 +1,5 @@
-package com.stayFinder.proyectoFinal.services.implementations;
+package com.stayFinder.proyectoFinal.services.userService.implementations;
+
 
 import com.stayFinder.proyectoFinal.dto.CreateUserDTO;
 import com.stayFinder.proyectoFinal.dto.LoginRequestDTO;
@@ -8,8 +9,8 @@ import com.stayFinder.proyectoFinal.entity.Usuario;
 import com.stayFinder.proyectoFinal.entity.enums.Role;
 import com.stayFinder.proyectoFinal.repository.UsuarioRepository;
 import com.stayFinder.proyectoFinal.security.JWTUtil;
-import com.stayFinder.proyectoFinal.services.Interfaces.UserServiceInterface;
 
+import com.stayFinder.proyectoFinal.services.userService.interfaces.UserServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
@@ -105,3 +106,4 @@ public class UserServiceImpl implements UserServiceInterface {
         return usuarioRepository.findAll();
     }
 }
+

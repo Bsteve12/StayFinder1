@@ -1,4 +1,6 @@
-package com.stayFinder.proyectoFinal.services.Interfaces;
+package com.stayFinder.proyectoFinal.services.userService.interfaces;
+
+
 
 import java.util.List;
 

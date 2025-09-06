@@ -1,4 +1,6 @@
-package com.stayFinder.proyectoFinal.services.Interfaces;
+package com.stayFinder.proyectoFinal.services.alojamientoService.interfaces;
+
+
 
 import com.stayFinder.proyectoFinal.dto.AlojamientoRequestDTO;
 import com.stayFinder.proyectoFinal.dto.AlojamientoResponseDTO;

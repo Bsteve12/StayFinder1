@@ -2,7 +2,7 @@ package com.stayFinder.proyectoFinal.controller;
 
 import com.stayFinder.proyectoFinal.dto.AlojamientoRequestDTO;
 import com.stayFinder.proyectoFinal.dto.AlojamientoResponseDTO;
-import com.stayFinder.proyectoFinal.services.Interfaces.AlojamientoServiceInterface;
+import com.stayFinder.proyectoFinal.services.alojamientoService.interfaces.AlojamientoServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

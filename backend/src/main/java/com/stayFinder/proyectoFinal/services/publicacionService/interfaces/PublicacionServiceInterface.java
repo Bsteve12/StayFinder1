@@ -1,4 +1,5 @@
-package com.stayFinder.proyectoFinal.services.Interfaces;
+package com.stayFinder.proyectoFinal.services.publicacionService.interfaces;
+
 
 import com.stayFinder.proyectoFinal.dto.PublicacionRequestDTO;
 import com.stayFinder.proyectoFinal.dto.PublicacionResponseDTO;

@@ -6,12 +6,11 @@ import com.stayFinder.proyectoFinal.dto.ObtenerReservaDTO;
 import com.stayFinder.proyectoFinal.entity.Reserva;
 import com.stayFinder.proyectoFinal.security.UserDetailsImpl;
 
-import com.stayFinder.proyectoFinal.services.Interfaces.ReservaServiceInterface;
+import com.stayFinder.proyectoFinal.services.reservaService.interfaces.ReservaServiceInterface;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

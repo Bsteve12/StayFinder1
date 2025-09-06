@@ -2,7 +2,7 @@ package com.stayFinder.proyectoFinal.controller;
 
 import com.stayFinder.proyectoFinal.dto.PublicacionRequestDTO;
 import com.stayFinder.proyectoFinal.dto.PublicacionResponseDTO;
-import com.stayFinder.proyectoFinal.services.Interfaces.*;
+import com.stayFinder.proyectoFinal.services.publicacionService.interfaces.PublicacionServiceInterface;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,4 +1,5 @@
-package com.stayFinder.proyectoFinal.services.implementations;
+package com.stayFinder.proyectoFinal.services.publicacionService.implementations;
+
 
 import com.stayFinder.proyectoFinal.dto.PublicacionRequestDTO;
 import com.stayFinder.proyectoFinal.dto.PublicacionResponseDTO;
@@ -7,7 +8,7 @@ import com.stayFinder.proyectoFinal.entity.enums.EstadoPublicacion;
 import com.stayFinder.proyectoFinal.entity.enums.Role;
 import com.stayFinder.proyectoFinal.repository.PublicacionRepository;
 import com.stayFinder.proyectoFinal.repository.UsuarioRepository;
-import com.stayFinder.proyectoFinal.services.Interfaces.PublicacionServiceInterface;
+import com.stayFinder.proyectoFinal.services.publicacionService.interfaces.PublicacionServiceInterface;
 
 import org.springframework.stereotype.Service;
 

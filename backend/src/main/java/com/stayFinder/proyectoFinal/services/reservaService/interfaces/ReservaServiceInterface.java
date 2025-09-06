@@ -1,4 +1,5 @@
-package com.stayFinder.proyectoFinal.services.Interfaces;
+package com.stayFinder.proyectoFinal.services.reservaService.interfaces;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -25,5 +26,5 @@ public interface ReservaServiceInterface {
     Object save(Reserva reserva);
 
     void deleteById(Long id);
-    
+
 }

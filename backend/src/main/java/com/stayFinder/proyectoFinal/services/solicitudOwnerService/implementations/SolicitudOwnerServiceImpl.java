@@ -1,4 +1,5 @@
-package com.stayFinder.proyectoFinal.services.implementations;
+package com.stayFinder.proyectoFinal.services.solicitudOwnerService.implementations;
+
 
 import com.stayFinder.proyectoFinal.dto.SolicitudOwnerDTO;
 import com.stayFinder.proyectoFinal.dto.RespuestaSolicitudDTO;
@@ -7,7 +8,8 @@ import com.stayFinder.proyectoFinal.entity.enums.EstadoSolicitud;
 import com.stayFinder.proyectoFinal.entity.enums.Role;
 import com.stayFinder.proyectoFinal.repository.SolicitudOwnerRepository;
 import com.stayFinder.proyectoFinal.repository.UsuarioRepository;
-import com.stayFinder.proyectoFinal.services.Interfaces.SolicitudOwnerServiceInterface;
+
+import com.stayFinder.proyectoFinal.services.solicitudOwnerService.interfaces.SolicitudOwnerServiceInterface;
 import org.springframework.stereotype.Service;
 
 import org.springframework.stereotype.Service;
@@ -71,3 +73,4 @@ public class SolicitudOwnerServiceImpl implements SolicitudOwnerServiceInterface
         return solicitudRepo.findByEstado("PENDIENTE");
     }
 }
+

@@ -1,4 +1,5 @@
-package com.stayFinder.proyectoFinal.services.Interfaces;
+package com.stayFinder.proyectoFinal.services.solicitudOwnerService.interfaces;
+
 
 import com.stayFinder.proyectoFinal.dto.SolicitudOwnerDTO;
 import com.stayFinder.proyectoFinal.dto.RespuestaSolicitudDTO;
@@ -11,3 +12,4 @@ public interface SolicitudOwnerServiceInterface {
     SolicitudOwner responderSolicitud(RespuestaSolicitudDTO dto);
     List<SolicitudOwner> listarSolicitudesPendientes();
 }
+

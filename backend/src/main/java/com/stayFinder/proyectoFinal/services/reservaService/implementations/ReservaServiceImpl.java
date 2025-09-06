@@ -1,4 +1,5 @@
-package com.stayFinder.proyectoFinal.services.implementations;
+package com.stayFinder.proyectoFinal.services.reservaService.implementations;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +16,7 @@ import com.stayFinder.proyectoFinal.entity.enums.EstadoReserva;
 import com.stayFinder.proyectoFinal.repository.AlojamientoRepository;
 import com.stayFinder.proyectoFinal.repository.ReservaRepository;
 import com.stayFinder.proyectoFinal.repository.UsuarioRepository;
-import com.stayFinder.proyectoFinal.services.Interfaces.ReservaServiceInterface;
+import com.stayFinder.proyectoFinal.services.reservaService.interfaces.ReservaServiceInterface;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,22 +30,22 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
 
     @Override
     public void createReserva(CreateReservaDTO createReservaDTO, Long userId) throws Exception {
-       Optional<Usuario> user = usuarioRepository.findById(userId);
-       if (user.isEmpty()) throw new Exception("Usuario no existe");
+        Optional<Usuario> user = usuarioRepository.findById(userId);
+        if (user.isEmpty()) throw new Exception("Usuario no existe");
 
-       Optional<Alojamiento> alojamiento = alojamientoRepository.findById(createReservaDTO.alojamientoId());
-       if (alojamiento.isEmpty()) throw new Exception("Alojamiento no existe");
+        Optional<Alojamiento> alojamiento = alojamientoRepository.findById(createReservaDTO.alojamientoId());
+        if (alojamiento.isEmpty()) throw new Exception("Alojamiento no existe");
 
-       Alojamiento alojamientoObject = alojamiento.get();
+        Alojamiento alojamientoObject = alojamiento.get();
 
 
-       Reserva reserva = Reserva.builder()
-               .usuario(user.get())
-               .alojamiento(alojamientoObject)
-               .fecha(createReservaDTO.fecha())
-               .precioTotal(alojamientoObject.getPrecio())
-               .estado(EstadoReserva.PENDIENTE)
-               .build();
+        Reserva reserva = Reserva.builder()
+                .usuario(user.get())
+                .alojamiento(alojamientoObject)
+                .fecha(createReservaDTO.fecha())
+                .precioTotal(alojamientoObject.getPrecio())
+                .estado(EstadoReserva.PENDIENTE)
+                .build();
 
         reservaRepository.save(reserva);
     }
@@ -101,5 +102,5 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }
-    
+
 }

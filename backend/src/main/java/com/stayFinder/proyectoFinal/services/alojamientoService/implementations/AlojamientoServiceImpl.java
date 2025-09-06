@@ -1,4 +1,6 @@
-package com.stayFinder.proyectoFinal.services.implementations;
+package com.stayFinder.proyectoFinal.services.alojamientoService.implementations;
+
+
 
 import com.stayFinder.proyectoFinal.dto.AlojamientoRequestDTO;
 import com.stayFinder.proyectoFinal.dto.AlojamientoResponseDTO;
@@ -7,7 +9,7 @@ import com.stayFinder.proyectoFinal.entity.Usuario;
 import com.stayFinder.proyectoFinal.entity.enums.Role;
 import com.stayFinder.proyectoFinal.repository.AlojamientoRepository;
 import com.stayFinder.proyectoFinal.repository.UsuarioRepository;
-import com.stayFinder.proyectoFinal.services.Interfaces.AlojamientoServiceInterface;
+import com.stayFinder.proyectoFinal.services.alojamientoService.interfaces.AlojamientoServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,34 +23,34 @@ public class AlojamientoServiceImpl implements AlojamientoServiceInterface {
     private final UsuarioRepository usuarioRepo;
 
     @Override
-public AlojamientoResponseDTO crear(AlojamientoRequestDTO req, Long ownerId) {
-    Usuario owner = usuarioRepo.findById(ownerId)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public AlojamientoResponseDTO crear(AlojamientoRequestDTO req, Long ownerId) {
+        Usuario owner = usuarioRepo.findById(ownerId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-    // Validación correcta con enum
-    if (!owner.getRole().equals(Role.OWNER)) {
-        throw new RuntimeException("Solo los OWNERS pueden crear alojamientos");
+        // Validación correcta con enum
+        if (!owner.getRole().equals(Role.OWNER)) {
+            throw new RuntimeException("Solo los OWNERS pueden crear alojamientos");
+        }
+
+        Alojamiento alojamiento = Alojamiento.builder()
+                .nombre(req.nombre())
+                .direccion(req.direccion())
+                .precio(req.precio())
+                .descripcion(req.descripcion())
+                .owner(owner)
+                .build();
+
+        alojamientoRepo.save(alojamiento);
+
+        return new AlojamientoResponseDTO(
+                alojamiento.getId(),
+                alojamiento.getNombre(),
+                alojamiento.getDireccion(),
+                alojamiento.getPrecio(),
+                alojamiento.getDescripcion(),
+                alojamiento.getOwner().getId()
+        );
     }
-
-    Alojamiento alojamiento = Alojamiento.builder()
-            .nombre(req.nombre())
-            .direccion(req.direccion())
-            .precio(req.precio())
-            .descripcion(req.descripcion())
-            .owner(owner)
-            .build();
-
-    alojamientoRepo.save(alojamiento);
-
-    return new AlojamientoResponseDTO(
-            alojamiento.getId(),
-            alojamiento.getNombre(),
-            alojamiento.getDireccion(),
-            alojamiento.getPrecio(),
-            alojamiento.getDescripcion(),
-            alojamiento.getOwner().getId()
-    );
-}
 
 
     @Override
