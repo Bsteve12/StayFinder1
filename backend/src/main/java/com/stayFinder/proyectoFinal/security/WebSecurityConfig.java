@@ -57,27 +57,31 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF (not needed for stateless JWT)
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // Configure endpoint authorization
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
-                        .requestMatchers("/api/usuario/login", "/api/usuario", "/api/reserva").permitAll()
+                        // Swagger endpoints (public)
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
 
-                        // All other endpoints require authentication
+                        // Public endpoints de tu API
+                        .requestMatchers(
+                                "/api/usuario/login",
+                                "/api/usuario",   // registro
+                                "/api/reserva"    // si quieres que sea público
+                        ).permitAll()
+
+                        // Todo lo demás requiere autenticación
                         .anyRequest().authenticated()
                 )
-                // Oauth for google authentication
-                
                 .userDetailsService(customUserDetailsService)
-                // Stateless session (required for JWT)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // Add JWT filter before Spring Security's default filter
                 .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 
 }
