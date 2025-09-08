@@ -1,8 +1,8 @@
 package com.stayFinder.proyectoFinal.services.publicacionService.interfaces;
 
 
-import com.stayFinder.proyectoFinal.dto.PublicacionRequestDTO;
-import com.stayFinder.proyectoFinal.dto.PublicacionResponseDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.PublicacionRequestDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.PublicacionResponseDTO;
 
 import java.util.List;
 

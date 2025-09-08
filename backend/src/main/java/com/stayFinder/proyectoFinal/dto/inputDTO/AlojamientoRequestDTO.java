@@ -1,4 +1,4 @@
-package com.stayFinder.proyectoFinal.dto;
+package com.stayFinder.proyectoFinal.dto.inputDTO;
 
 public record AlojamientoRequestDTO(
         String nombre,

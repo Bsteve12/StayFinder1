@@ -2,8 +2,8 @@ package com.stayFinder.proyectoFinal.services.alojamientoService.implementations
 
 
 
-import com.stayFinder.proyectoFinal.dto.AlojamientoRequestDTO;
-import com.stayFinder.proyectoFinal.dto.AlojamientoResponseDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.AlojamientoRequestDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.AlojamientoResponseDTO;
 import com.stayFinder.proyectoFinal.entity.Alojamiento;
 import com.stayFinder.proyectoFinal.entity.Usuario;
 import com.stayFinder.proyectoFinal.entity.enums.Role;

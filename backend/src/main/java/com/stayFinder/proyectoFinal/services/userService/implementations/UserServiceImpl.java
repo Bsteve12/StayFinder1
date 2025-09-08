@@ -1,10 +1,10 @@
 package com.stayFinder.proyectoFinal.services.userService.implementations;
 
 
-import com.stayFinder.proyectoFinal.dto.CreateUserDTO;
-import com.stayFinder.proyectoFinal.dto.LoginRequestDTO;
-import com.stayFinder.proyectoFinal.dto.LoginResponse;
-import com.stayFinder.proyectoFinal.dto.UpdateUserDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.CreateUserDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.LoginRequestDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.LoginResponseDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.UpdateUserDTO;
 import com.stayFinder.proyectoFinal.entity.Usuario;
 import com.stayFinder.proyectoFinal.entity.enums.Role;
 import com.stayFinder.proyectoFinal.repository.UsuarioRepository;
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserServiceInterface {
 
     // Login de usuario
     @Override
-    public LoginResponse login(LoginRequestDTO loginRequestDTO) throws Exception {
+    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) throws Exception {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequestDTO.email(), loginRequestDTO.contrasena()
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserServiceInterface {
                     usuarioObject.getRole()
             );
 
-            return new LoginResponse(token);
+            return new LoginResponseDTO(token);
         }
         throw new Exception("No se puede hacer login");
     }

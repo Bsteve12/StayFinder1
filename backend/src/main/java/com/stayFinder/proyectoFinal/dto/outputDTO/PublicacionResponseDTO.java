@@ -1,4 +1,5 @@
-package com.stayFinder.proyectoFinal.dto;
+package com.stayFinder.proyectoFinal.dto.outputDTO;
+
 
 import com.stayFinder.proyectoFinal.entity.enums.*;
 

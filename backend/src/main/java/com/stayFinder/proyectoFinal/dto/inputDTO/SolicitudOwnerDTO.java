@@ -1,4 +1,5 @@
-package com.stayFinder.proyectoFinal.dto;
+package com.stayFinder.proyectoFinal.dto.inputDTO;
+
 
 import lombok.Builder;
 import lombok.Getter;

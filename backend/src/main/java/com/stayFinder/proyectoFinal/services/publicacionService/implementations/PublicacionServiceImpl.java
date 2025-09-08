@@ -1,8 +1,8 @@
 package com.stayFinder.proyectoFinal.services.publicacionService.implementations;
 
 
-import com.stayFinder.proyectoFinal.dto.PublicacionRequestDTO;
-import com.stayFinder.proyectoFinal.dto.PublicacionResponseDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.PublicacionRequestDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.PublicacionResponseDTO;
 import com.stayFinder.proyectoFinal.entity.*;
 import com.stayFinder.proyectoFinal.entity.enums.EstadoPublicacion;
 import com.stayFinder.proyectoFinal.entity.enums.Role;

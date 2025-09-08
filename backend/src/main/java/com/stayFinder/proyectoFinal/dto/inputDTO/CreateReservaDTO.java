@@ -1,15 +1,15 @@
-package com.stayFinder.proyectoFinal.dto;
+package com.stayFinder.proyectoFinal.dto.inputDTO;
 
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.Email;
 
 public record CreateReservaDTO(
-    Long alojamientoId,
-    String fecha
+        Long alojamientoId,
+        String fecha
 
-) { // validaciones 
+) { // validaciones
 
-    
+
 
 }

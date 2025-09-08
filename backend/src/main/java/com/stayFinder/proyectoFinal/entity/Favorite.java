@@ -13,6 +13,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
 @Table(name = "favoritos")
 public class Favorite {
 
@@ -20,10 +21,13 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    // @ManyToOne
-    // private Usuario usuario;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
-    // @ManyToOne
-    // private Alojamiento alojamiento;
-
+    @ManyToOne
+    @JoinColumn(name = "alojamiento_id")
+    private Alojamiento alojamiento;
 }
+
+

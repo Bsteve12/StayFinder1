@@ -4,9 +4,9 @@ package com.stayFinder.proyectoFinal.services.reservaService.interfaces;
 import java.util.List;
 import java.util.Optional;
 
-import com.stayFinder.proyectoFinal.dto.ActualizarReservaDTO;
-import com.stayFinder.proyectoFinal.dto.CreateReservaDTO;
-import com.stayFinder.proyectoFinal.dto.ObtenerReservaDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.ActualizarReservaDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.CreateReservaDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.ObtenerReservaDTO;
 import com.stayFinder.proyectoFinal.entity.Reserva;
 
 public interface ReservaServiceInterface {

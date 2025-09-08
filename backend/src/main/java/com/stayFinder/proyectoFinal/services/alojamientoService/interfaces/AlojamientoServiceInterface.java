@@ -2,8 +2,8 @@ package com.stayFinder.proyectoFinal.services.alojamientoService.interfaces;
 
 
 
-import com.stayFinder.proyectoFinal.dto.AlojamientoRequestDTO;
-import com.stayFinder.proyectoFinal.dto.AlojamientoResponseDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.AlojamientoRequestDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.AlojamientoResponseDTO;
 
 public interface AlojamientoServiceInterface{
     AlojamientoResponseDTO crear(AlojamientoRequestDTO req, Long ownerId);

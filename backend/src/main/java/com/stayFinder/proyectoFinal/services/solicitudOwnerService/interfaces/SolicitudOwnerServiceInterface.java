@@ -1,8 +1,8 @@
 package com.stayFinder.proyectoFinal.services.solicitudOwnerService.interfaces;
 
 
-import com.stayFinder.proyectoFinal.dto.SolicitudOwnerDTO;
-import com.stayFinder.proyectoFinal.dto.RespuestaSolicitudDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.SolicitudOwnerDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.RespuestaSolicitudDTO;
 import com.stayFinder.proyectoFinal.entity.SolicitudOwner;
 
 import java.util.List;

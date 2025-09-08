@@ -4,10 +4,10 @@ package com.stayFinder.proyectoFinal.services.userService.interfaces;
 
 import java.util.List;
 
-import com.stayFinder.proyectoFinal.dto.CreateUserDTO;
-import com.stayFinder.proyectoFinal.dto.LoginRequestDTO;
-import com.stayFinder.proyectoFinal.dto.LoginResponse;
-import com.stayFinder.proyectoFinal.dto.UpdateUserDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.CreateUserDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.LoginRequestDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.LoginResponseDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.UpdateUserDTO;
 import com.stayFinder.proyectoFinal.entity.Usuario;
 
 public interface UserServiceInterface {
@@ -17,7 +17,7 @@ public interface UserServiceInterface {
     void updateUser(UpdateUserDTO updateUserDTO);
 
     // Autenticación
-    LoginResponse login(LoginRequestDTO loginRequestDTO) throws Exception;
+    LoginResponseDTO login(LoginRequestDTO loginRequestDTO) throws Exception;
 
     // CRUD básico de Usuario
     Usuario findByEmail(String email);

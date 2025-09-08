@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.stayFinder.proyectoFinal.dto.ActualizarReservaDTO;
-import com.stayFinder.proyectoFinal.dto.CreateReservaDTO;
-import com.stayFinder.proyectoFinal.dto.ObtenerReservaDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.ActualizarReservaDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.CreateReservaDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.ObtenerReservaDTO;
 import com.stayFinder.proyectoFinal.entity.Alojamiento;
 import com.stayFinder.proyectoFinal.entity.Reserva;
 import com.stayFinder.proyectoFinal.entity.Usuario;

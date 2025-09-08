@@ -1,4 +1,5 @@
-package com.stayFinder.proyectoFinal.dto;
+package com.stayFinder.proyectoFinal.dto.inputDTO;
+
 
 public record UpdateUserDTO(String nombre, String telefono, String fechaNacimiento, String contrasena) {
 
@@ -6,5 +7,5 @@ public record UpdateUserDTO(String nombre, String telefono, String fechaNacimien
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'email'");
     }
-    
+
 }
