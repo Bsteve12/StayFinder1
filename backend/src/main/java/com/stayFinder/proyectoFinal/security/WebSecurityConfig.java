@@ -59,23 +59,26 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Swagger endpoints (public)
+                        // Swagger público
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml"
                         ).permitAll()
 
-                        // Public endpoints de tu API
+                        // Endpoints públicos de tu API
                         .requestMatchers(
                                 "/api/usuario/login",
-                                "/api/usuario",   // registro
-                                "/api/reserva"    // si quieres que sea público
+                                "/api/usuario",
+                                "/api/reserva"
                         ).permitAll()
 
                         // Todo lo demás requiere autenticación
                         .anyRequest().authenticated()
                 )
+
                 .userDetailsService(customUserDetailsService)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
