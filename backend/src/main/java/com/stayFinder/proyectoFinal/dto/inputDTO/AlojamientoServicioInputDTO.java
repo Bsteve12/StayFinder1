@@ -1,5 +1,6 @@
 package com.stayFinder.proyectoFinal.dto.inputDTO;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 @Getter
@@ -7,7 +8,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Schema(description = "Datos para asociar un servicio a un alojamiento")
 public class AlojamientoServicioInputDTO {
+    @Schema(description = "ID del alojamiento", example = "3")
     private Long alojamientoId;
+
+    @Schema(description = "ID del servicio", example = "1")
     private Long servicioId;
 }

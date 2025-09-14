@@ -1,20 +1,24 @@
 package com.stayFinder.proyectoFinal.dto.outputDTO;
 
-
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Schema(description = "Respuesta con los datos de la revisión de una solicitud de Owner")
 public class RespuestaSolicitudDTO {
+    @Schema(description = "ID de la solicitud evaluada", example = "75")
     private Long solicitudId;
-    private Long adminId;
-    private boolean aprobada;
-    private String comentario;
 
-    // Getters y Setters
+    @Schema(description = "ID del administrador que evaluó la solicitud", example = "3")
+    private Long adminId;
+
+    @Schema(description = "Indica si la solicitud fue aprobada", example = "true")
+    private boolean aprobada;
+
+    @Schema(description = "Comentario del administrador", example = "Solicitud aprobada, cumple con los requisitos")
+    private String comentario;
 }

@@ -78,13 +78,17 @@ public class UserServiceImpl implements UserServiceInterface {
 
     // Actualizar usuario
     @Override
-    public void updateUser(UpdateUserDTO updateUserDTO) {
-        Usuario usuario = usuarioRepository.findByEmail(updateUserDTO.email())
+    public void updateUser(Long id, UpdateUserDTO updateUserDTO) {
+        Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         usuario.setNombre(updateUserDTO.nombre());
         usuario.setTelefono(updateUserDTO.telefono());
         usuario.setFechaNacimiento(updateUserDTO.fechaNacimiento());
+
+        if (updateUserDTO.contrasena() != null && !updateUserDTO.contrasena().isBlank()) {
+            usuario.setContrasena(passwordEncoder.encode(updateUserDTO.contrasena()));
+        }
 
         usuarioRepository.save(usuario);
     }

@@ -14,7 +14,7 @@ public interface UserServiceInterface {
 
     // Manejo de usuarios
     void createUser(CreateUserDTO createUserDTO) throws Exception;
-    void updateUser(UpdateUserDTO updateUserDTO);
+    void updateUser(Long id, UpdateUserDTO updateUserDTO);
 
     // Autenticación
     LoginResponseDTO login(LoginRequestDTO loginRequestDTO) throws Exception;
