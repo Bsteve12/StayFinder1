@@ -109,5 +109,12 @@ public class UserServiceImpl implements UserServiceInterface {
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
     }
+
+    // Ejemplo de cómo usas un método custom del DAO
+    public List<Usuario> getUsuariosPorRol(String rol) {
+        return usuarioRepository.buscarUsuariosPorRol(rol); // viene del DAO
+    }
+
 }
+
 

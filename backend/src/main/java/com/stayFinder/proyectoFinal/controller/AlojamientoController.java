@@ -24,7 +24,8 @@ public class AlojamientoController {
     @PostMapping
     @Operation(summary = "Crear un alojamiento")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Alojamiento creado correctamente"),
+            @ApiResponse(responseCode = "200",
+                          description = "Alojamiento creado correctamente"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
     public ResponseEntity<AlojamientoResponseDTO> crear(
