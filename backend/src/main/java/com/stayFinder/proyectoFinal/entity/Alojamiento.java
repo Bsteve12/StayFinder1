@@ -3,6 +3,9 @@ package com.stayFinder.proyectoFinal.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,7 +28,10 @@ public class Alojamiento {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private Usuario owner;
-
+    @OneToMany(mappedBy = "alojamiento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImagenAlojamiento> imagenes = new ArrayList<>();
     @OneToOne(mappedBy = "alojamiento", cascade = CascadeType.ALL, orphanRemoval = true)
     private Publicacion publicacion;
+
+
 }

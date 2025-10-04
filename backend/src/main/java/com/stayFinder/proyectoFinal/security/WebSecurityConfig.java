@@ -73,12 +73,8 @@ public class WebSecurityConfig {
                                 "/api/reserva"
                         ).permitAll()
 
-                        // Endpoints públicos de tu API
-                        .requestMatchers(
-                                "/api/usuario/login",
-                                "/api/usuario",
-                                "/api/reserva"
-                        ).permitAll()
+                        // 📊 SOLO ADMIN puede acceder a reportes
+                        .requestMatchers("/api/reportes/**").hasRole("ADMIN")
 
                         // Todo lo demás requiere autenticación
                         .anyRequest().authenticated()
@@ -90,6 +86,5 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-
 
 }

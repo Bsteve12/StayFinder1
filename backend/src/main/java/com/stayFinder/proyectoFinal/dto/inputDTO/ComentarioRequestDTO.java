@@ -1,17 +1,13 @@
 package com.stayFinder.proyectoFinal.dto.inputDTO;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
-@Data
-@Schema(description = "Datos de entrada para crear un comentario en un alojamiento")
-public class ComentarioRequestDTO {
-    @Schema(description = "Texto del comentario", example = "Excelente alojamiento con muy buena atención")
-    private String texto;
-
-    @Schema(description = "ID del usuario que comenta", example = "2")
-    private Long usuarioId;
-
-    @Schema(description = "ID del alojamiento sobre el cual se comenta", example = "5")
-    private Long alojamientoId;
-}
+@Builder
+public record ComentarioRequestDTO(
+        Long reservaId,
+        Integer calificacion,
+        String mensaje
+) {}

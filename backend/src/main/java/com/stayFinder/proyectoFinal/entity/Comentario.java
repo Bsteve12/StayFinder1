@@ -1,69 +1,44 @@
 package com.stayFinder.proyectoFinal.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "comentarios")
 public class Comentario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String texto;
-
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    @ManyToOne
-    @JoinColumn(name = "alojamiento_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "alojamiento_id", nullable = false)
     private Alojamiento alojamiento;
 
-    private LocalDateTime creadoEn;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reserva_id", nullable = false)
+    private Reserva reserva;
 
-    @PrePersist
-    protected void onCreate() {
-        creadoEn = LocalDateTime.now();
-    }
+    @Column(nullable = false)
+    private Integer calificacion; // 1-5 estrellas
 
-    public Long getId() {
-        return id;
-    }
+    @Column(length = 500)
+    private String mensaje;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column
+    private String respuestaAnfitrion;
 
-    public String getTexto() {
-        return texto;
-    }
-
-    public void setTexto(String texto) {
-        this.texto = texto;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public Alojamiento getAlojamiento() {
-        return alojamiento;
-    }
-
-    public void setAlojamiento(Alojamiento alojamiento) {
-        this.alojamiento = alojamiento;
-    }
-
-    public LocalDateTime getCreadoEn() {
-        return creadoEn;
-    }
-
-    public void setCreadoEn(LocalDateTime creadoEn) {
-        this.creadoEn = creadoEn;
-    }
+    @Column(nullable = false)
+    private LocalDateTime fechaCreacion;
 }

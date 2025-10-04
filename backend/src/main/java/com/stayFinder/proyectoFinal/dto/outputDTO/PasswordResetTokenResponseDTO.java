@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Schema(description = "Respuesta con la información de un token de restablecimiento de contraseña")
-public class PasswordResetTokenOutputDTO {
+public class PasswordResetTokenResponseDTO {
     @Schema(description = "ID del token de recuperación", example = "301")
     private Long id;
 
