@@ -1,6 +1,6 @@
 package com.stayFinder.proyectoFinal.entity;
 
-import com.stayFinder.proyectoFinal.entity.enums.EstadoPublicacion;
+import com.stayFinder.proyectoFinal.entity.enums.EstadoSolicitudPublicacion;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,7 +15,7 @@ public class Publicacion {
     private String descripcion;
 
     @Enumerated(EnumType.STRING)
-    private EstadoPublicacion estado;
+    private EstadoSolicitudPublicacion estado;
 
     // Relación con Usuario (quien crea la publicación)
     @ManyToOne
@@ -37,8 +37,8 @@ public class Publicacion {
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public EstadoPublicacion getEstado() { return estado; }
-    public void setEstado(EstadoPublicacion estado) { this.estado = estado; }
+    public EstadoSolicitudPublicacion getEstado() { return estado; }
+    public void setEstado(EstadoSolicitudPublicacion estado) { this.estado = estado; }
 
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }

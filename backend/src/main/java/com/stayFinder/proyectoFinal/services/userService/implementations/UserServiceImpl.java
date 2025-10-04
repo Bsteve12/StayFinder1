@@ -1,15 +1,15 @@
 package com.stayFinder.proyectoFinal.services.userService.implementations;
 
-
 import com.stayFinder.proyectoFinal.dto.inputDTO.CreateUserDTO;
 import com.stayFinder.proyectoFinal.dto.inputDTO.LoginRequestDTO;
-import com.stayFinder.proyectoFinal.dto.outputDTO.LoginResponseDTO;
 import com.stayFinder.proyectoFinal.dto.inputDTO.UpdateUserDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.LoginResponseDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.UsuarioResponseDTO;
 import com.stayFinder.proyectoFinal.entity.Usuario;
 import com.stayFinder.proyectoFinal.entity.enums.Role;
+import com.stayFinder.proyectoFinal.mapper.UsuarioMapper;
 import com.stayFinder.proyectoFinal.repository.UsuarioRepository;
 import com.stayFinder.proyectoFinal.security.JWTUtil;
-
 import com.stayFinder.proyectoFinal.services.userService.interfaces.UserServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,26 +29,37 @@ public class UserServiceImpl implements UserServiceInterface {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
+    private final UsuarioMapper usuarioMapper;
 
-    // Crear un nuevo usuario
+    // Crear usuario (CLIENT por defecto o cualquier rol si lo hace ADMIN)
     @Override
-    public void createUser(CreateUserDTO createUserDTO) throws Exception {
-        if (usuarioRepository.existsByEmail(createUserDTO.correo())) {
+    public UsuarioResponseDTO createUser(CreateUserDTO dto, Role roleSolicitado, Long adminId) throws Exception {
+        if (usuarioRepository.existsByEmail(dto.correo())) {
             throw new Exception("El email ya existe");
         }
 
-        String encodedPassword = passwordEncoder.encode(createUserDTO.contrasena());
+        Role rolFinal = Role.CLIENT; // por defecto
+
+        if (roleSolicitado != null) {
+            if (adminId == null) throw new Exception("Solo un ADMIN puede asignar roles");
+            Usuario admin = usuarioRepository.findById(adminId)
+                    .orElseThrow(() -> new Exception("Admin no encontrado"));
+            if (admin.getRole() != Role.ADMIN) throw new Exception("No autorizado para asignar roles");
+            rolFinal = roleSolicitado;
+        }
+
+        String encodedPassword = passwordEncoder.encode(dto.contrasena());
 
         Usuario usuario = Usuario.builder()
-                .nombre(createUserDTO.nombre())
-                .email(createUserDTO.correo())
-                .fechaNacimiento(createUserDTO.fechaNacimiento())
-                .telefono(createUserDTO.telefono())
+                .nombre(dto.nombre())
+                .email(dto.correo())
+                .fechaNacimiento(dto.fechaNacimiento())
+                .telefono(dto.telefono())
                 .contrasena(encodedPassword)
-                .role(Role.CLIENT) // siempre inicia como CLIENT
+                .role(rolFinal)
                 .build();
 
-        usuarioRepository.save(usuario);
+        return usuarioMapper.toDto(usuarioRepository.save(usuario));
     }
 
     // Login de usuario
@@ -64,33 +75,68 @@ public class UserServiceImpl implements UserServiceInterface {
             Optional<Usuario> user = usuarioRepository.findByEmail(authentication.getName());
             if (user.isEmpty()) throw new Exception("Usuario no existe");
 
-            Usuario usuarioObject = user.get();
+            Usuario usuario = user.get();
             String token = jwtUtil.GenerateToken(
-                    usuarioObject.getId(),
-                    usuarioObject.getEmail(),
-                    usuarioObject.getRole()
+                    usuario.getId(),
+                    usuario.getEmail(),
+                    usuario.getRole()
             );
 
             return new LoginResponseDTO(token);
         }
-        throw new Exception("No se puede hacer login");
+        throw new Exception("Credenciales inválidas");
     }
 
-    // Actualizar usuario
+    // Actualizar usuario (solo self o admin)
     @Override
-    public void updateUser(Long id, UpdateUserDTO updateUserDTO) {
+    public UsuarioResponseDTO updateUser(Long id, UpdateUserDTO dto, Long actorId) throws Exception {
+        Usuario actor = usuarioRepository.findById(actorId)
+                .orElseThrow(() -> new Exception("Usuario actor no encontrado"));
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new Exception("Usuario no encontrado"));
 
-        usuario.setNombre(updateUserDTO.nombre());
-        usuario.setTelefono(updateUserDTO.telefono());
-        usuario.setFechaNacimiento(updateUserDTO.fechaNacimiento());
-
-        if (updateUserDTO.contrasena() != null && !updateUserDTO.contrasena().isBlank()) {
-            usuario.setContrasena(passwordEncoder.encode(updateUserDTO.contrasena()));
+        if (!actor.getId().equals(usuario.getId()) && actor.getRole() != Role.ADMIN) {
+            throw new Exception("No tienes permisos para actualizar este usuario");
         }
 
-        usuarioRepository.save(usuario);
+        usuario.setNombre(dto.nombre());
+        usuario.setTelefono(dto.telefono());
+        usuario.setFechaNacimiento(dto.fechaNacimiento());
+
+        if (dto.contrasena() != null && !dto.contrasena().isBlank()) {
+            usuario.setContrasena(passwordEncoder.encode(dto.contrasena()));
+        }
+
+        return usuarioMapper.toDto(usuarioRepository.save(usuario));
+    }
+
+    // Eliminar usuario
+    @Override
+    public void deleteUser(Long id, Long actorId) throws Exception {
+        Usuario actor = usuarioRepository.findById(actorId)
+                .orElseThrow(() -> new Exception("Usuario actor no encontrado"));
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new Exception("Usuario no encontrado"));
+
+        if (!actor.getId().equals(usuario.getId()) && actor.getRole() != Role.ADMIN) {
+            throw new Exception("No tienes permisos para eliminar este usuario");
+        }
+
+        usuarioRepository.delete(usuario);
+    }
+
+    // Asignar rol
+    @Override
+    public UsuarioResponseDTO assignRole(Long userId, Role newRole, Long adminId) throws Exception {
+        Usuario admin = usuarioRepository.findById(adminId)
+                .orElseThrow(() -> new Exception("Admin no encontrado"));
+        if (admin.getRole() != Role.ADMIN) throw new Exception("No autorizado para asignar roles");
+
+        Usuario usuario = usuarioRepository.findById(userId)
+                .orElseThrow(() -> new Exception("Usuario no encontrado"));
+
+        usuario.setRole(newRole);
+        return usuarioMapper.toDto(usuarioRepository.save(usuario));
     }
 
     // CRUD básico
@@ -106,15 +152,16 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
     @Override
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
+    public List<UsuarioResponseDTO> findAll() {
+        return usuarioRepository.findAll().stream()
+                .map(usuarioMapper::toDto)
+                .toList();
     }
 
-    // Ejemplo de cómo usas un método custom del DAO
-    public List<Usuario> getUsuariosPorRol(String rol) {
-        return usuarioRepository.buscarUsuariosPorRol(rol); // viene del DAO
+    @Override
+    public List<UsuarioResponseDTO> getUsuariosPorRol(String rol) {
+        return usuarioRepository.buscarUsuariosPorRol(rol).stream()
+                .map(usuarioMapper::toDto)
+                .toList();
     }
-
 }
-
-

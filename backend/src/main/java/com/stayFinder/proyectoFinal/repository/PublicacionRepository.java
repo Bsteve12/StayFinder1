@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PublicacionRepository extends JpaRepository<Publicacion, Long> {
-    List<Publicacion> findByEstado(EstadoPublicacion estado);
+    List<Publicacion> findByEstado(EstadoSolicitudPublicacion estado);
 }
 

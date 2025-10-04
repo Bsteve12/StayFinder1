@@ -1,6 +1,6 @@
 package com.stayFinder.proyectoFinal.entity.enums;
 
-public enum EstadoPublicacion {
+public enum EstadoSolicitudPublicacion {
     PENDIENTE,
     APROBADA,
     RECHAZADA;

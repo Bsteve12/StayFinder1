@@ -38,9 +38,11 @@ public class SolicitudOwner {
 
     private LocalDateTime fechaRevision;
 
+    //  ruta del documento subido (PDF)
+    private String documentoRuta;
     @ManyToOne
     @JoinColumn(name = "admin_id")
     private Usuario adminRevisor; // Admin que revisa la solicitud
 
-    // Getters y Setters
+
 }

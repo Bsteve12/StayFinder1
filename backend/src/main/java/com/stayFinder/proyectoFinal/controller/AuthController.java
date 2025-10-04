@@ -52,10 +52,10 @@ public class AuthController {
         }
         return null;
     }
-
     @GetMapping("/all")
-    @Operation(summary = "Listar todos los usuarios", description = "Devuelve todos los usuarios (solo para pruebas).")
-    public List<Usuario> allUsers() {
+    @Operation(summary = "Listar todos los usuarios", description = "Devuelve todos los usuarios en formato DTO.")
+    public List<com.stayFinder.proyectoFinal.dto.outputDTO.UsuarioResponseDTO> allUsers() {
         return usuarioService.findAll();
     }
+
 }

@@ -28,8 +28,8 @@ public class AlojamientoServiceImpl implements AlojamientoServiceInterface {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Validación correcta con enum
-        if (!owner.getRole().equals(Role.OWNER)) {
-            throw new RuntimeException("Solo los OWNERS pueden crear alojamientos");
+        if (!(owner.getRole().equals(Role.OWNER) || owner.getRole().equals(Role.ADMIN))) {
+            throw new RuntimeException("Solo OWNERS o ADMIN pueden crear alojamientos");
         }
 
         Alojamiento alojamiento = Alojamiento.builder()
