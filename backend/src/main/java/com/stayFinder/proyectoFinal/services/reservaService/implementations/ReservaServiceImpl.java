@@ -3,6 +3,8 @@ package com.stayFinder.proyectoFinal.services.reservaService.implementations;
 import com.stayFinder.proyectoFinal.dto.inputDTO.ActualizarReservaDTO;
 import com.stayFinder.proyectoFinal.dto.inputDTO.CancelarReservaDTO;
 import com.stayFinder.proyectoFinal.dto.inputDTO.ReservaRequestDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.HistorialReservasRequestDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaHistorialDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaResponseDTO;
 import com.stayFinder.proyectoFinal.entity.Alojamiento;
 import com.stayFinder.proyectoFinal.entity.Reserva;
@@ -39,6 +41,8 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         this.reservaMapper = reservaMapper;
     }
 
+    // ------------------------- MÉTODOS EXISTENTES -------------------------
+
     @Override
     public ReservaResponseDTO createReserva(ReservaRequestDTO dto, Long userId) throws Exception {
         Usuario usuario = usuarioRepository.findById(userId)
@@ -55,8 +59,6 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         reserva.setUsuario(usuario);
         reserva.setAlojamiento(alojamiento);
         reserva.setEstado(EstadoReserva.PENDIENTE);
-
-        //  cálculo de precio centralizado
         reserva.setPrecioTotal(calcularPrecioTotal(dto, alojamiento));
 
         Reserva saved = reservaRepository.save(reserva);
@@ -90,7 +92,6 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         reserva.setNumeroHuespedes(dto.numeroHuespedes());
         reserva.setTipoReserva(dto.tipoReserva());
 
-
         ReservaRequestDTO tempDto = new ReservaRequestDTO(
                 reserva.getUsuario().getId(),
                 reserva.getAlojamiento().getId(),
@@ -123,7 +124,6 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
                 .toList();
     }
 
-
     @Override
     public Optional<ReservaResponseDTO> findById(Long id) {
         return reservaRepository.findById(id).map(reservaMapper::toDto);
@@ -140,8 +140,6 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         reserva.setUsuario(usuario);
         reserva.setAlojamiento(alojamiento);
         reserva.setEstado(EstadoReserva.PENDIENTE);
-
-        // cálculo con descuentos
         reserva.setPrecioTotal(calcularPrecioTotal(dto, alojamiento));
 
         Reserva saved = reservaRepository.save(reserva);
@@ -154,9 +152,64 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         reservaRepository.delete(reserva);
     }
 
-    // =========================================================
-    // MÉTODOS AUXILIARES
-    // =========================================================
+    // ------------------------- NUEVOS MÉTODOS: HISTORIAL -------------------------
+
+    @Override
+    public List<ReservaHistorialDTO> historialReservasUsuario(Long usuarioId, HistorialReservasRequestDTO filtros) throws Exception {
+        usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new Exception("Usuario no existe"));
+
+        List<Reserva> reservas = reservaRepository.findByUsuarioId(usuarioId);
+
+        return reservas.stream()
+                .filter(r -> filtros.fechaInicio() == null || !r.getFechaInicio().isBefore(filtros.fechaInicio()))
+                .filter(r -> filtros.fechaFin() == null || !r.getFechaFin().isAfter(filtros.fechaFin()))
+                .filter(r -> filtros.estado() == null || r.getEstado() == filtros.estado())
+                .map(r -> new ReservaHistorialDTO(
+                        r.getId(),
+                        r.getAlojamiento().getId(),
+                        r.getAlojamiento().getNombre(),
+                        r.getUsuario().getId(),
+                        r.getUsuario().getNombre(),
+                        r.getFechaInicio(),
+                        r.getFechaFin(),
+                        r.getNumeroHuespedes(),
+                        r.getPrecioTotal(),
+                        r.getEstado(),
+                        r.getTipoReserva()
+                ))
+                .toList();
+    }
+
+    @Override
+    public List<ReservaHistorialDTO> historialReservasAnfitrion(Long ownerId, HistorialReservasRequestDTO filtros) throws Exception {
+        usuarioRepository.findById(ownerId)
+                .orElseThrow(() -> new Exception("Usuario no existe"));
+
+        List<Alojamiento> alojamientos = alojamientoRepository.findByOwnerId(ownerId);
+
+        return alojamientos.stream()
+                .flatMap(a -> reservaRepository.findByAlojamientoId(a.getId()).stream())
+                .filter(r -> filtros.fechaInicio() == null || !r.getFechaInicio().isBefore(filtros.fechaInicio()))
+                .filter(r -> filtros.fechaFin() == null || !r.getFechaFin().isAfter(filtros.fechaFin()))
+                .filter(r -> filtros.estado() == null || r.getEstado() == filtros.estado())
+                .map(r -> new ReservaHistorialDTO(
+                        r.getId(),
+                        r.getAlojamiento().getId(),
+                        r.getAlojamiento().getNombre(),
+                        r.getUsuario().getId(),
+                        r.getUsuario().getNombre(),
+                        r.getFechaInicio(),
+                        r.getFechaFin(),
+                        r.getNumeroHuespedes(),
+                        r.getPrecioTotal(),
+                        r.getEstado(),
+                        r.getTipoReserva()
+                ))
+                .toList();
+    }
+
+    // ------------------------- MÉTODOS AUXILIARES -------------------------
 
     private void validarFechas(LocalDate inicio, LocalDate fin) throws Exception {
         if (inicio.isAfter(fin)) {
@@ -191,9 +244,6 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         return reserva;
     }
 
-    // =========================================================
-    // LÓGICA DE PRECIOS Y DESCUENTOS
-    // =========================================================
     private double calcularPrecioTotal(ReservaRequestDTO dto, Alojamiento alojamiento) {
         long noches = ChronoUnit.DAYS.between(dto.fechaInicio(), dto.fechaFin());
         if (noches <= 0) {
@@ -202,14 +252,13 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
 
         double precioBase = noches * alojamiento.getPrecio();
 
-        // Aplicar descuentos según tipo de reserva
         if (dto.tipoReserva() == TipoReserva.VIP) {
             if (noches > 7) {
-                precioBase *= 0.5; // servicios a mitad de precio
+                precioBase *= 0.5;
             }
-            precioBase *= 0.9; // descuento 10% alojamiento
+            precioBase *= 0.9;
         } else {
-            precioBase *= 0.95; // descuento 5% sencilla
+            precioBase *= 0.95;
         }
 
         return precioBase;
