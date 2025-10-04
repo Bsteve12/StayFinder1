@@ -11,7 +11,6 @@ import lombok.*;
 @Entity
 @Table(name = "alojamientos")
 public class Alojamiento {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,12 +20,12 @@ public class Alojamiento {
     private Double precio;
     private String descripcion;
 
-    // Relación con el OWNER
+    private Integer capacidadMaxima;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private Usuario owner;
 
-    // Relación con Publicación
     @OneToOne(mappedBy = "alojamiento", cascade = CascadeType.ALL, orphanRemoval = true)
     private Publicacion publicacion;
 }

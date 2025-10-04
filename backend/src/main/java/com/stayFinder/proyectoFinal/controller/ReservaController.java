@@ -1,9 +1,8 @@
 package com.stayFinder.proyectoFinal.controller;
 
 import com.stayFinder.proyectoFinal.dto.outputDTO.ControllerGeneralResponseDTO;
-import com.stayFinder.proyectoFinal.dto.inputDTO.CreateReservaDTO;
-import com.stayFinder.proyectoFinal.dto.outputDTO.ObtenerReservaDTO;
-import com.stayFinder.proyectoFinal.entity.Reserva;
+import com.stayFinder.proyectoFinal.dto.inputDTO.ReservaRequestDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaResponseDTO;
 import com.stayFinder.proyectoFinal.security.UserDetailsImpl;
 import com.stayFinder.proyectoFinal.services.reservaService.interfaces.ReservaServiceInterface;
 
@@ -37,29 +36,29 @@ public class ReservaController {
             @ApiResponse(responseCode = "200", description = "Lista de reservas"),
             @ApiResponse(responseCode = "401", description = "No autenticado")
     })
-    public ResponseEntity<List<ObtenerReservaDTO>> getAll(
+    public ResponseEntity<List<ReservaResponseDTO>> getAll(
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl user) throws Exception {
-        List<ObtenerReservaDTO> reservas = reservaService.obtenerReservasUsuario(user.getId());
+        List<ReservaResponseDTO> reservas = reservaService.obtenerReservasUsuario(user.getId());
         return ResponseEntity.ok(reservas);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener reserva por ID", description = "Devuelve los datos de una reserva por su ID.")
-    public ResponseEntity<Reserva> getById(
+    public ResponseEntity<ReservaResponseDTO> getById(
             @Parameter(description = "ID de la reserva", required = true, example = "1")
             @PathVariable Long id) {
-        Optional<Reserva> reserva = reservaService.findById(id);
+        Optional<ReservaResponseDTO> reserva = reservaService.findById(id);
         return reserva.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @Operation(summary = "Crear reserva", description = "Crea una nueva reserva para el usuario autenticado.")
-    public ResponseEntity<ControllerGeneralResponseDTO> create(
-            @Valid @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos para crear la reserva", required = true)
-            @RequestBody CreateReservaDTO reserva,
+    public ResponseEntity<ReservaResponseDTO> create(
+            @Valid @RequestBody ReservaRequestDTO reserva,
             @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl user) throws Exception {
-        reservaService.createReserva(reserva, user.getId());
-        return ResponseEntity.ok().body(new ControllerGeneralResponseDTO(true, "Reserva creada exitosamente"));
+
+        ReservaResponseDTO response = reservaService.createReserva(reserva, user.getId());
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
@@ -67,25 +66,19 @@ public class ReservaController {
     public ResponseEntity<Object> update(
             @Parameter(description = "ID de la reserva", required = true, example = "1")
             @PathVariable Long id,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Objeto Reserva con los cambios")
-            @RequestBody Reserva reserva) {
-        return reservaService.findById(id)
-                .map(r -> {
-                    reserva.setId(id);
-                    return ResponseEntity.ok(reservaService.save(reserva));
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Objeto con los cambios de reserva")
+            @RequestBody ReservaRequestDTO reserva) throws Exception {
+        ReservaResponseDTO updated = reservaService.save(reserva);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar reserva", description = "Elimina una reserva por id.")
     public ResponseEntity<Void> delete(
             @Parameter(description = "ID de la reserva", required = true, example = "1")
-            @PathVariable Long id) {
-        if (reservaService.findById(id).isPresent()) {
-            reservaService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+            @PathVariable Long id,
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl user) throws Exception {
+        reservaService.deleteById(id, user.getId());
+        return ResponseEntity.noContent().build();
     }
 }

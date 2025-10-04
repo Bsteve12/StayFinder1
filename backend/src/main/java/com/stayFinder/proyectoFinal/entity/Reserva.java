@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Setter
@@ -30,8 +32,12 @@ public class Reserva {
     @JoinColumn(name = "alojamiento_id")
     private Alojamiento alojamiento;
 
-    private String fecha;
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
+    private Integer numeroHuespedes;
     private Double precioTotal;
-    private EstadoReserva estado;
 
+    @Enumerated(EnumType.STRING)
+    private EstadoReserva estado;
 }
+

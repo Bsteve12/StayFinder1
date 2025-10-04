@@ -1,14 +1,28 @@
 package com.stayFinder.proyectoFinal.dto.inputDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
 
-@Data
-@Schema(description = "Datos para actualizar una reserva existente")
-public class ActualizarReservaDTO {
-    @Schema(description = "Nuevo estado de la reserva (0 = Pendiente, 1 = Confirmada, 2 = Cancelada)", example = "1")
-    private Integer estado;
+import java.time.LocalDate;
 
-    @Schema(description = "Nueva fecha de la reserva en formato YYYY-MM-DD", example = "2025-10-15")
-    private String fecha;
-}
+public record ActualizarReservaDTO(
+
+        @NotNull
+        @Schema(description = "ID de la reserva a actualizar", example = "15")
+        Long reservaId,
+
+        @NotNull
+        @Future
+        @Schema(description = "Nueva fecha de inicio de la reserva", example = "2025-12-20")
+        LocalDate fechaInicio,
+
+        @NotNull
+        @Future
+        @Schema(description = "Nueva fecha de fin de la reserva", example = "2025-12-25")
+        LocalDate fechaFin,
+
+        @NotNull
+        @Schema(description = "Cantidad de huéspedes actualizada", example = "3")
+        Integer numeroHuespedes
+) {}

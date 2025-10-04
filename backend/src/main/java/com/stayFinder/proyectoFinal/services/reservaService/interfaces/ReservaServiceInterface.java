@@ -1,30 +1,38 @@
 package com.stayFinder.proyectoFinal.services.reservaService.interfaces;
 
+import com.stayFinder.proyectoFinal.dto.inputDTO.ActualizarReservaDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.CancelarReservaDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.ReservaRequestDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaResponseDTO;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.stayFinder.proyectoFinal.dto.inputDTO.ActualizarReservaDTO;
-import com.stayFinder.proyectoFinal.dto.inputDTO.CreateReservaDTO;
-import com.stayFinder.proyectoFinal.dto.outputDTO.ObtenerReservaDTO;
-import com.stayFinder.proyectoFinal.entity.Reserva;
-
 public interface ReservaServiceInterface {
 
-    void createReserva(CreateReservaDTO createReservaDTO, Long userId) throws Exception;
+    // Crear una nueva reserva
+    ReservaResponseDTO createReserva(ReservaRequestDTO dto, Long userId) throws Exception;
 
+
+    // Cancelar reserva (con motivo opcional)
+    void cancelarReserva(CancelarReservaDTO dto, Long userId) throws Exception;
+
+    // =============================
+    // ELIMINAR RESERVA (cancelar)
+    // =============================
     void deleteReserva(Long id) throws Exception;
 
-    void actualizarReserva(ActualizarReservaDTO actualizarReservaDTO) throws Exception;
+    // Actualizar datos de una reserva
+    ReservaResponseDTO actualizarReserva(ActualizarReservaDTO dto, Long userId) throws Exception;
 
-    List<ObtenerReservaDTO> obtenerReservasUsuario(Long usuarioId) throws Exception;
-
+    // Confirmar reserva
     void confirmarReserva(Long id, Long userId) throws Exception;
 
-    Optional<Reserva> findById(Long id);
+    // Obtener reservas por usuario
+    List<ReservaResponseDTO> obtenerReservasUsuario(Long usuarioId) throws Exception;
 
-    Object save(Reserva reserva);
-
-    void deleteById(Long id);
-
+    // Métodos utilitarios
+    Optional<ReservaResponseDTO> findById(Long id);
+    ReservaResponseDTO save(ReservaRequestDTO dto) throws Exception;
+    void deleteById(Long id, Long userId) throws Exception;
 }
