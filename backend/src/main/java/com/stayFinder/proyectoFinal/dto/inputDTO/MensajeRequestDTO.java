@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Schema(description = "Datos de entrada para enviar un mensaje en un chat")
-public class MensajeInputDTO {
+public class MensajeRequestDTO {
     @NotNull
     @Schema(description = "ID del chat al que pertenece el mensaje", example = "3")
     private Long chatId;

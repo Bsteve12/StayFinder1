@@ -8,12 +8,12 @@ import com.stayFinder.proyectoFinal.entity.Alojamiento;
 import com.stayFinder.proyectoFinal.entity.Reserva;
 import com.stayFinder.proyectoFinal.entity.Usuario;
 import com.stayFinder.proyectoFinal.entity.enums.EstadoReserva;
+import com.stayFinder.proyectoFinal.entity.enums.TipoReserva;
 import com.stayFinder.proyectoFinal.mapper.ReservaMapper;
 import com.stayFinder.proyectoFinal.repository.AlojamientoRepository;
 import com.stayFinder.proyectoFinal.repository.ReservaRepository;
 import com.stayFinder.proyectoFinal.repository.UsuarioRepository;
 import com.stayFinder.proyectoFinal.services.reservaService.interfaces.ReservaServiceInterface;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,17 +22,23 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class ReservaServiceImpl implements ReservaServiceInterface {
 
+    private final ReservaRepository reservaRepository;
     private final UsuarioRepository usuarioRepository;
     private final AlojamientoRepository alojamientoRepository;
-    private final ReservaRepository reservaRepository;
     private final ReservaMapper reservaMapper;
 
-    // =============================
-    // CREAR RESERVA
-    // =============================
+    public ReservaServiceImpl(ReservaRepository reservaRepository,
+                              UsuarioRepository usuarioRepository,
+                              AlojamientoRepository alojamientoRepository,
+                              ReservaMapper reservaMapper) {
+        this.reservaRepository = reservaRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.alojamientoRepository = alojamientoRepository;
+        this.reservaMapper = reservaMapper;
+    }
+
     @Override
     public ReservaResponseDTO createReserva(ReservaRequestDTO dto, Long userId) throws Exception {
         Usuario usuario = usuarioRepository.findById(userId)
@@ -50,61 +56,30 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         reserva.setAlojamiento(alojamiento);
         reserva.setEstado(EstadoReserva.PENDIENTE);
 
-        long noches = ChronoUnit.DAYS.between(dto.fechaInicio(), dto.fechaFin());
-        reserva.setPrecioTotal(noches * alojamiento.getPrecio());
+        //  cálculo de precio centralizado
+        reserva.setPrecioTotal(calcularPrecioTotal(dto, alojamiento));
 
         Reserva saved = reservaRepository.save(reserva);
         return reservaMapper.toDto(saved);
     }
+
     @Override
     public void cancelarReserva(CancelarReservaDTO dto, Long userId) throws Exception {
-        Reserva reserva = obtenerReservaValida(dto.reservaId());
-
-        // Validar que la reserva pertenezca al usuario
-        if (!reserva.getUsuario().getId().equals(userId)) {
-            throw new Exception("No tienes permisos para cancelar esta reserva");
-        }
-
-        // Validar que la reserva no sea pasada
-        if (reserva.getFechaInicio().isBefore(LocalDate.now())) {
-            throw new Exception("No se puede cancelar una reserva que ya inició o terminó");
-        }
-
+        Reserva reserva = obtenerReservaValida(dto.reservaId(), userId);
         reserva.setEstado(EstadoReserva.CANCELADA);
-
-        // (Opcional) Guardar motivo de cancelación en un campo si lo agregas en la entidad
-        // Por ahora, solo mostramos en consola
-        if (dto.motivo() != null && !dto.motivo().isBlank()) {
-            System.out.println("Reserva cancelada con motivo: " + dto.motivo());
-        }
-
         reservaRepository.save(reserva);
     }
-    // =============================
-    // ELIMINAR RESERVA (cancelar)
-    // =============================
+
     @Override
     public void deleteReserva(Long id) throws Exception {
-        Reserva reserva = obtenerReservaValida(id);
-
-        if (reserva.getFechaInicio().isBefore(LocalDate.now())) {
-            throw new Exception("No se puede cancelar una reserva pasada");
-        }
-
-        reserva.setEstado(EstadoReserva.CANCELADA);
-        reservaRepository.save(reserva);
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new Exception("Reserva no encontrada"));
+        reservaRepository.delete(reserva);
     }
 
-    // =============================
-    // ACTUALIZAR RESERVA
-    // =============================
     @Override
     public ReservaResponseDTO actualizarReserva(ActualizarReservaDTO dto, Long userId) throws Exception {
-        Reserva reserva = obtenerReservaValida(dto.reservaId());
-
-        if (!reserva.getUsuario().getId().equals(userId)) {
-            throw new Exception("No tienes permisos para actualizar esta reserva");
-        }
+        Reserva reserva = obtenerReservaValida(dto.reservaId(), userId);
 
         validarFechas(dto.fechaInicio(), dto.fechaFin());
         validarCapacidad(dto.numeroHuespedes(), reserva.getAlojamiento().getCapacidadMaxima());
@@ -113,17 +88,30 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         reserva.setFechaInicio(dto.fechaInicio());
         reserva.setFechaFin(dto.fechaFin());
         reserva.setNumeroHuespedes(dto.numeroHuespedes());
+        reserva.setTipoReserva(dto.tipoReserva());
 
-        long noches = ChronoUnit.DAYS.between(dto.fechaInicio(), dto.fechaFin());
-        reserva.setPrecioTotal(noches * reserva.getAlojamiento().getPrecio());
+
+        ReservaRequestDTO tempDto = new ReservaRequestDTO(
+                reserva.getUsuario().getId(),
+                reserva.getAlojamiento().getId(),
+                reserva.getFechaInicio(),
+                reserva.getFechaFin(),
+                reserva.getNumeroHuespedes(),
+                reserva.getTipoReserva()
+        );
+        reserva.setPrecioTotal(calcularPrecioTotal(tempDto, reserva.getAlojamiento()));
 
         Reserva saved = reservaRepository.save(reserva);
         return reservaMapper.toDto(saved);
     }
 
-    // =============================
-    // LISTAR RESERVAS DE UN USUARIO
-    // =============================
+    @Override
+    public void confirmarReserva(Long id, Long userId) throws Exception {
+        Reserva reserva = obtenerReservaValida(id, userId);
+        reserva.setEstado(EstadoReserva.CONFIRMADA);
+        reservaRepository.save(reserva);
+    }
+
     @Override
     public List<ReservaResponseDTO> obtenerReservasUsuario(Long usuarioId) throws Exception {
         usuarioRepository.findById(usuarioId)
@@ -135,105 +123,95 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
                 .toList();
     }
 
-    // =============================
-    // CONFIRMAR RESERVA
-    // =============================
-    @Override
-    public void confirmarReserva(Long id, Long userId) throws Exception {
-        Reserva reserva = obtenerReservaValida(id);
 
-        if (!reserva.getUsuario().getId().equals(userId)) {
-            throw new Exception("No puedes confirmar una reserva que no es tuya");
-        }
-
-        reserva.setEstado(EstadoReserva.CONFIRMADA);
-        reservaRepository.save(reserva);
-    }
-
-    // =============================
-    // OBTENER POR ID
-    // =============================
     @Override
     public Optional<ReservaResponseDTO> findById(Long id) {
         return reservaRepository.findById(id).map(reservaMapper::toDto);
     }
 
-    // =============================
-    // GUARDAR RESERVA (update general)
-    // =============================
     @Override
     public ReservaResponseDTO save(ReservaRequestDTO dto) throws Exception {
-        Reserva reserva = reservaMapper.toEntity(dto);
-
+        Alojamiento alojamiento = alojamientoRepository.findById(dto.alojamientoId())
+                .orElseThrow(() -> new Exception("Alojamiento no existe"));
         Usuario usuario = usuarioRepository.findById(dto.usuarioId())
                 .orElseThrow(() -> new Exception("Usuario no existe"));
 
-        Alojamiento alojamiento = alojamientoRepository.findById(dto.alojamientoId())
-                .orElseThrow(() -> new Exception("Alojamiento no existe"));
-
-        validarFechas(dto.fechaInicio(), dto.fechaFin());
-        validarCapacidad(dto.numeroHuespedes(), alojamiento.getCapacidadMaxima());
-        validarDisponibilidad(dto.fechaInicio(), dto.fechaFin(), alojamiento.getId());
-
+        Reserva reserva = reservaMapper.toEntity(dto);
         reserva.setUsuario(usuario);
         reserva.setAlojamiento(alojamiento);
+        reserva.setEstado(EstadoReserva.PENDIENTE);
 
-        long noches = ChronoUnit.DAYS.between(dto.fechaInicio(), dto.fechaFin());
-        reserva.setPrecioTotal(noches * alojamiento.getPrecio());
+        // cálculo con descuentos
+        reserva.setPrecioTotal(calcularPrecioTotal(dto, alojamiento));
 
         Reserva saved = reservaRepository.save(reserva);
         return reservaMapper.toDto(saved);
     }
 
-    // =============================
-    // ELIMINAR POR ID
-    // =============================
     @Override
     public void deleteById(Long id, Long userId) throws Exception {
-        Reserva reserva = obtenerReservaValida(id);
-
-        if (!reserva.getUsuario().getId().equals(userId)) {
-            throw new Exception("No tienes permisos para eliminar esta reserva");
-        }
-
+        Reserva reserva = obtenerReservaValida(id, userId);
         reservaRepository.delete(reserva);
     }
 
-    // =============================
-    // MÉTODOS DE VALIDACIÓN
-    // =============================
-    private Reserva obtenerReservaValida(Long id) throws Exception {
-        return reservaRepository.findById(id)
-                .orElseThrow(() -> new Exception("Reserva no existe"));
-    }
+    // =========================================================
+    // MÉTODOS AUXILIARES
+    // =========================================================
 
     private void validarFechas(LocalDate inicio, LocalDate fin) throws Exception {
+        if (inicio.isAfter(fin)) {
+            throw new Exception("La fecha de inicio no puede ser posterior a la fecha de fin");
+        }
         if (inicio.isBefore(LocalDate.now())) {
             throw new Exception("La fecha de inicio no puede ser en el pasado");
         }
-        if (!fin.isAfter(inicio)) {
-            throw new Exception("La fecha de fin debe ser después de la fecha de inicio");
-        }
-        if (ChronoUnit.DAYS.between(inicio, fin) < 1) {
-            throw new Exception("La reserva debe ser al menos de 1 noche");
-        }
     }
 
-    private void validarCapacidad(int huespedes, int capacidadMaxima) throws Exception {
-        if (huespedes > capacidadMaxima) {
-            throw new Exception("El número de huéspedes supera la capacidad del alojamiento");
+    private void validarCapacidad(int numeroHuespedes, int capacidadMaxima) throws Exception {
+        if (numeroHuespedes > capacidadMaxima) {
+            throw new Exception("El número de huéspedes excede la capacidad máxima");
         }
     }
 
     private void validarDisponibilidad(LocalDate inicio, LocalDate fin, Long alojamientoId) throws Exception {
         List<Reserva> reservas = reservaRepository.findByAlojamientoIdAndEstado(alojamientoId, EstadoReserva.CONFIRMADA);
-
-        boolean solapado = reservas.stream().anyMatch(r ->
-                (inicio.isBefore(r.getFechaFin()) && fin.isAfter(r.getFechaInicio()))
-        );
-
-        if (solapado) {
-            throw new Exception("El alojamiento no está disponible en esas fechas");
+        for (Reserva r : reservas) {
+            if (!(fin.isBefore(r.getFechaInicio()) || inicio.isAfter(r.getFechaFin()))) {
+                throw new Exception("El alojamiento no está disponible en las fechas seleccionadas");
+            }
         }
+    }
+
+    private Reserva obtenerReservaValida(Long reservaId, Long userId) throws Exception {
+        Reserva reserva = reservaRepository.findById(reservaId)
+                .orElseThrow(() -> new Exception("Reserva no encontrada"));
+        if (!reserva.getUsuario().getId().equals(userId)) {
+            throw new Exception("No tiene permiso para modificar esta reserva");
+        }
+        return reserva;
+    }
+
+    // =========================================================
+    // LÓGICA DE PRECIOS Y DESCUENTOS
+    // =========================================================
+    private double calcularPrecioTotal(ReservaRequestDTO dto, Alojamiento alojamiento) {
+        long noches = ChronoUnit.DAYS.between(dto.fechaInicio(), dto.fechaFin());
+        if (noches <= 0) {
+            noches = 1;
+        }
+
+        double precioBase = noches * alojamiento.getPrecio();
+
+        // Aplicar descuentos según tipo de reserva
+        if (dto.tipoReserva() == TipoReserva.VIP) {
+            if (noches > 7) {
+                precioBase *= 0.5; // servicios a mitad de precio
+            }
+            precioBase *= 0.9; // descuento 10% alojamiento
+        } else {
+            precioBase *= 0.95; // descuento 5% sencilla
+        }
+
+        return precioBase;
     }
 }

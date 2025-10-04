@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Schema(description = "Respuesta con los datos de un mensaje dentro de un chat")
-public class MensajeOutputDTO {
+public class MensajeResponseDTO {
     @Schema(description = "ID del mensaje", example = "101")
     private Long id;
 

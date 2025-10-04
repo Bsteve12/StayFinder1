@@ -2,15 +2,17 @@ package com.stayFinder.proyectoFinal.dto.inputDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(description = "Datos de entrada para registrar un pago en línea")
-public class PagoInputDTO {
+@Schema(description = "Datos de entrada para registrar un pago")
+public class PagoRequestDTO {
+
     @NotNull
     @Schema(description = "ID de la reserva asociada al pago", example = "15")
     private Long reservaId;

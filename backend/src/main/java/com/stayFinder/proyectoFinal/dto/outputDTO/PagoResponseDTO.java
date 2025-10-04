@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Schema(description = "Respuesta con la información de un pago realizado")
-public class PagoOutputDTO {
+public class PagoResponseDTO {
     @Schema(description = "ID del pago", example = "2001")
     private Long id;
 

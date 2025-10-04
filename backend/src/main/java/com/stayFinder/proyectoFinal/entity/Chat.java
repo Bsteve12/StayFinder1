@@ -15,13 +15,13 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String tema;
-
+    // Cliente
     @ManyToOne
-    @JoinColumn(name = "usuario1_id", nullable = false)
-    private Usuario usuario1;
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
+    // Anfitrión
     @ManyToOne
-    @JoinColumn(name = "usuario2_id", nullable = false)
-    private Usuario usuario2;
+    @JoinColumn(name = "anfitrion_id", nullable = false)
+    private Usuario anfitrion;
 }

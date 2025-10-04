@@ -1,5 +1,6 @@
 package com.stayFinder.proyectoFinal.dto.inputDTO;
 
+import com.stayFinder.proyectoFinal.entity.enums.TipoReserva;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -24,5 +25,9 @@ public record ActualizarReservaDTO(
 
         @NotNull
         @Schema(description = "Cantidad de huéspedes actualizada", example = "3")
-        Integer numeroHuespedes
+        Integer numeroHuespedes,
+
+        @NotNull
+        @Schema(description = "Tipo de reserva (VIP o SENCILLA)", example = "VIP")
+        TipoReserva tipoReserva
 ) {}

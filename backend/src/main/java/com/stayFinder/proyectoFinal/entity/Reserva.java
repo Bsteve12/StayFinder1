@@ -2,7 +2,9 @@ package com.stayFinder.proyectoFinal.entity;
 
 import com.stayFinder.proyectoFinal.entity.enums.EstadoReserva;
 
+import com.stayFinder.proyectoFinal.entity.enums.TipoReserva;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,5 +41,7 @@ public class Reserva {
 
     @Enumerated(EnumType.STRING)
     private EstadoReserva estado;
+
+    private TipoReserva tipoReserva;
 }
 

@@ -9,7 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Schema(description = "Respuesta con los datos de un chat entre usuario y anfitrión")
-public class ChatOutputDTO {
+public class ChatResponseDTO {
+
     @Schema(description = "ID del chat", example = "15")
     private Long id;
 
