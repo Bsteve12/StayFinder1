@@ -2,6 +2,7 @@ package com.stayFinder.proyectoFinal.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,15 +13,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class PasswordResetToken {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String token;
-    private LocalDateTime expiresAt;
-    private Boolean usado = false;
-
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
+
+    @Column(nullable = false, unique = true)
+    private String token;
+
+    @Column(nullable = false)
+    private LocalDateTime expiresAt;
+
+    @Column(nullable = false)
+    private boolean usado;  // Getter será isUsado()
 }

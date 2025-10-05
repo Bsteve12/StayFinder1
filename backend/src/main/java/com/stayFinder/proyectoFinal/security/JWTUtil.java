@@ -16,16 +16,14 @@ import java.util.Date;
 import java.util.UUID;
 
 @Component
-public class JWTUtil { // tiene los metodos para verificar la validez del jwt 
+public class JWTUtil {
+
     @Value("${jwt.key}")
     private String jwtKey;
     @Value("${jwt.tokenExpiration}")
     private int tokenExpiration;
 
-    /*@Value("${jwt.refreshTokenExpiration}")
-    private int refreshTokenExpiration;
-   */
-   private SecretKey secretKey;
+    private SecretKey secretKey;
 
     @PostConstruct
     public void init(){
@@ -41,38 +39,26 @@ public class JWTUtil { // tiene los metodos para verificar la validez del jwt
                 .setExpiration(new Date(System.currentTimeMillis() + expirationInMs))
                 .setIssuedAt(Date.from(Instant.now()));
 
-     
-       
         return Jwts.builder()
                 .setClaims(claims)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String GetEmailFromToken(String token, boolean refresh){
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey).build()
-                .parseClaimsJwt(token)
-                .getBody()
-                .getSubject();
+    public String GetEmailFromToken(String token) {
+        return extractAllClaims(token).getSubject();
     }
 
     public UUID GetSessionIdFromRefreshToken(String token){
-        String sessionId =Jwts.parserBuilder()
-                .setSigningKey(secretKey).build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("sessionId", String.class);
-
+        String sessionId = extractAllClaims(token).get("sessionId", String.class);
         return UUID.fromString(sessionId);
     }
-
 
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJws(token) // parseClaimsJws -> para tokens firmados
                 .getBody();
     }
 
@@ -89,35 +75,18 @@ public class JWTUtil { // tiene los metodos para verificar la validez del jwt
         try {
             final String username = extractUsername(token);
             return (username.equals(userEmail) && !isTokenExpired(token));
-        } catch (SecurityException e) {
-            System.out.println("Invalid JWT signature: " + e.getMessage());
-        } catch (MalformedJwtException e) {
-            System.out.println("Invalid JWT token: " + e.getMessage());
-        } catch (ExpiredJwtException e) {
-            System.out.println("JWT token is expired: " + e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            System.out.println("JWT token is unsupported: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println("JWT claims string is empty: " + e.getMessage());
+        } catch (JwtException | IllegalArgumentException e) {
+            System.out.println("JWT error: " + e.getMessage());
         }
         return false;
     }
-
 
     public boolean ValidateJwtToken(String token, UserDetails userDetails) {
         try {
             final String username = extractUsername(token);
             return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-        } catch (SecurityException e) {
-            System.out.println("Invalid JWT signature: " + e.getMessage());
-        } catch (MalformedJwtException e) {
-            System.out.println("Invalid JWT token: " + e.getMessage());
-        } catch (ExpiredJwtException e) {
-            System.out.println("JWT token is expired: " + e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            System.out.println("JWT token is unsupported: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println("La cadena de claims del JWT está vacía: " + e.getMessage());
+        } catch (JwtException | IllegalArgumentException e) {
+            System.out.println("JWT error: " + e.getMessage());
         }
         return false;
     }

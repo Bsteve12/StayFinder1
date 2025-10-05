@@ -16,6 +16,7 @@ import com.stayFinder.proyectoFinal.repository.AlojamientoRepository;
 import com.stayFinder.proyectoFinal.repository.ReservaRepository;
 import com.stayFinder.proyectoFinal.repository.UsuarioRepository;
 import com.stayFinder.proyectoFinal.services.reservaService.interfaces.ReservaServiceInterface;
+import com.stayFinder.proyectoFinal.services.emailService.interfaces.EmailServiceInterface;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,15 +31,18 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
     private final UsuarioRepository usuarioRepository;
     private final AlojamientoRepository alojamientoRepository;
     private final ReservaMapper reservaMapper;
+    private final EmailServiceInterface emailService; // Inyeccion del objeto
 
     public ReservaServiceImpl(ReservaRepository reservaRepository,
                               UsuarioRepository usuarioRepository,
                               AlojamientoRepository alojamientoRepository,
-                              ReservaMapper reservaMapper) {
+                              ReservaMapper reservaMapper,
+                              EmailServiceInterface emailService) {
         this.reservaRepository = reservaRepository;
         this.usuarioRepository = usuarioRepository;
         this.alojamientoRepository = alojamientoRepository;
         this.reservaMapper = reservaMapper;
+        this.emailService = emailService;
     }
 
     // ------------------------- MÉTODOS EXISTENTES -------------------------
@@ -62,6 +66,16 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         reserva.setPrecioTotal(calcularPrecioTotal(dto, alojamiento));
 
         Reserva saved = reservaRepository.save(reserva);
+
+        //  Notificación de confirmación inicial (pendiente de confirmar)
+        emailService.sendReservationConfirmation(
+                usuario.getEmail(),
+                "Reserva creada",
+                "Hola " + usuario.getNombre() +
+                        ", tu reserva #" + saved.getId() +
+                        " fue creada y está en estado PENDIENTE."
+        );
+
         return reservaMapper.toDto(saved);
     }
 
@@ -70,6 +84,14 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         Reserva reserva = obtenerReservaValida(dto.reservaId(), userId);
         reserva.setEstado(EstadoReserva.CANCELADA);
         reservaRepository.save(reserva);
+
+        // ✅ Notificación de cancelación
+        emailService.sendReservationCancellation(
+                reserva.getUsuario().getEmail(),
+                "Reserva cancelada",
+                "Hola " + reserva.getUsuario().getNombre() +
+                        ", tu reserva #" + reserva.getId() + " ha sido cancelada."
+        );
     }
 
     @Override
@@ -111,6 +133,14 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
         Reserva reserva = obtenerReservaValida(id, userId);
         reserva.setEstado(EstadoReserva.CONFIRMADA);
         reservaRepository.save(reserva);
+
+        // ✅ Notificación de confirmación definitiva
+        emailService.sendReservationConfirmation(
+                reserva.getUsuario().getEmail(),
+                "Reserva confirmada",
+                "Hola " + reserva.getUsuario().getNombre() +
+                        ", tu reserva #" + reserva.getId() + " fue CONFIRMADA con éxito."
+        );
     }
 
     @Override

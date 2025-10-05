@@ -13,7 +13,7 @@ public class PasswordResetTokenMapper {
                 .usuarioId(entity.getUsuario().getId())
                 .token(entity.getToken())
                 .expiresAt(entity.getExpiresAt())
-                .usado(entity.getUsado())
+                .usado(entity.isUsado())  //
                 .build();
     }
 }

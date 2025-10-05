@@ -37,7 +37,6 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenServiceI
         Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new Exception("Usuario no encontrado"));
 
-        // generar un token único
         String token = UUID.randomUUID().toString();
 
         PasswordResetToken entity = PasswordResetToken.builder()
@@ -55,7 +54,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenServiceI
         PasswordResetToken entity = tokenRepository.findByToken(token)
                 .orElseThrow(() -> new Exception("Token inválido"));
 
-        if (entity.getUsado() || entity.getExpiresAt().isBefore(LocalDateTime.now())) {
+        if (entity.isUsado() || entity.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new Exception("Token expirado o ya utilizado");
         }
 
