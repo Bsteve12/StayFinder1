@@ -32,6 +32,7 @@ public class Alojamiento {
     private List<ImagenAlojamiento> imagenes = new ArrayList<>();
     @OneToOne(mappedBy = "alojamiento", cascade = CascadeType.ALL, orphanRemoval = true)
     private Publicacion publicacion;
-
+    @Column(nullable = false)
+    private boolean eliminado = false;
 
 }

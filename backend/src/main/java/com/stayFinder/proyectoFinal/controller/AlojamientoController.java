@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "Alojamientos", description = "Operaciones para gestionar alojamientos")
 @RestController
 @RequestMapping("/api/alojamientos")
@@ -58,4 +60,12 @@ public class AlojamientoController {
             @Parameter(description = "ID del alojamiento a obtener") @PathVariable Long id) {
         return ResponseEntity.ok(alojamientoService.obtenerPorId(id));
     }
+
+    @GetMapping("/activos")
+    @Operation(summary = "Listar todos los alojamientos activos")
+    public ResponseEntity<List<AlojamientoResponseDTO>> obtenerAlojamientosActivos() {
+        List<AlojamientoResponseDTO> activos = alojamientoService.listarAlojamientosActivos();
+        return ResponseEntity.ok(activos);
+    }
+
 }

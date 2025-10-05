@@ -1,6 +1,5 @@
 package com.stayFinder.proyectoFinal.entity;
 
-
 import java.io.Serializable;
 
 import com.stayFinder.proyectoFinal.entity.enums.Role;
@@ -19,10 +18,11 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "usuarios")
-public class Usuario implements Serializable{
+public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false) // 🔹 asegura que el id nunca será nulo
     private Long id;
 
     private String nombre;
@@ -30,12 +30,13 @@ public class Usuario implements Serializable{
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false) // 🔹 usuario_id NO puede ser nulo
+    private Long usuario_id;
+
     private String contrasena;
     private String telefono;
     private String fechaNacimiento;
 
-    // Relación opcional con rol
+    @Enumerated(EnumType.STRING)
     private Role role;
-
-
 }

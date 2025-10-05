@@ -9,6 +9,15 @@ import java.util.List;
 
 @Repository
 public interface AlojamientoRepository extends JpaRepository<Alojamiento, Long>, AlojamientoRepositoryCustom {
+
+    // Lista solo alojamientos activos (no eliminados) por propietario
+    List<Alojamiento> findByOwnerIdAndEliminadoFalse(Long ownerId);
+
+    // Lista todos los alojamientos activos
+    List<Alojamiento> findByEliminadoFalse();
+
+    // Método para obtener alojamientos por ownerId
     List<Alojamiento> findByOwnerId(Long ownerId);
-    // Puedes agregar consultas personalizadas aquí si las necesitas
+
+
 }

@@ -1,7 +1,5 @@
 package com.stayFinder.proyectoFinal.security;
 
-
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,66 +23,31 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-    /**
-     * This class is used to configure spring security framework
-     * passwordEncoder is a bean that handles password encryption or comparison
-     * authenticationManager handles the authentication whe we requested on the account serivce
-     * securityFilterChain is where we set the protected routes and where we can set up Oauth2
-     */
 
-     private final CustomUserDetailsService customUserDetailsService;
-     private final AuthTokenFilter authTokenFilter;
-     
+    private final CustomUserDetailsService customUserDetailsService;
+    private final AuthTokenFilter authTokenFilter;
 
-    /*
-     * Password encoder bean (uses BCrypt hashing)
-     * Critical for secure password storage
-     */
     @Bean
-    public PasswordEncoder passwordEncoder() { 
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-
-    /*
-     * Authentication manager bean
-     * Required for programmatic authentication (e.g., in /generateToken)
-     */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {// es un bin (adminstra un metodo) 
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Swagger público
-                        .requestMatchers(
-                                "/",
-                                "/swagger-ui.html",
-                                "/swagger-ui/**",
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/v3/api-docs.yaml",
-                                "/api/usuario/login",
-                                "/api/usuario",
-                                "/api/reserva"
-                        ).permitAll()
-
-                        // 📊 SOLO ADMIN puede acceder a reportes
-                        .requestMatchers("/api/reportes/**").hasRole("ADMIN")
-
-                        // Todo lo demás requiere autenticación
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()  // 🔓 Permitir todos los endpoints
                 )
-
-                .userDetailsService(customUserDetailsService)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
 }

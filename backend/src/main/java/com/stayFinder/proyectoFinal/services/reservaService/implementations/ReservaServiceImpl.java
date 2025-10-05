@@ -82,10 +82,19 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
     @Override
     public void cancelarReserva(CancelarReservaDTO dto, Long userId) throws Exception {
         Reserva reserva = obtenerReservaValida(dto.reservaId(), userId);
+
+        // 🔹 Validar que falten al menos 48h para la fecha de inicio
+        LocalDate hoy = LocalDate.now();
+        long horasHastaCheckIn = ChronoUnit.HOURS.between(hoy.atStartOfDay(), reserva.getFechaInicio().atStartOfDay());
+
+        if (horasHastaCheckIn < 48) {
+            throw new Exception("La reserva solo puede cancelarse hasta 48 horas antes del check-in");
+        }
+
         reserva.setEstado(EstadoReserva.CANCELADA);
         reservaRepository.save(reserva);
 
-        // ✅ Notificación de cancelación
+        // Notificación de cancelación
         emailService.sendReservationCancellation(
                 reserva.getUsuario().getEmail(),
                 "Reserva cancelada",
