@@ -40,6 +40,7 @@ public class UsuarioController {
             @RequestParam(required = false) Role role, // opcional: solo admin puede usarlo
             @RequestParam(required = false) Long adminId
     ) throws Exception {
+        System.out.println("Se está creando un usuario con los datos: " + dto);
         return ResponseEntity.ok(userService.createUser(dto, role, adminId));
     }
 
@@ -79,9 +80,9 @@ public class UsuarioController {
         return ResponseEntity.ok(userService.findAll());
     }
 
-    @GetMapping("/rol/{rol}")
+    @GetMapping("/role/{role}")
     @Operation(summary = "Listar usuarios por rol", description = "Filtra usuarios por rol (CLIENT, OWNER, ADMIN).")
-    public ResponseEntity<List<UsuarioResponseDTO>> getByRol(@PathVariable String rol) {
-        return ResponseEntity.ok(userService.getUsuariosPorRol(rol));
+    public ResponseEntity<List<UsuarioResponseDTO>> getByRol(@PathVariable String role) {
+        return ResponseEntity.ok(userService.getUsuariosPorRol(role));
     }
 }

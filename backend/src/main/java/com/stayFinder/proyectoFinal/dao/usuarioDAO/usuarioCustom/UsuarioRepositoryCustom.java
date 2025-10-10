@@ -4,6 +4,6 @@ import com.stayFinder.proyectoFinal.entity.Usuario;
 import java.util.List;
 
 public interface UsuarioRepositoryCustom {
-    List<Usuario> buscarUsuariosPorRol(String rol);
+    List<Usuario> buscarUsuariosPorRol(String role);
     List<Usuario> topUsuariosConMasReservas(int limite);
 }

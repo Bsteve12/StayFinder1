@@ -12,5 +12,8 @@ public record UpdateUserDTO(
         @Schema(description = "Nueva fecha de nacimiento", example = "1998-04-21")
         String fechaNacimiento,
         @Schema(description = "Nueva contraseña", example = "Password123")
-        String contrasena
+        String contrasena,
+
+        @Schema(description = "Nueva cedula del usuario", example = "0987654321")
+        Long usuario_id
 ) { }

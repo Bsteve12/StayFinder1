@@ -17,5 +17,6 @@ public record CreateUserDTO(
         @Schema(description = "Fecha de nacimiento en formato YYYY-MM-DD", example = "1995-08-21") String fechaNacimiento,
 
         @NotBlank @Size(min = 8, message = "La contraseña debe tener mínimo 8 caracteres")
-        @Schema(description = "Contraseña segura", example = "Password123") String contrasena
+        @Schema(description = "Contraseña segura", example = "Password123") String contrasena,
+        @Schema(description = "Cedula del usuario", example = "1234567890") Long usuario_id
 ) {}

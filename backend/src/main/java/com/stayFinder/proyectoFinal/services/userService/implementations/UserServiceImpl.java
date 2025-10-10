@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserServiceInterface {
                 .fechaNacimiento(dto.fechaNacimiento())
                 .telefono(dto.telefono())
                 .contrasena(encodedPassword)
+                .usuario_id(dto.usuario_id())
                 .role(rolFinal)
                 .build();
 
@@ -102,6 +103,7 @@ public class UserServiceImpl implements UserServiceInterface {
         usuario.setNombre(dto.nombre());
         usuario.setTelefono(dto.telefono());
         usuario.setFechaNacimiento(dto.fechaNacimiento());
+        usuario.setUsuario_id(dto.usuario_id());
 
         if (dto.contrasena() != null && !dto.contrasena().isBlank()) {
             usuario.setContrasena(passwordEncoder.encode(dto.contrasena()));
@@ -159,8 +161,8 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
     @Override
-    public List<UsuarioResponseDTO> getUsuariosPorRol(String rol) {
-        return usuarioRepository.buscarUsuariosPorRol(rol).stream()
+    public List<UsuarioResponseDTO> getUsuariosPorRol(String role) {
+        return usuarioRepository.buscarUsuariosPorRol(role).stream()
                 .map(usuarioMapper::toDto)
                 .toList();
     }
