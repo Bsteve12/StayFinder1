@@ -10,9 +10,11 @@ import lombok.*;
 @Builder
 @Schema(description = "Datos para asociar un servicio a un alojamiento")
 public class AlojamientoServicioInputDTO {
+    @NonNull
     @Schema(description = "ID del alojamiento", example = "3")
     private Long alojamientoId;
 
+    @NonNull
     @Schema(description = "ID del servicio", example = "1")
     private Long servicioId;
 }
