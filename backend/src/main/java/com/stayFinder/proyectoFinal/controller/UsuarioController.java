@@ -37,41 +37,41 @@ public class UsuarioController {
     @Operation(summary = "Crear usuario", description = "Crea un usuario. Si lo hace un admin puede asignar rol inicial.")
     public ResponseEntity<UsuarioResponseDTO> createUser(
             @Valid @RequestBody CreateUserDTO dto,
-            @RequestParam(required = false) Role role, // opcional: solo admin puede usarlo
-            @RequestParam(required = false) Long adminId
+            @RequestParam(required = false) Role role,
+            @RequestParam(required = false) Long adminUsuarioId
     ) throws Exception {
         System.out.println("Se está creando un usuario con los datos: " + dto);
-        return ResponseEntity.ok(userService.createUser(dto, role, adminId));
+        return ResponseEntity.ok(userService.createUser(dto, role, adminUsuarioId));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{usuarioId}")
     @Operation(summary = "Actualizar usuario", description = "El propio usuario o un admin puede actualizarlo.")
     public ResponseEntity<UsuarioResponseDTO> updateUser(
-            @PathVariable Long id,
+            @PathVariable Long usuarioId,
             @Valid @RequestBody UpdateUserDTO dto,
-            @RequestParam Long actorId // quien ejecuta la acción
+            @RequestParam Long actorUsuarioId
     ) throws Exception {
-        return ResponseEntity.ok(userService.updateUser(id, dto, actorId));
+        return ResponseEntity.ok(userService.updateUser(usuarioId, dto, actorUsuarioId));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{usuarioId}")
     @Operation(summary = "Eliminar usuario", description = "El propio usuario o un admin puede eliminarlo.")
     public ResponseEntity<ControllerGeneralResponseDTO> deleteUser(
-            @PathVariable Long id,
-            @RequestParam Long actorId
+            @PathVariable Long usuarioId,
+            @RequestParam Long actorUsuarioId
     ) throws Exception {
-        userService.deleteUser(id, actorId);
+        userService.deleteUser(usuarioId, actorUsuarioId);
         return ResponseEntity.ok(new ControllerGeneralResponseDTO(true, "Usuario eliminado correctamente"));
     }
 
-    @PutMapping("/{id}/role")
+    @PutMapping("/{usuarioId}/role")
     @Operation(summary = "Asignar rol", description = "Solo un admin puede asignar rol a otro usuario.")
     public ResponseEntity<UsuarioResponseDTO> assignRole(
-            @PathVariable Long id,
+            @PathVariable Long usuarioId,
             @RequestParam Role newRole,
-            @RequestParam Long adminId
+            @RequestParam Long adminUsuarioId
     ) throws Exception {
-        return ResponseEntity.ok(userService.assignRole(id, newRole, adminId));
+        return ResponseEntity.ok(userService.assignRole(usuarioId, newRole, adminUsuarioId));
     }
 
     @GetMapping
@@ -82,7 +82,7 @@ public class UsuarioController {
 
     @GetMapping("/role/{role}")
     @Operation(summary = "Listar usuarios por rol", description = "Filtra usuarios por rol (CLIENT, OWNER, ADMIN).")
-    public ResponseEntity<List<UsuarioResponseDTO>> getByRol(@PathVariable String role) {
-        return ResponseEntity.ok(userService.getUsuariosPorRol(role));
+    public ResponseEntity<List<UsuarioResponseDTO>> getByRol(@PathVariable Role role) {
+        return ResponseEntity.ok(userService.getUsuariosPorRol(role.name()));
     }
 }

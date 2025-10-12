@@ -13,10 +13,10 @@ import com.stayFinder.proyectoFinal.entity.enums.Role;
 public interface UserServiceInterface {
 
     // Manejo de usuarios
-    UsuarioResponseDTO createUser(CreateUserDTO createUserDTO, Role roleSolicitado, Long adminId) throws Exception;
-    UsuarioResponseDTO updateUser(Long id, UpdateUserDTO updateUserDTO, Long actorId) throws Exception;
-    void deleteUser(Long id, Long actorId) throws Exception;
-    UsuarioResponseDTO assignRole(Long userId, Role newRole, Long adminId) throws Exception;
+    UsuarioResponseDTO createUser(CreateUserDTO createUserDTO, Role roleSolicitado, Long adminUsuarioId) throws Exception;
+    UsuarioResponseDTO updateUser(Long usuarioId, UpdateUserDTO updateUserDTO, Long actorUsuarioId) throws Exception;
+    void deleteUser(Long usuarioId, Long actorUsuarioId) throws Exception;
+    UsuarioResponseDTO assignRole(Long usuarioId, Role newRole, Long adminUsuarioId) throws Exception;
 
     // Autenticación
     LoginResponseDTO login(LoginRequestDTO loginRequestDTO) throws Exception;

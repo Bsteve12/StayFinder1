@@ -2,6 +2,7 @@ package com.stayFinder.proyectoFinal.dao.usuarioDAO.usuarioImpl;
 
 import com.stayFinder.proyectoFinal.dao.usuarioDAO.usuarioCustom.UsuarioRepositoryCustom;
 import com.stayFinder.proyectoFinal.entity.Usuario;
+import com.stayFinder.proyectoFinal.entity.enums.Role;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -16,9 +17,12 @@ public class UsuarioRepositoryImpl implements UsuarioRepositoryCustom {
 
     @Override
     public List<Usuario> buscarUsuariosPorRol(String rol) {
-        String jpql = "SELECT u FROM Usuario u WHERE u.rol = :rol";
+        // ✅ Convertimos el String a Role antes de usarlo en la query
+        Role rolEnum = Role.valueOf(rol.toUpperCase());
+
+        String jpql = "SELECT u FROM Usuario u WHERE u.role = :rol";
         return entityManager.createQuery(jpql, Usuario.class)
-                .setParameter("rol", rol)
+                .setParameter("rol", rolEnum)
                 .getResultList();
     }
 

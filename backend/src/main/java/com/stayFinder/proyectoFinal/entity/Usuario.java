@@ -22,7 +22,7 @@ public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false) // 🔹 asegura que el id nunca será nulo
+    @Column(nullable = false)
     private Long id;
 
     private String nombre;
@@ -30,8 +30,8 @@ public class Usuario implements Serializable {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false) // 🔹 usuario_id NO puede ser nulo
-    private Long usuario_id;
+    @Column(name = "usuario_id", nullable = false, unique = true) // 👈 la columna se sigue llamando usuario_id en la BD
+    private Long usuarioId; // 👈 el campo en Java ahora sí se llama usuarioId
 
     private String contrasena;
     private String telefono;
@@ -40,3 +40,4 @@ public class Usuario implements Serializable {
     @Enumerated(EnumType.STRING)
     private Role role;
 }
+
