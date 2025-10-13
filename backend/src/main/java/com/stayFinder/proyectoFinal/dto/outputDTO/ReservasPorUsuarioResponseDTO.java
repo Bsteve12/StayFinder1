@@ -10,8 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "Muestra el nombre del usuario y la cantidad de reservas que tiene  ")
+@Schema(description = "Muestra el nombre del usuario y la cantidad total de reservas que tiene")
 public class ReservasPorUsuarioResponseDTO {
+
+    @Schema(description = "Nombre completo del usuario", example = "Laura Gómez")
     private String nombreUsuario;
+
+    @Schema(description = "Cantidad de reservas asociadas al usuario", example = "8")
     private Long cantidadReservas;
 }

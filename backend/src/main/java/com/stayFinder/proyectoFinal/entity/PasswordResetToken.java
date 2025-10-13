@@ -29,5 +29,5 @@ public class PasswordResetToken {
     private LocalDateTime expiresAt;
 
     @Column(nullable = false)
-    private boolean usado;  // Getter será isUsado()
+    private boolean usado;
 }

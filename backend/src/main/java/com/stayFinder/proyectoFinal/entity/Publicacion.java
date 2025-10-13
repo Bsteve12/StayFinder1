@@ -2,9 +2,14 @@ package com.stayFinder.proyectoFinal.entity;
 
 import com.stayFinder.proyectoFinal.entity.enums.EstadoSolicitudPublicacion;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "publicaciones")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Publicacion {
 
     @Id
@@ -26,23 +31,4 @@ public class Publicacion {
     @OneToOne
     @JoinColumn(name = "alojamiento_id", referencedColumnName = "id")
     private Alojamiento alojamiento;
-
-    // Getters y setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
-
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-
-    public EstadoSolicitudPublicacion getEstado() { return estado; }
-    public void setEstado(EstadoSolicitudPublicacion estado) { this.estado = estado; }
-
-    public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-
-    public Alojamiento getAlojamiento() { return alojamiento; }
-    public void setAlojamiento(Alojamiento alojamiento) { this.alojamiento = alojamiento; }
 }
