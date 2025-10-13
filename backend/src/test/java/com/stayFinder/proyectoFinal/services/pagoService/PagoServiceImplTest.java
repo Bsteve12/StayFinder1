@@ -7,6 +7,7 @@ import com.stayFinder.proyectoFinal.entity.Reserva;
 import com.stayFinder.proyectoFinal.mapper.PagoMapper;
 import com.stayFinder.proyectoFinal.repository.PagoRepository;
 import com.stayFinder.proyectoFinal.repository.ReservaRepository;
+import com.stayFinder.proyectoFinal.services.pagoService.implementations.PagoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

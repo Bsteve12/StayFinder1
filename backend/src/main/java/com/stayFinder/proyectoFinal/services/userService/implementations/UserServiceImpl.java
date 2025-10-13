@@ -1,4 +1,4 @@
-package com.stayFinder.proyectoFinal.services.userService;
+package com.stayFinder.proyectoFinal.services.userService.implementations;
 
 import com.stayFinder.proyectoFinal.dto.inputDTO.CreateUserDTO;
 import com.stayFinder.proyectoFinal.dto.inputDTO.LoginRequestDTO;

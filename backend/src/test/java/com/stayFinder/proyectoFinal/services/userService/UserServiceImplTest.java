@@ -8,6 +8,7 @@ import com.stayFinder.proyectoFinal.entity.enums.Role;
 import com.stayFinder.proyectoFinal.mapper.UsuarioMapper;
 import com.stayFinder.proyectoFinal.repository.UsuarioRepository;
 import com.stayFinder.proyectoFinal.security.JWTUtil;
+import com.stayFinder.proyectoFinal.services.userService.implementations.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

@@ -1,4 +1,4 @@
-package com.stayFinder.proyectoFinal.services.alojamientoService;
+package com.stayFinder.proyectoFinal.services.alojamientoService.implementations;
 
 import com.stayFinder.proyectoFinal.dto.inputDTO.AlojamientoRequestDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.AlojamientoResponseDTO;

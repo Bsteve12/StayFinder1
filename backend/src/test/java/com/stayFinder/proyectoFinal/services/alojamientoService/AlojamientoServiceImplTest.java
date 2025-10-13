@@ -10,6 +10,7 @@ import com.stayFinder.proyectoFinal.entity.enums.Role;
 import com.stayFinder.proyectoFinal.repository.AlojamientoRepository;
 import com.stayFinder.proyectoFinal.repository.ReservaRepository;
 import com.stayFinder.proyectoFinal.repository.UsuarioRepository;
+import com.stayFinder.proyectoFinal.services.alojamientoService.implementations.AlojamientoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
