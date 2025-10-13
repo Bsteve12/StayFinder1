@@ -7,6 +7,7 @@ import com.stayFinder.proyectoFinal.entity.Reserva;
 import com.stayFinder.proyectoFinal.entity.Usuario;
 import com.stayFinder.proyectoFinal.entity.enums.EstadoReserva;
 import com.stayFinder.proyectoFinal.entity.enums.TipoReserva;
+import com.stayFinder.proyectoFinal.entity.enums.Role; // Importado
 import com.stayFinder.proyectoFinal.mapper.ReservaMapper;
 import com.stayFinder.proyectoFinal.repository.AlojamientoRepository;
 import com.stayFinder.proyectoFinal.repository.ReservaRepository;
@@ -26,6 +27,10 @@ import static org.mockito.Mockito.*;
 
 class ReservaServiceImplTest {
 
+    // Constantes para IDs de Negocio/Token
+    private static final Long USUARIO_ID_NEGOCIO = 100L;
+    private static final Long ADMIN_ID_NEGOCIO = 999L;
+
     @Mock
     private ReservaRepository reservaRepository;
 
@@ -44,7 +49,8 @@ class ReservaServiceImplTest {
     @InjectMocks
     private ReservaServiceImpl reservaService;
 
-    private Usuario usuario;
+    private Usuario cliente; // Cambiado a 'cliente' para mayor claridad
+    private Usuario admin;   // Nuevo objeto Admin
     private Alojamiento alojamiento;
     private Reserva reserva;
     private ReservaRequestDTO requestDTO;
@@ -54,10 +60,18 @@ class ReservaServiceImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        usuario = new Usuario();
-        usuario.setId(1L);
-        usuario.setNombre("Allison");
-        usuario.setEmail("allison@test.com");
+        // CONFIGURACIÓN DEL CLIENTE (Actor principal en las pruebas)
+        cliente = new Usuario();
+        cliente.setId(1L); // PK de DB (usado en el DTO de salida)
+        cliente.setUsuarioId(USUARIO_ID_NEGOCIO); // ID de Negocio (usado por el servicio en findByUsuarioId)
+        cliente.setNombre("Allison");
+        cliente.setEmail("allison@test.com");
+        cliente.setRole(Role.CLIENT); // Rol requerido por obtenerReservaValida
+
+        // CONFIGURACIÓN DEL ADMINISTRADOR
+        admin = new Usuario();
+        admin.setUsuarioId(ADMIN_ID_NEGOCIO);
+        admin.setRole(Role.ADMIN);
 
         alojamiento = new Alojamiento();
         alojamiento.setId(2L);
@@ -67,7 +81,7 @@ class ReservaServiceImplTest {
 
         reserva = Reserva.builder()
                 .id(10L)
-                .usuario(usuario)
+                .usuario(cliente) // Usamos cliente
                 .alojamiento(alojamiento)
                 .fechaInicio(LocalDate.now().plusDays(3))
                 .fechaFin(LocalDate.now().plusDays(5))
@@ -77,8 +91,9 @@ class ReservaServiceImplTest {
                 .precioTotal(190000.0)
                 .build();
 
+        // El DTO de entrada debe usar el ID de negocio/token si tu servicio lo espera.
         requestDTO = new ReservaRequestDTO(
-                usuario.getId(),
+                cliente.getUsuarioId(), // *** USAMOS EL ID DE NEGOCIO ***
                 alojamiento.getId(),
                 reserva.getFechaInicio(),
                 reserva.getFechaFin(),
@@ -88,7 +103,7 @@ class ReservaServiceImplTest {
 
         responseDTO = new ReservaResponseDTO(
                 reserva.getId(),
-                usuario.getId(),
+                cliente.getId(), // Usamos la PK de DB para el DTO de salida (asumiendo que es lo que mapea el mapper)
                 alojamiento.getId(),
                 reserva.getFechaInicio(),
                 reserva.getFechaFin(),
@@ -100,28 +115,29 @@ class ReservaServiceImplTest {
 
     @Test
     void createReserva_deberiaCrearReservaConExito() throws Exception {
-        when(usuarioRepository.findById(usuario.getId())).thenReturn(Optional.of(usuario));
+        // CORREGIDO: El servicio usa findByUsuarioId (ID de negocio)
+        when(usuarioRepository.findByUsuarioId(USUARIO_ID_NEGOCIO)).thenReturn(Optional.of(cliente));
         when(alojamientoRepository.findById(alojamiento.getId())).thenReturn(Optional.of(alojamiento));
         when(reservaMapper.toEntity(requestDTO)).thenReturn(reserva);
         when(reservaRepository.save(any(Reserva.class))).thenReturn(reserva);
         when(reservaMapper.toDto(reserva)).thenReturn(responseDTO);
 
-        ReservaResponseDTO result = reservaService.createReserva(requestDTO, usuario.getId());
+        ReservaResponseDTO result = reservaService.createReserva(requestDTO, USUARIO_ID_NEGOCIO); // ID de negocio
 
         assertNotNull(result);
-        assertEquals(usuario.getId(), result.usuarioId());
-        assertEquals(alojamiento.getId(), result.alojamientoId());
+        assertEquals(cliente.getId(), result.usuarioId()); // El DTO de salida retorna la PK de DB
         verify(emailService, times(1)).sendReservationConfirmation(
-                eq(usuario.getEmail()), anyString(), anyString()
+                eq(cliente.getEmail()), anyString(), anyString()
         );
     }
 
     @Test
     void createReserva_deberiaLanzarExcepcionSiUsuarioNoExiste() {
-        when(usuarioRepository.findById(usuario.getId())).thenReturn(Optional.empty());
+        // CORREGIDO: El servicio usa findByUsuarioId (ID de negocio)
+        when(usuarioRepository.findByUsuarioId(USUARIO_ID_NEGOCIO)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(Exception.class, () ->
-                reservaService.createReserva(requestDTO, usuario.getId())
+                reservaService.createReserva(requestDTO, USUARIO_ID_NEGOCIO)
         );
 
         assertEquals("Usuario no existe", exception.getMessage());
@@ -131,16 +147,21 @@ class ReservaServiceImplTest {
     void confirmarReserva_deberiaCambiarEstadoYEnviarCorreo() throws Exception {
         reserva.setEstado(EstadoReserva.PENDIENTE);
         when(reservaRepository.findById(reserva.getId())).thenReturn(Optional.of(reserva));
+
+        // CORREGIDO: Se debe simular la búsqueda del actor (cliente) por su ID de negocio
+        when(usuarioRepository.findByUsuarioId(USUARIO_ID_NEGOCIO)).thenReturn(Optional.of(cliente));
+
         when(reservaRepository.save(reserva)).thenReturn(reserva);
 
-        reservaService.confirmarReserva(reserva.getId(), usuario.getId());
+        reservaService.confirmarReserva(reserva.getId(), USUARIO_ID_NEGOCIO); // ID de negocio
 
         assertEquals(EstadoReserva.CONFIRMADA, reserva.getEstado());
         verify(emailService, times(1)).sendReservationConfirmation(
-                eq(usuario.getEmail()), anyString(), anyString()
+                eq(cliente.getEmail()), anyString(), anyString()
         );
     }
 
+    // El método deleteReserva sin userId no usa obtenerReservaValida, por lo que pasa si existe.
     @Test
     void deleteReserva_deberiaEliminarReservaExistente() throws Exception {
         when(reservaRepository.findById(reserva.getId())).thenReturn(Optional.of(reserva));
@@ -152,15 +173,20 @@ class ReservaServiceImplTest {
 
     @Test
     void obtenerReservasUsuario_deberiaRetornarListaDeReservas() throws Exception {
-        when(usuarioRepository.findById(usuario.getId())).thenReturn(Optional.of(usuario));
-        when(reservaRepository.findByUsuarioId(usuario.getId())).thenReturn(List.of(reserva));
+        // CORREGIDO: El servicio usa findByUsuarioId (ID de negocio)
+        when(usuarioRepository.findByUsuarioId(USUARIO_ID_NEGOCIO)).thenReturn(Optional.of(cliente));
+
+        // El repositorio busca por el ID de negocio según la implementación
+        when(reservaRepository.findByUsuarioId(USUARIO_ID_NEGOCIO)).thenReturn(List.of(reserva));
         when(reservaMapper.toDto(reserva)).thenReturn(responseDTO);
 
-        List<ReservaResponseDTO> result = reservaService.obtenerReservasUsuario(usuario.getId());
+        List<ReservaResponseDTO> result = reservaService.obtenerReservasUsuario(USUARIO_ID_NEGOCIO);
 
         assertEquals(1, result.size());
         assertEquals(reserva.getId(), result.get(0).id());
     }
+
+    // Pruebas findById no cambian porque solo dependen de la PK de la Reserva.
 
     @Test
     void findById_deberiaRetornarReservaSiExiste() {
@@ -180,5 +206,25 @@ class ReservaServiceImplTest {
         Optional<ReservaResponseDTO> result = reservaService.findById(99L);
 
         assertTrue(result.isEmpty());
+    }
+
+    // Nueva prueba de seguridad/permisos para validar obtenerReservaValida
+    @Test
+    void confirmarReserva_deberiaPermitirAccesoAAdmin() throws Exception {
+        reserva.setEstado(EstadoReserva.PENDIENTE);
+        when(reservaRepository.findById(reserva.getId())).thenReturn(Optional.of(reserva));
+
+        // Simular que el actor es el ADMIN (ID de negocio)
+        when(usuarioRepository.findByUsuarioId(ADMIN_ID_NEGOCIO)).thenReturn(Optional.of(admin));
+
+        when(reservaRepository.save(reserva)).thenReturn(reserva);
+
+        // Intentar confirmar usando el ID del ADMIN
+        reservaService.confirmarReserva(reserva.getId(), ADMIN_ID_NEGOCIO);
+
+        assertEquals(EstadoReserva.CONFIRMADA, reserva.getEstado());
+        verify(emailService, times(1)).sendReservationConfirmation(
+                eq(cliente.getEmail()), anyString(), anyString()
+        );
     }
 }

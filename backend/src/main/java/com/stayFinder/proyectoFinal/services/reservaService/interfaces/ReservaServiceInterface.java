@@ -1,10 +1,7 @@
 package com.stayFinder.proyectoFinal.services.reservaService.interfaces;
 
-import com.stayFinder.proyectoFinal.dto.inputDTO.ActualizarReservaRequestDTO;
-import com.stayFinder.proyectoFinal.dto.inputDTO.CancelarReservaRequestDTO;
-import com.stayFinder.proyectoFinal.dto.inputDTO.ReservaRequestDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.*;
 import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaResponseDTO;
-import com.stayFinder.proyectoFinal.dto.inputDTO.HistorialReservasRequestDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaHistorialResponseDTO;
 
 import java.util.List;
@@ -40,5 +37,8 @@ public interface ReservaServiceInterface {
     List<ReservaHistorialResponseDTO> historialReservasUsuario(Long usuarioId, HistorialReservasRequestDTO filtros) throws Exception;
 
     List<ReservaHistorialResponseDTO> historialReservasAnfitrion(Long ownerId, HistorialReservasRequestDTO filtros) throws Exception;
+
+    ReservaResponseDTO createReservaBasica(CreateReservaRequestDTO dto, Long usuarioId) throws Exception;
+
 }
 

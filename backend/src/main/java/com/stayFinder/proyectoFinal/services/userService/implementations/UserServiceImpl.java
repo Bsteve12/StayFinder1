@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserServiceInterface {
     private final UsuarioRepository usuarioRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
-    private JWTUtil jwtUtil;
+    private final JWTUtil jwtUtil; // Inyección final (por constructor de Lombok)
     private final UsuarioMapper usuarioMapper;
 
     @Override
@@ -67,27 +67,35 @@ public class UserServiceImpl implements UserServiceInterface {
 
     @Override
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) throws Exception {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequestDTO.email(),
-                        loginRequestDTO.contrasena()
-                )
-        );
-
-        if (authentication.isAuthenticated()) {
-            Optional<Usuario> user = usuarioRepository.findByEmail(authentication.getName());
-            if (user.isEmpty()) throw new Exception("Usuario no existe");
-
-            Usuario usuario = user.get();
-
-            String token = jwtUtil.GenerateToken(
-                    usuario.getUsuarioId(), // ahora el token se genera con el id del usuario real
-                    usuario.getEmail(),
-                    usuario.getRole()
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequestDTO.email(),
+                            loginRequestDTO.contrasena()
+                    )
             );
 
-            return new LoginResponseDTO(token);
+            if (authentication.isAuthenticated()) {
+                Optional<Usuario> user = usuarioRepository.findByEmail(authentication.getName());
+                if (user.isEmpty()) throw new Exception("Usuario no existe");
+
+                Usuario usuario = user.get();
+
+                String token = jwtUtil.GenerateToken(
+                        usuario.getUsuarioId(),
+                        usuario.getEmail(),
+                        usuario.getRole()
+                );
+
+                return new LoginResponseDTO(token);
+            }
+
+        } catch (Exception e) { // Captura la excepción de autenticación (BadCredentialsException, etc.)
+            // Lanza tu propia excepción con el mensaje deseado.
+            throw new Exception("Credenciales inválidas");
         }
+
+        // Si la autenticación pasa pero isAuthenticated() es falso (esto es raro en la práctica)
         throw new Exception("Credenciales inválidas");
     }
 
@@ -105,7 +113,9 @@ public class UserServiceImpl implements UserServiceInterface {
         usuario.setNombre(dto.nombre());
         usuario.setTelefono(dto.telefono());
         usuario.setFechaNacimiento(dto.fechaNacimiento());
-        usuario.setUsuarioId(dto.usuarioId());
+        // Quitar la línea de abajo si usuarioId es una clave inmutable de negocio
+        // usuario.setUsuarioId(dto.usuarioId());
+
 
         if (dto.contrasena() != null && !dto.contrasena().isBlank()) {
             usuario.setContrasena(passwordEncoder.encode(dto.contrasena()));
@@ -167,10 +177,5 @@ public class UserServiceImpl implements UserServiceInterface {
         return usuarioRepository.buscarUsuariosPorRol(role).stream()
                 .map(usuarioMapper::toDto)
                 .toList();
-    }
-
-    // Setter for JWTUtil to allow injection in tests
-    public void setJwtUtil(JWTUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
     }
 }

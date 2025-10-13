@@ -7,13 +7,16 @@ import com.stayFinder.proyectoFinal.dto.outputDTO.ControllerGeneralResponseDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.LoginResponseDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.UsuarioResponseDTO;
 import com.stayFinder.proyectoFinal.entity.enums.Role;
+import com.stayFinder.proyectoFinal.security.UserDetailsImpl; // Importar UserDetailsImpl
 import com.stayFinder.proyectoFinal.services.userService.interfaces.UserServiceInterface;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter; // Importar Parameter
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal; // Importar AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,22 +48,24 @@ public class UsuarioController {
     }
 
     @PutMapping("/{usuarioId}")
-    @Operation(summary = "Actualizar usuario", description = "El propio usuario o un admin puede actualizarlo.")
+    @Operation(summary = "Actualizar usuario", description = "El propio usuario o un admin puede actualizarlo. Requiere token.")
     public ResponseEntity<UsuarioResponseDTO> updateUser(
             @PathVariable Long usuarioId,
             @Valid @RequestBody UpdateUserDTO dto,
-            @RequestParam Long actorUsuarioId
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl user // 👈 Corregido para usar el ID del token
     ) throws Exception {
-        return ResponseEntity.ok(userService.updateUser(usuarioId, dto, actorUsuarioId));
+        // Se pasa el ID de Negocio del usuario autenticado (actor)
+        return ResponseEntity.ok(userService.updateUser(usuarioId, dto, user.getId()));
     }
 
     @DeleteMapping("/{usuarioId}")
-    @Operation(summary = "Eliminar usuario", description = "El propio usuario o un admin puede eliminarlo.")
+    @Operation(summary = "Eliminar usuario", description = "El propio usuario o un admin puede eliminarlo. Requiere token.")
     public ResponseEntity<ControllerGeneralResponseDTO> deleteUser(
             @PathVariable Long usuarioId,
-            @RequestParam Long actorUsuarioId
+            @Parameter(hidden = true) @AuthenticationPrincipal UserDetailsImpl user // 👈 Corregido para usar el ID del token
     ) throws Exception {
-        userService.deleteUser(usuarioId, actorUsuarioId);
+        // Se pasa el ID de Negocio del usuario autenticado (actor)
+        userService.deleteUser(usuarioId, user.getId());
         return ResponseEntity.ok(new ControllerGeneralResponseDTO(true, "Usuario eliminado correctamente"));
     }
 
@@ -71,6 +76,7 @@ public class UsuarioController {
             @RequestParam Role newRole,
             @RequestParam Long adminUsuarioId
     ) throws Exception {
+        // Nota: Este endpoint sigue usando adminUsuarioId, lo cual es correcto si el ID del admin no viene del token.
         return ResponseEntity.ok(userService.assignRole(usuarioId, newRole, adminUsuarioId));
     }
 

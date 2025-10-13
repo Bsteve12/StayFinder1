@@ -30,10 +30,11 @@ public class JWTUtil {
         secretKey = Keys.hmacShaKeyFor(jwtKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String GenerateToken(long id, String email, Role role){
+    // CORRECCIÓN 1: Cambiamos el nombre del parámetro a 'usuarioId' y lo usamos en .setId()
+    public String GenerateToken(long usuarioId, String email, Role role){
         long expirationInMs = tokenExpiration;
         Claims claims = Jwts.claims()
-                .setId(Long.toString(id))
+                .setId(Long.toString(usuarioId)) // 👈 Ahora usa correctamente el ID de Negocio
                 .setSubject(email)
                 .setIssuer(role.toString())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationInMs))
@@ -47,6 +48,20 @@ public class JWTUtil {
 
     public String GetEmailFromToken(String token) {
         return extractAllClaims(token).getSubject();
+    }
+
+    // CORRECCIÓN 2: Método para extraer el ID de Negocio (usuarioId) del token.
+    public Long GetUsuarioIdFromToken(String token) {
+        try {
+            String idStr = extractAllClaims(token).getId();
+            if (idStr != null) {
+                return Long.parseLong(idStr);
+            }
+        } catch (JwtException | IllegalArgumentException e) {
+            // Manejar error si el token no es válido o el ID no es un Long
+            System.err.println("Error al extraer UsuarioId del token: " + e.getMessage());
+        }
+        return null;
     }
 
     public UUID GetSessionIdFromRefreshToken(String token){
