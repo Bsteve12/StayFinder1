@@ -1,4 +1,4 @@
-package com.stayFinder.proyectoFinal.services.userService.implementations;
+package com.stayFinder.proyectoFinal.services.userService;
 
 import com.stayFinder.proyectoFinal.dto.inputDTO.CreateUserDTO;
 import com.stayFinder.proyectoFinal.dto.inputDTO.LoginRequestDTO;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserServiceInterface {
     private final UsuarioRepository usuarioRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
-    private final JWTUtil jwtUtil;
+    private JWTUtil jwtUtil;
     private final UsuarioMapper usuarioMapper;
 
     @Override
@@ -167,5 +167,10 @@ public class UserServiceImpl implements UserServiceInterface {
         return usuarioRepository.buscarUsuariosPorRol(role).stream()
                 .map(usuarioMapper::toDto)
                 .toList();
+    }
+
+    // Setter for JWTUtil to allow injection in tests
+    public void setJwtUtil(JWTUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
     }
 }

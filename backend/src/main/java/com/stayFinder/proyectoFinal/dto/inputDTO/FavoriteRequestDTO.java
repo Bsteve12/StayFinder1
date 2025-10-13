@@ -1,4 +1,3 @@
-// Si prefieres record en vez de clase con Lombok:
 package com.stayFinder.proyectoFinal.dto.inputDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;

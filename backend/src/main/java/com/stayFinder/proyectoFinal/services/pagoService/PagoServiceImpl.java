@@ -1,4 +1,4 @@
-package com.stayFinder.proyectoFinal.services.pagoService.implementations;
+package com.stayFinder.proyectoFinal.services.pagoService;
 
 import com.stayFinder.proyectoFinal.dto.inputDTO.PagoRequestDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.PagoResponseDTO;
