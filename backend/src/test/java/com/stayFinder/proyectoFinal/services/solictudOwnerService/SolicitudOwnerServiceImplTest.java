@@ -1,7 +1,9 @@
 package com.stayFinder.proyectoFinal.services.solictudOwnerService;
 
-import com.stayFinder.proyectoFinal.dto.inputDTO.SolicitudOwnerDTO;
-import com.stayFinder.proyectoFinal.dto.inputDTO.RespuestaSolicitudDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.RespuestaSolicitudRequestDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.SolicitudOwnerRequestDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.RespuestaSolicitudRequestDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.SolicitudOwnerRequestDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.SolicitudOwnerResponseDTO;
 import com.stayFinder.proyectoFinal.entity.SolicitudOwner;
 import com.stayFinder.proyectoFinal.entity.Usuario;
@@ -74,7 +76,7 @@ class SolicitudOwnerServiceImplTest {
     @Test
     void crearSolicitud_DeberiaCrearCorrectamente() throws Exception {
         // Arrange
-        SolicitudOwnerDTO dto = new SolicitudOwnerDTO(usuarioCliente.getId(), "Quiero ser propietario");
+        SolicitudOwnerRequestDTO dto = new SolicitudOwnerRequestDTO(usuarioCliente.getId(), "Quiero ser propietario");
         when(usuarioRepo.findById(usuarioCliente.getId())).thenReturn(Optional.of(usuarioCliente));
         when(solicitudRepo.findByEstado(EstadoSolicitud.PENDIENTE)).thenReturn(List.of());
         when(solicitudRepo.save(any())).thenReturn(solicitud);
@@ -100,7 +102,7 @@ class SolicitudOwnerServiceImplTest {
                 .role(Role.OWNER)
                 .build();
 
-        SolicitudOwnerDTO dto = new SolicitudOwnerDTO(noCliente.getId(), "No debería poder");
+        SolicitudOwnerRequestDTO dto = new SolicitudOwnerRequestDTO(noCliente.getId(), "No debería poder");
         when(usuarioRepo.findById(noCliente.getId())).thenReturn(Optional.of(noCliente));
 
         // Act & Assert
@@ -112,7 +114,7 @@ class SolicitudOwnerServiceImplTest {
     void responderSolicitud_DeberiaAprobarCorrectamente() throws Exception {
         // Arrange
         solicitud.setFechaSolicitud(LocalDateTime.now().minusDays(1));
-        RespuestaSolicitudDTO dto = new RespuestaSolicitudDTO(
+        RespuestaSolicitudRequestDTO dto = new RespuestaSolicitudRequestDTO(
                 solicitud.getId(), usuarioAdmin.getId(), true , "Aprobado"
         );
 
@@ -136,7 +138,7 @@ class SolicitudOwnerServiceImplTest {
     void responderSolicitud_DeberiaRechazarPorVencimiento() throws Exception {
         // Arrange
         solicitud.setFechaSolicitud(LocalDateTime.now().minusDays(5));
-        RespuestaSolicitudDTO dto = new RespuestaSolicitudDTO(
+        RespuestaSolicitudRequestDTO dto = new RespuestaSolicitudRequestDTO(
                 solicitud.getId(), usuarioAdmin.getId(), true, "fuera de plazo"
         );
 

@@ -1,11 +1,11 @@
 package com.stayFinder.proyectoFinal.services.reservaService.interfaces;
 
-import com.stayFinder.proyectoFinal.dto.inputDTO.ActualizarReservaDTO;
-import com.stayFinder.proyectoFinal.dto.inputDTO.CancelarReservaDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.ActualizarReservaRequestDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.CancelarReservaRequestDTO;
 import com.stayFinder.proyectoFinal.dto.inputDTO.ReservaRequestDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaResponseDTO;
 import com.stayFinder.proyectoFinal.dto.inputDTO.HistorialReservasRequestDTO;
-import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaHistorialDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaHistorialResponseDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +17,7 @@ public interface ReservaServiceInterface {
 
 
     // Cancelar reserva (con motivo opcional)
-    void cancelarReserva(CancelarReservaDTO dto, Long userId) throws Exception;
+    void cancelarReserva(CancelarReservaRequestDTO dto, Long userId) throws Exception;
 
     // =============================
     // ELIMINAR RESERVA (cancelar)
@@ -25,7 +25,7 @@ public interface ReservaServiceInterface {
     void deleteReserva(Long id) throws Exception;
 
     // Actualizar datos de una reserva
-    ReservaResponseDTO actualizarReserva(ActualizarReservaDTO dto, Long userId) throws Exception;
+    ReservaResponseDTO actualizarReserva(ActualizarReservaRequestDTO dto, Long userId) throws Exception;
 
     // Confirmar reserva
     void confirmarReserva(Long id, Long userId) throws Exception;
@@ -37,8 +37,8 @@ public interface ReservaServiceInterface {
     Optional<ReservaResponseDTO> findById(Long id);
     ReservaResponseDTO save(ReservaRequestDTO dto) throws Exception;
     void deleteById(Long id, Long userId) throws Exception;
-    List<ReservaHistorialDTO> historialReservasUsuario(Long usuarioId, HistorialReservasRequestDTO filtros) throws Exception;
+    List<ReservaHistorialResponseDTO> historialReservasUsuario(Long usuarioId, HistorialReservasRequestDTO filtros) throws Exception;
 
-    List<ReservaHistorialDTO> historialReservasAnfitrion(Long ownerId, HistorialReservasRequestDTO filtros) throws Exception;
+    List<ReservaHistorialResponseDTO> historialReservasAnfitrion(Long ownerId, HistorialReservasRequestDTO filtros) throws Exception;
 }
 

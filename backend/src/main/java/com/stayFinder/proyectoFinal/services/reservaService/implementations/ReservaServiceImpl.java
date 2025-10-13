@@ -1,10 +1,10 @@
 package com.stayFinder.proyectoFinal.services.reservaService.implementations;
 
-import com.stayFinder.proyectoFinal.dto.inputDTO.ActualizarReservaDTO;
-import com.stayFinder.proyectoFinal.dto.inputDTO.CancelarReservaDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.ActualizarReservaRequestDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.CancelarReservaRequestDTO;
 import com.stayFinder.proyectoFinal.dto.inputDTO.ReservaRequestDTO;
 import com.stayFinder.proyectoFinal.dto.inputDTO.HistorialReservasRequestDTO;
-import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaHistorialDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaHistorialResponseDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaResponseDTO;
 import com.stayFinder.proyectoFinal.entity.Alojamiento;
 import com.stayFinder.proyectoFinal.entity.Reserva;
@@ -80,7 +80,7 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
     }
 
     @Override
-    public void cancelarReserva(CancelarReservaDTO dto, Long userId) throws Exception {
+    public void cancelarReserva(CancelarReservaRequestDTO dto, Long userId) throws Exception {
         Reserva reserva = obtenerReservaValida(dto.reservaId(), userId);
 
         // 🔹 Validar que falten al menos 48h para la fecha de inicio
@@ -111,7 +111,7 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
     }
 
     @Override
-    public ReservaResponseDTO actualizarReserva(ActualizarReservaDTO dto, Long userId) throws Exception {
+    public ReservaResponseDTO actualizarReserva(ActualizarReservaRequestDTO dto, Long userId) throws Exception {
         Reserva reserva = obtenerReservaValida(dto.reservaId(), userId);
 
         validarFechas(dto.fechaInicio(), dto.fechaFin());
@@ -194,7 +194,7 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
     // ------------------------- NUEVOS MÉTODOS: HISTORIAL -------------------------
 
     @Override
-    public List<ReservaHistorialDTO> historialReservasUsuario(Long usuarioId, HistorialReservasRequestDTO filtros) throws Exception {
+    public List<ReservaHistorialResponseDTO> historialReservasUsuario(Long usuarioId, HistorialReservasRequestDTO filtros) throws Exception {
         usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new Exception("Usuario no existe"));
 
@@ -204,7 +204,7 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
                 .filter(r -> filtros.fechaInicio() == null || !r.getFechaInicio().isBefore(filtros.fechaInicio()))
                 .filter(r -> filtros.fechaFin() == null || !r.getFechaFin().isAfter(filtros.fechaFin()))
                 .filter(r -> filtros.estado() == null || r.getEstado() == filtros.estado())
-                .map(r -> new ReservaHistorialDTO(
+                .map(r -> new ReservaHistorialResponseDTO(
                         r.getId(),
                         r.getAlojamiento().getId(),
                         r.getAlojamiento().getNombre(),
@@ -221,7 +221,7 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
     }
 
     @Override
-    public List<ReservaHistorialDTO> historialReservasAnfitrion(Long ownerId, HistorialReservasRequestDTO filtros) throws Exception {
+    public List<ReservaHistorialResponseDTO> historialReservasAnfitrion(Long ownerId, HistorialReservasRequestDTO filtros) throws Exception {
         usuarioRepository.findById(ownerId)
                 .orElseThrow(() -> new Exception("Usuario no existe"));
 
@@ -232,7 +232,7 @@ public class ReservaServiceImpl implements ReservaServiceInterface {
                 .filter(r -> filtros.fechaInicio() == null || !r.getFechaInicio().isBefore(filtros.fechaInicio()))
                 .filter(r -> filtros.fechaFin() == null || !r.getFechaFin().isAfter(filtros.fechaFin()))
                 .filter(r -> filtros.estado() == null || r.getEstado() == filtros.estado())
-                .map(r -> new ReservaHistorialDTO(
+                .map(r -> new ReservaHistorialResponseDTO(
                         r.getId(),
                         r.getAlojamiento().getId(),
                         r.getAlojamiento().getNombre(),

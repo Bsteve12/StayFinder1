@@ -1,7 +1,7 @@
 package com.stayFinder.proyectoFinal.services.solicitudOwnerService.implementations;
 
-import com.stayFinder.proyectoFinal.dto.inputDTO.SolicitudOwnerDTO;
-import com.stayFinder.proyectoFinal.dto.inputDTO.RespuestaSolicitudDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.SolicitudOwnerRequestDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.RespuestaSolicitudRequestDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.SolicitudOwnerResponseDTO;
 import com.stayFinder.proyectoFinal.entity.SolicitudOwner;
 import com.stayFinder.proyectoFinal.entity.Usuario;
@@ -34,7 +34,7 @@ public class SolicitudOwnerServiceImpl implements SolicitudOwnerServiceInterface
     private static final String UPLOAD_DIR = "uploads/solicitudes/";
 
     @Override
-    public SolicitudOwnerResponseDTO crearSolicitud(SolicitudOwnerDTO dto, MultipartFile documento) throws Exception {
+    public SolicitudOwnerResponseDTO crearSolicitud(SolicitudOwnerRequestDTO dto, MultipartFile documento) throws Exception {
         Usuario usuario = usuarioRepo.findById(dto.usuarioId())
                 .orElseThrow(() -> new Exception("Usuario no encontrado"));
 
@@ -67,7 +67,7 @@ public class SolicitudOwnerServiceImpl implements SolicitudOwnerServiceInterface
     }
 
     @Override
-    public SolicitudOwnerResponseDTO responderSolicitud(RespuestaSolicitudDTO dto) throws Exception {
+    public SolicitudOwnerResponseDTO responderSolicitud(RespuestaSolicitudRequestDTO dto) throws Exception {
         SolicitudOwner solicitud = solicitudRepo.findById(dto.solicitudId())
                 .orElseThrow(() -> new Exception("Solicitud no encontrada"));
 

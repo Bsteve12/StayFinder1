@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PublicacionesPendientesDTO {
+public class PublicacionesPendientesResponseDTO {
     private String titulo;
     private EstadoSolicitudPublicacion estado;
 }

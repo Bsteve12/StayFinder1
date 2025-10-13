@@ -15,5 +15,5 @@ public record UpdateUserDTO(
         String contrasena,
 
         @Schema(description = "Nueva cedula del usuario", example = "0987654321")
-        Long usuario_id
+        Long usuarioId
 ) { }

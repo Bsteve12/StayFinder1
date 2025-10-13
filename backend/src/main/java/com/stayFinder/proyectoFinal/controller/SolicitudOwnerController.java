@@ -1,7 +1,7 @@
 package com.stayFinder.proyectoFinal.controller;
 
-import com.stayFinder.proyectoFinal.dto.inputDTO.SolicitudOwnerDTO;
-import com.stayFinder.proyectoFinal.dto.inputDTO.RespuestaSolicitudDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.SolicitudOwnerRequestDTO;
+import com.stayFinder.proyectoFinal.dto.inputDTO.RespuestaSolicitudRequestDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.SolicitudOwnerResponseDTO;
 import com.stayFinder.proyectoFinal.services.solicitudOwnerService.interfaces.SolicitudOwnerServiceInterface;
 
@@ -30,7 +30,7 @@ public class SolicitudOwnerController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Crear solicitud (multipart: data + documento)")
     public ResponseEntity<SolicitudOwnerResponseDTO> crearSolicitud(
-            @RequestPart("data") SolicitudOwnerDTO dto,
+            @RequestPart("data") SolicitudOwnerRequestDTO dto,
             @RequestPart(value = "documento", required = false) MultipartFile documento) throws Exception {
 
         SolicitudOwnerResponseDTO resp = solicitudService.crearSolicitud(dto, documento);
@@ -39,7 +39,7 @@ public class SolicitudOwnerController {
 
     @PostMapping("/responder")
     @Operation(summary = "Responder solicitud (admin)")
-    public ResponseEntity<SolicitudOwnerResponseDTO> responderSolicitud(@RequestBody RespuestaSolicitudDTO dto) throws Exception {
+    public ResponseEntity<SolicitudOwnerResponseDTO> responderSolicitud(@RequestBody RespuestaSolicitudRequestDTO dto) throws Exception {
         return ResponseEntity.ok(solicitudService.responderSolicitud(dto));
     }
 

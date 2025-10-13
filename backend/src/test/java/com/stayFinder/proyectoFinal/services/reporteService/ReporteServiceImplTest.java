@@ -21,29 +21,29 @@ class ReporteServiceImplTest {
     @InjectMocks
     private ReporteServiceImpl reporteService;
 
-    private List<ReservasPorUsuarioDTO> reservasPorUsuario;
-    private List<IngresosPorAlojamientoDTO> ingresosPorAlojamiento;
-    private List<PublicacionesPendientesDTO> publicacionesPendientes;
-    private List<UsuariosActivosDTO> usuariosActivos;
-    private List<FavoritosPorUsuarioDTO> favoritosPorUsuario;
+    private List<ReservasPorUsuarioResponseDTO> reservasPorUsuario;
+    private List<IngresosPorAlojamientoResponseDTO> ingresosPorAlojamiento;
+    private List<PublicacionesPendientesResponseDTO> publicacionesPendientes;
+    private List<UsuariosActivosResponseDTO> usuariosActivos;
+    private List<FavoritosPorUsuarioResponseDTO> favoritosPorUsuario;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
         // Datos simulados
-        reservasPorUsuario = List.of(new ReservasPorUsuarioDTO("Allison", 5L));
-        ingresosPorAlojamiento = List.of(new IngresosPorAlojamientoDTO("Casa Café", 1500000.0));
-        publicacionesPendientes = List.of(new PublicacionesPendientesDTO("Alojamiento 1", EstadoSolicitudPublicacion.PENDIENTE));
-        usuariosActivos = List.of(new UsuariosActivosDTO("Allison", "allison@test.com"));
-        favoritosPorUsuario = List.of(new FavoritosPorUsuarioDTO("Allison", "Casa Café", 3L));
+        reservasPorUsuario = List.of(new ReservasPorUsuarioResponseDTO("Allison", 5L));
+        ingresosPorAlojamiento = List.of(new IngresosPorAlojamientoResponseDTO("Casa Café", 1500000.0));
+        publicacionesPendientes = List.of(new PublicacionesPendientesResponseDTO("Alojamiento 1", EstadoSolicitudPublicacion.PENDIENTE));
+        usuariosActivos = List.of(new UsuariosActivosResponseDTO("Allison", "allison@test.com"));
+        favoritosPorUsuario = List.of(new FavoritosPorUsuarioResponseDTO("Allison", "Casa Café", 3L));
     }
 
     @Test
     void getReservasPorUsuario_deberiaRetornarListaCorrecta() {
         when(reportesRepository.obtenerReservasPorUsuario()).thenReturn(reservasPorUsuario);
 
-        List<ReservasPorUsuarioDTO> result = reporteService.getReservasPorUsuario();
+        List<ReservasPorUsuarioResponseDTO> result = reporteService.getReservasPorUsuario();
 
         assertEquals(1, result.size());
         assertEquals("Allison", result.get(0).getNombreUsuario());
@@ -55,7 +55,7 @@ class ReporteServiceImplTest {
     void getIngresosPorAlojamiento_deberiaRetornarListaCorrecta() {
         when(reportesRepository.obtenerIngresosPorAlojamiento()).thenReturn(ingresosPorAlojamiento);
 
-        List<IngresosPorAlojamientoDTO> result = reporteService.getIngresosPorAlojamiento();
+        List<IngresosPorAlojamientoResponseDTO> result = reporteService.getIngresosPorAlojamiento();
 
         assertEquals(1, result.size());
         assertEquals("Casa Café", result.get(0).getNombreAlojamiento());
@@ -67,7 +67,7 @@ class ReporteServiceImplTest {
     void getPublicacionesPendientes_deberiaRetornarListaCorrecta() {
         when(reportesRepository.obtenerPublicacionesPendientes()).thenReturn(publicacionesPendientes);
 
-        List<PublicacionesPendientesDTO> result = reporteService.getPublicacionesPendientes();
+        List<PublicacionesPendientesResponseDTO> result = reporteService.getPublicacionesPendientes();
 
         assertEquals(1, result.size());
         assertEquals("Alojamiento 1", result.get(0).getTitulo());
@@ -79,7 +79,7 @@ class ReporteServiceImplTest {
     void getUsuariosActivos_deberiaRetornarListaCorrecta() {
         when(reportesRepository.obtenerUsuariosActivos()).thenReturn(usuariosActivos);
 
-        List<UsuariosActivosDTO> result = reporteService.getUsuariosActivos();
+        List<UsuariosActivosResponseDTO> result = reporteService.getUsuariosActivos();
 
         assertEquals(1, result.size());
         assertEquals("Allison", result.get(0).getNombreUsuario());
@@ -91,7 +91,7 @@ class ReporteServiceImplTest {
     void getFavoritosPorUsuario_deberiaRetornarListaCorrecta() {
         when(reportesRepository.obtenerFavoritosPorUsuario()).thenReturn(favoritosPorUsuario);
 
-        List<FavoritosPorUsuarioDTO> result = reporteService.getFavoritosPorUsuario();
+        List<FavoritosPorUsuarioResponseDTO> result = reporteService.getFavoritosPorUsuario();
 
         assertEquals(1, result.size());
         assertEquals("Allison", result.get(0).getNombreUsuario());

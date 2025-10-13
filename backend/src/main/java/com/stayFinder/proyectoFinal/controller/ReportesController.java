@@ -16,27 +16,27 @@ public class ReportesController {
     private final ReporteServiceInterface reporteService;
 
     @GetMapping("/reservas-por-usuario")
-    public List<ReservasPorUsuarioDTO> reservasPorUsuario() {
+    public List<ReservasPorUsuarioResponseDTO> reservasPorUsuario() {
         return reporteService.getReservasPorUsuario();
     }
 
     @GetMapping("/ingresos-por-alojamiento")
-    public List<IngresosPorAlojamientoDTO> ingresosPorAlojamiento() {
+    public List<IngresosPorAlojamientoResponseDTO> ingresosPorAlojamiento() {
         return reporteService.getIngresosPorAlojamiento();
     }
 
     @GetMapping("/publicaciones-pendientes")
-    public List<PublicacionesPendientesDTO> publicacionesPendientes() {
+    public List<PublicacionesPendientesResponseDTO> publicacionesPendientes() {
         return reporteService.getPublicacionesPendientes();
     }
 
     @GetMapping("/usuarios-activos")
-    public List<UsuariosActivosDTO> usuariosActivos() {
+    public List<UsuariosActivosResponseDTO> usuariosActivos() {
         return reporteService.getUsuariosActivos();
     }
 
     @GetMapping("/favoritos-por-usuario")
-    public List<FavoritosPorUsuarioDTO> favoritosPorUsuario() {
+    public List<FavoritosPorUsuarioResponseDTO> favoritosPorUsuario() {
         return reporteService.getFavoritosPorUsuario();
     }
 }

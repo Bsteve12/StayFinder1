@@ -61,7 +61,7 @@ class UserServiceImplTest {
         usuario.setRole(Role.CLIENT);
 
         when(usuarioRepository.existsByEmail(dto.correo())).thenReturn(false);
-        when(usuarioRepository.existsByUsuarioId(dto.usuario_id())).thenReturn(false);
+        when(usuarioRepository.existsByUsuarioId(dto.usuarioId())).thenReturn(false);
         when(passwordEncoder.encode(dto.contrasena())).thenReturn("encodedPassword");
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
         when(usuarioMapper.toDto(any(Usuario.class))).thenReturn(new UsuarioResponseDTO(
@@ -81,7 +81,7 @@ class UserServiceImplTest {
         assertNotNull(result);
         assertEquals("Allison", result.nombre());
         verify(usuarioRepository, times(1)).existsByEmail(dto.correo());
-        verify(usuarioRepository, times(1)).existsByUsuarioId(dto.usuario_id());
+        verify(usuarioRepository, times(1)).existsByUsuarioId(dto.usuarioId());
         verify(usuarioRepository, times(1)).save(any(Usuario.class));
     }
 

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngresosPorAlojamientoDTO {
-    private String nombreAlojamiento;
-    private Double ingresosTotales;
+public class UsuariosActivosResponseDTO {
+    private String nombreUsuario;
+    private String email;
 }

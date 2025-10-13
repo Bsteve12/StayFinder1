@@ -30,7 +30,7 @@ public class Usuario implements Serializable {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(name = "usuario_id", nullable = false, unique = true) // 👈 la columna se sigue llamando usuario_id en la BD
+    @Column(name = "usuarioId", nullable = false, unique = true) // 👈 la columna se sigue llamando usuario_id en la BD
     private Long usuarioId; // 👈 el campo en Java ahora sí se llama usuarioId
 
     private String contrasena;

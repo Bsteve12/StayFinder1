@@ -10,4 +10,6 @@ public record ServicioRequestDTO(
 
         @NotNull @Schema(description = "Precio del servicio por día", example = "80000.0")
         Double precio
+
+        
 ) {}

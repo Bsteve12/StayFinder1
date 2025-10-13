@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record ActualizarReservaDTO(
+public record ActualizarReservaRequestDTO(
 
         @NotNull
         @Schema(description = "ID de la reserva a actualizar", example = "15")

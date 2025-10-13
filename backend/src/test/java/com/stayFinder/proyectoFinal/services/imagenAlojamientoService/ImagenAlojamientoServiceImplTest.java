@@ -61,7 +61,7 @@ class ImagenAlojamientoServiceImplTest {
         responseDTO.setAlojamientoId(1L);
     }
 
-    // ✅ Test subirImagen()
+    //  Test subirImagen()
     @Test
     void subirImagen_deberiaGuardarYRetornarDTO() throws Exception {
         when(alojamientoRepository.findById(1L)).thenReturn(Optional.of(alojamiento));
@@ -77,7 +77,7 @@ class ImagenAlojamientoServiceImplTest {
         verify(imagenRepository, times(1)).save(imagen);
     }
 
-    // ⚠️ Test subirImagen() cuando el alojamiento no existe
+    // Test subirImagen() cuando el alojamiento no existe
     @Test
     void subirImagen_conAlojamientoInexistente_deberiaLanzarExcepcion() {
         when(alojamientoRepository.findById(1L)).thenReturn(Optional.empty());
@@ -85,7 +85,7 @@ class ImagenAlojamientoServiceImplTest {
         assertEquals("Alojamiento no encontrado", exception.getMessage());
     }
 
-    // ✅ Test obtenerImagen()
+    //  Test obtenerImagen()
     @Test
     void obtenerImagen_deberiaRetornarDTO() throws Exception {
         when(imagenRepository.findById(10L)).thenReturn(Optional.of(imagen));
@@ -105,7 +105,7 @@ class ImagenAlojamientoServiceImplTest {
         assertEquals("Imagen no encontrada", exception.getMessage());
     }
 
-    // ✅ Test listarPorAlojamiento()
+    //  Test listarPorAlojamiento()
     @Test
     void listarPorAlojamiento_deberiaRetornarListaDeImagenes() throws Exception {
         alojamiento.setImagenes(List.of(imagen));
@@ -119,7 +119,7 @@ class ImagenAlojamientoServiceImplTest {
         verify(alojamientoRepository, times(1)).findById(1L);
     }
 
-    // ⚠️ Test listarPorAlojamiento() con alojamiento inexistente
+    //  Test listarPorAlojamiento() con alojamiento inexistente
     @Test
     void listarPorAlojamiento_conAlojamientoInexistente_deberiaLanzarExcepcion() {
         when(alojamientoRepository.findById(1L)).thenReturn(Optional.empty());
@@ -127,7 +127,7 @@ class ImagenAlojamientoServiceImplTest {
         assertEquals("Alojamiento no encontrado", exception.getMessage());
     }
 
-    // ✅ Test eliminarImagen()
+    // Test eliminarImagen()
     @Test
     void eliminarImagen_deberiaEliminarCorrectamente() throws Exception {
         when(imagenRepository.findById(10L)).thenReturn(Optional.of(imagen));
@@ -138,7 +138,7 @@ class ImagenAlojamientoServiceImplTest {
         verify(imagenRepository, times(1)).delete(imagen);
     }
 
-    // ⚠️ Test eliminarImagen() cuando no existe
+    //  Test eliminarImagen() cuando no existe
     @Test
     void eliminarImagen_conIdInexistente_deberiaLanzarExcepcion() {
         when(imagenRepository.findById(99L)).thenReturn(Optional.empty());

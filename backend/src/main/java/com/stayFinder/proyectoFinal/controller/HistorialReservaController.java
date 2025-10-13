@@ -1,7 +1,7 @@
 package com.stayFinder.proyectoFinal.controller;
 
 import com.stayFinder.proyectoFinal.dto.inputDTO.HistorialReservasRequestDTO;
-import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaHistorialDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.ReservaHistorialResponseDTO;
 import com.stayFinder.proyectoFinal.entity.enums.EstadoReserva;
 import com.stayFinder.proyectoFinal.services.reservaService.interfaces.ReservaServiceInterface;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class HistorialReservaController {
      * Parámetros opcionales en query: fechaInicio, fechaFin, estado
      */
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<ReservaHistorialDTO>> historialUsuario(
+    public ResponseEntity<List<ReservaHistorialResponseDTO>> historialUsuario(
             @PathVariable Long usuarioId,
             @RequestParam(required = false) String fechaInicio,
             @RequestParam(required = false) String fechaFin,
@@ -46,7 +46,7 @@ public class HistorialReservaController {
      * Parámetros opcionales en query: fechaInicio, fechaFin, estado
      */
     @GetMapping("/anfitrion/{ownerId}")
-    public ResponseEntity<List<ReservaHistorialDTO>> historialAnfitrion(
+    public ResponseEntity<List<ReservaHistorialResponseDTO>> historialAnfitrion(
             @PathVariable Long ownerId,
             @RequestParam(required = false) String fechaInicio,
             @RequestParam(required = false) String fechaFin,

@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserServiceInterface {
         if (usuarioRepository.existsByEmail(dto.correo())) {
             throw new Exception("El email ya existe");
         }
-        if (usuarioRepository.existsByUsuarioId(dto.usuario_id())) {
+        if (usuarioRepository.existsByUsuarioId(dto.usuarioId())) {
             throw new Exception("El usuario_id ya está en uso");
         }
 
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserServiceInterface {
                 .email(dto.correo())
                 .telefono(dto.telefono())
                 .fechaNacimiento(dto.fechaNacimiento())
-                .usuarioId(dto.usuario_id())
+                .usuarioId(dto.usuarioId())
                 .contrasena(encodedPassword)
                 .role(rolFinal)
                 .build();
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserServiceInterface {
         usuario.setNombre(dto.nombre());
         usuario.setTelefono(dto.telefono());
         usuario.setFechaNacimiento(dto.fechaNacimiento());
-        usuario.setUsuarioId(dto.usuario_id());
+        usuario.setUsuarioId(dto.usuarioId());
 
         if (dto.contrasena() != null && !dto.contrasena().isBlank()) {
             usuario.setContrasena(passwordEncoder.encode(dto.contrasena()));

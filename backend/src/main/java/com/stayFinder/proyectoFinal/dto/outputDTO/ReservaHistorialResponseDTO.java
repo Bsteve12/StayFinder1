@@ -4,7 +4,7 @@ import com.stayFinder.proyectoFinal.entity.enums.EstadoReserva;
 import com.stayFinder.proyectoFinal.entity.enums.TipoReserva;
 import java.time.LocalDate;
 
-public class ReservaHistorialDTO {
+public class ReservaHistorialResponseDTO {
 
     private Long reservaId;
     private Long alojamientoId;
@@ -18,10 +18,10 @@ public class ReservaHistorialDTO {
     private EstadoReserva estado;
     private TipoReserva tipoReserva;
 
-    public ReservaHistorialDTO(Long reservaId, Long alojamientoId, String alojamientoNombre,
-                               Long usuarioId, String usuarioNombre, LocalDate fechaInicio,
-                               LocalDate fechaFin, int numeroHuespedes, double precioTotal,
-                               EstadoReserva estado, TipoReserva tipoReserva) {
+    public ReservaHistorialResponseDTO(Long reservaId, Long alojamientoId, String alojamientoNombre,
+                                       Long usuarioId, String usuarioNombre, LocalDate fechaInicio,
+                                       LocalDate fechaFin, int numeroHuespedes, double precioTotal,
+                                       EstadoReserva estado, TipoReserva tipoReserva) {
         this.reservaId = reservaId;
         this.alojamientoId = alojamientoId;
         this.alojamientoNombre = alojamientoNombre;

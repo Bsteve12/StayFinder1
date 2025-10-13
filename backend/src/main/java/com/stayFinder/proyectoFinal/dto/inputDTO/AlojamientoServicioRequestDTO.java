@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Schema(description = "Datos para asociar un servicio a un alojamiento")
-public class AlojamientoServicioInputDTO {
+public class AlojamientoServicioRequestDTO {
     @NonNull
     @Schema(description = "ID del alojamiento", example = "3")
     private Long alojamientoId;

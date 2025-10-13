@@ -4,9 +4,9 @@ import com.stayFinder.proyectoFinal.dto.outputDTO.*;
 import java.util.List;
 
 public interface ReporteServiceInterface {
-    List<ReservasPorUsuarioDTO> getReservasPorUsuario();
-    List<IngresosPorAlojamientoDTO> getIngresosPorAlojamiento();
-    List<PublicacionesPendientesDTO> getPublicacionesPendientes();
-    List<UsuariosActivosDTO> getUsuariosActivos();
-    List<FavoritosPorUsuarioDTO> getFavoritosPorUsuario();
+    List<ReservasPorUsuarioResponseDTO> getReservasPorUsuario();
+    List<IngresosPorAlojamientoResponseDTO> getIngresosPorAlojamiento();
+    List<PublicacionesPendientesResponseDTO> getPublicacionesPendientes();
+    List<UsuariosActivosResponseDTO> getUsuariosActivos();
+    List<FavoritosPorUsuarioResponseDTO> getFavoritosPorUsuario();
 }

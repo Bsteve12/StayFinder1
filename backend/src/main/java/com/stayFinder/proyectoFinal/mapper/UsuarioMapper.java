@@ -9,11 +9,13 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
 
-    // De CreateUserDTO -> Usuario (no mapeamos la contraseña, la maneja el service)
+    // 🔹 De CreateUserDTO -> Usuario
     @Mapping(source = "correo", target = "email")
+    @Mapping(source = "usuarioId", target = "usuarioId") // ahora coincide con DTO y entidad
     Usuario toEntity(CreateUserDTO dto);
 
-    // De Usuario -> UsuarioResponseDTO (ajusta nombres si tu DTO tiene campos distintos)
+    // 🔹 De Usuario -> UsuarioResponseDTO
     @Mapping(source = "email", target = "correo")
+    @Mapping(source = "usuarioId", target = "usuarioId")
     UsuarioResponseDTO toDto(Usuario usuario);
 }
