@@ -4,9 +4,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   selector: 'app-button',
   standalone: false,
   templateUrl: './button.html',
-  styleUrl: './button.scss',
+  styleUrls: ['./button.scss']
 })
-export class Button {
+export class ButtonComponent {
   @Input() label = 'Enviar';
   @Input() color: 'primary' | 'accent' | 'warn' = 'primary';
   @Input() type: 'button' | 'submit' | 'reset' = 'button';

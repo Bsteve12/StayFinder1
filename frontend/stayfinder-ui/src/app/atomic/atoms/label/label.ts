@@ -4,9 +4,9 @@ import { Component, Input } from '@angular/core';
   selector: 'app-label',
   standalone: false,
   templateUrl: './label.html',
-  styleUrl: './label.scss',
+  styleUrls: ['./label.scss']
 })
-export class Label {
+export class LabelComponent {
   @Input() text = '';
   @Input() forId = '';
   @Input() color = 'text-gray-800';

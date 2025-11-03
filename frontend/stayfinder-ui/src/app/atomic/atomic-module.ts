@@ -6,25 +6,35 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
-import { Button } from './atoms/button/button';
+import { ButtonComponent } from './atoms/button/button';
 import { InputComponent } from './atoms/input/input';
-import { Label } from './atoms/label/label';
-import { Icon } from './atoms/icon/icon';
-import { FormField } from './molecules/form-field/form-field';
-import { LoginForm } from './organisms/login-form/login-form';
-import { AuthTemplate } from './templates/auth-template/auth-template';
+import { LabelComponent } from './atoms/label/label';
+import { FormFieldComponent } from './molecules/form-field/form-field';
+import { LoginFormComponent } from './organisms/login-form/login-form';
+import { AuthTemplateComponent } from './templates/auth-template/auth-template';
+import { DesignShowcaseComponent } from './pages/design-showcase/design-showcase';
+import { IconComponent} from './atoms/icon/icon';
 
-
+// Agregar solo para probar el sistema de diseño
+import { RouterModule, Routes } from '@angular/router';
+const atomicRoutes: Routes = [
+  {
+    // Segmento restante: 'pages/design-showcase'
+    path: 'pages/design-showcase',
+    component: DesignShowcaseComponent
+  }
+];
 
 @NgModule({
   declarations: [
-    Button,
+    ButtonComponent,
     InputComponent,
-    Label,
-    Icon,
-    FormField,
-    LoginForm,
-    AuthTemplate
+    LabelComponent,
+    FormFieldComponent,
+    LoginFormComponent,
+    AuthTemplateComponent,
+    DesignShowcaseComponent,
+    IconComponent
   ],
   imports: [
     CommonModule,
@@ -33,15 +43,17 @@ import { AuthTemplate } from './templates/auth-template/auth-template';
     MatInputModule,
     MatIconModule,
     MatFormFieldModule
+    , RouterModule.forChild(atomicRoutes),// Agregar solo para probar el sistema de diseño
   ],
   exports: [
-    Button,
+    ButtonComponent,
     InputComponent,
-    Label,
-    Icon,
-    FormField,
-    LoginForm,
-    AuthTemplate
+    LabelComponent,
+    FormFieldComponent,
+    LoginFormComponent,
+    AuthTemplateComponent,
+    DesignShowcaseComponent,
+    IconComponent
   ]
 })
-export class AtomicModule { }
+export class AtomicModule {}

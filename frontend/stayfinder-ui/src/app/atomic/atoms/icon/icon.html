@@ -1,1 +1,28 @@
-<p>icon works!</p>
+<!-- Material Icon -->
+<ng-container *ngIf="type === 'material'">
+  <!-- usa ligatures (nombre) o svgIcon si registraste -->
+  <mat-icon [attr.aria-label]="ariaLabel"
+            [style.fontSize]="sizePx"
+            [style.color]="color">
+    {{ name }}
+  </mat-icon>
+</ng-container>
+
+<!-- Lucide Icon -->
+<ng-container *ngIf="type === 'lucide'">
+  <!-- lucide-angular expone <lucide-icon name="..."> -->
+
+</ng-container>
+
+<!-- FontAwesome -->
+<ng-container *ngIf="type === 'fontawesome'">
+  <!-- Si pasas IconDefinition: usa [icon]="faIcon" -->
+
+  <!-- Opción: si pasas name string (ej 'user') tendrías que mapearlo en el padre al IconDefinition -->
+</ng-container>
+
+<!-- Heroicons / ng-icons -->
+<ng-container *ngIf="type === 'hero'">
+  <!-- ng-icons usa <ng-icon [icon]="heroUser"> o <ng-icon name="heroUser"> dependiente de registro -->
+  <!-- Aquí asumimos has registrado icons con withIcons y usarás el name registrado -->
+</ng-container>

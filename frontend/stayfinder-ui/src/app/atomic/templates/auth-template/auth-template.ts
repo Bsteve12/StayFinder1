@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-auth-template',
   standalone: false,
   templateUrl: './auth-template.html',
-  styleUrl: './auth-template.scss',
+  styleUrls: ['./auth-template.scss']
 })
-export class AuthTemplate {
-
+export class AuthTemplateComponent {
+  @Input() title = '';
+  @Input() subtitle = '';
+  @Input() logo?: string;
 }
