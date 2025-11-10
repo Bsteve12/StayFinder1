@@ -1,0 +1,158 @@
+<div class="home-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <img src="assets/logo.svg" alt="StayFinder" />
+        <span class="logo-text">StayFinder</span>
+      </div>
+      
+      <div class="header-actions">
+        <button pButton label="Conviértete en Anfitrión" class="host-button"></button>
+        <button pButton icon="pi pi-bars" class="p-button-rounded menu-button"></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section con Buscador -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-title-wrapper">
+        <i class="pi pi-home hero-icon"></i>
+        <h1 class="hero-title">Alojamientos</h1>
+      </div>
+      
+      <div class="search-card">
+        <div class="search-row">
+          <div class="search-field">
+            <label>Dónde</label>
+            <input 
+              type="text" 
+              pInputText 
+              placeholder="Explora destinos" 
+              [(ngModel)]="searchLocation"
+            />
+          </div>
+
+          <div class="search-field">
+            <label>Check-in</label>
+            <div class="date-input" (click)="openCheckInDialog()">
+              <span [class.placeholder]="!checkInDate">{{ formatDate(checkInDate) }}</span>
+              <i class="pi pi-calendar"></i>
+            </div>
+          </div>
+
+          <div class="search-field">
+            <label>Check-out</label>
+            <div class="date-input" (click)="openCheckOutDialog()">
+              <span [class.placeholder]="!checkOutDate">{{ formatDate(checkOutDate) }}</span>
+              <i class="pi pi-calendar"></i>
+            </div>
+          </div>
+
+          <div class="search-field">
+            <label>Quién</label>
+            <p-inputNumber 
+              [(ngModel)]="guests" 
+              placeholder="¿Cuántos?"
+              [min]="1"
+              [showButtons]="true"
+            ></p-inputNumber>
+          </div>
+
+          <button 
+            pButton 
+            icon="pi pi-search" 
+            label="Buscar" 
+            class="search-button"
+            (click)="onSearch()"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Destinos Populares -->
+    <section class="destinations-section">
+      <h2 class="section-title">Destinos populares</h2>
+      
+      <div class="carousel-wrapper">
+        <p-carousel 
+          [value]="destinations" 
+          [numVisible]="4" 
+          [numScroll]="1" 
+          [circular]="true"
+          [responsiveOptions]="responsiveOptions"
+          [showNavigators]="true"
+          [showIndicators]="false"
+        >
+          <ng-template let-destination pTemplate="item">
+            <div class="destination-card">
+              <div class="card-image-wrapper">
+                <img [src]="destination.image" [alt]="destination.name" class="card-image" />
+                <button 
+                  class="favorite-button" 
+                  [class.active]="destination.favorite"
+                  (click)="toggleFavorite(destination)"
+                >
+                  <i class="pi pi-heart-fill"></i>
+                </button>
+              </div>
+              <div class="card-content">
+                <div class="card-header">
+                  <h3 class="card-title">{{ destination.name }}</h3>
+                  <div class="card-rating">
+                    <i class="pi pi-star-fill"></i>
+                    <span>{{ destination.rating }}</span>
+                  </div>
+                </div>
+                <p class="card-location">
+                  <i class="pi pi-map-marker"></i>
+                  {{ destination.location }}
+                </p>
+                <p class="card-price">
+                  <strong>${{ destination.price | number }}</strong> / noche
+                </p>
+              </div>
+            </div>
+          </ng-template>
+        </p-carousel>
+      </div>
+    </section>
+
+    <!-- Testimonios -->
+    <section class="testimonials-section">
+      <h2 class="section-title">Testimonios de usuarios</h2>
+      
+      <div class="carousel-wrapper">
+        <p-carousel 
+          [value]="testimonials" 
+          [numVisible]="4" 
+          [numScroll]="1" 
+          [circular]="true"
+          [responsiveOptions]="responsiveOptions"
+          [showNavigators]="true"
+          [showIndicators]="false"
+        >
+          <ng-template let-testimonial pTemplate="item">
+            <div class="testimonial-card">
+              <div class="testimonial-header">
+                <img [src]="testimonial.avatar" [alt]="testimonial.name" class="testimonial-avatar" />
+                <div class="testimonial-info">
+                  <h4 class="testimonial-name">{{ testimonial.name }}</h4>
+                  <p class="testimonial-date">{{ testimonial.date }}</p>
+                </div>
+              </div>
+              <div class="testimonial-rating">
+                <i class="pi pi-star-fill" *ngFor="let star of [1,2,3,4,5].slice(0, testimonial.rating)"></i>
+              </div>
+              <p class="testimonial-comment">{{ testimonial.comment }}</p>
+            </div>
+          </ng-template>
+        </p-carousel>
+      </div>
+    </section>
+  </main>
+</div>
