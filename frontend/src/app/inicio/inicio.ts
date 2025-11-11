@@ -6,11 +6,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { provideNativeDateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
+import { RouterLink } from "@angular/router";
+import { Header } from "../components/header/header";
+import { AlojamientosService } from '../services/alojamientos';
 
 interface Destination {
   id: number;
@@ -40,23 +40,36 @@ interface Testimonial {
     InputTextModule,
     InputNumberModule,
     FormsModule,
-    MatButtonModule
-  ],
+    MatButtonModule,
+    RouterLink,
+    Header
+],
   providers: [provideNativeDateAdapter()],
   templateUrl: './inicio.html',
   styleUrl: './inicio.scss',
 })
 export class Inicio {
-   dialog = inject(MatDialog);
-  
-  // Datos del formulario de búsqueda
-  searchLocation: string = '';
-  checkInDate: Date | null = null;
-  checkOutDate: Date | null = null;
-  guests: number = 1;
+
+  destinations: Destination[] = [];
+
+  constructor(private alojamientosService: AlojamientosService) {
+    this.getAlojamientosActivos();
+  }
+
+  getAlojamientosActivos() {
+    this.alojamientosService.obtenerAlojamientosActivos().subscribe({
+      next: (data) => {
+        console.log(data)
+        this.destinations = data;
+      },
+      error: (error) => {
+        console.error('Error al obtener alojamientos activos:', error);
+      }
+    });
+  }
 
   // Destinos populares
-  destinations: Destination[] = [
+  destinationsTest: Destination[] = [
     {
       id: 1,
       name: 'Casa en la Playa',
@@ -176,112 +189,5 @@ export class Inicio {
     destination.favorite = !destination.favorite;
   }
 
-  openCheckInDialog() {
-    const dialogRef = this.dialog.open(DatePickerDialog, {
-      data: { selectedDate: this.checkInDate, title: 'Selecciona fecha de Check-in' }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.checkInDate = result;
-      }
-    });
-  }
-
-  openCheckOutDialog() {
-    const dialogRef = this.dialog.open(DatePickerDialog, {
-      data: { selectedDate: this.checkOutDate, title: 'Selecciona fecha de Check-out' }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.checkOutDate = result;
-      }
-    });
-  }
-
-  formatDate(date: Date | null): string {
-    if (!date) return 'Agrega fecha';
-    return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  }
-
-  onSearch() {
-    console.log('Búsqueda:', {
-      location: this.searchLocation,
-      checkIn: this.checkInDate,
-      checkOut: this.checkOutDate,
-      guests: this.guests
-    });
-  }
-}
-
-// Dialog Component para el DatePicker
-@Component({
-  selector: 'date-picker-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule,
-  ],
-  providers: [
-    provideNativeDateAdapter(),
-    { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },
-  ],
-  template: `
-    <div class="dialog-container">
-      <h2 mat-dialog-title>{{ data.title }}</h2>
-      <mat-dialog-content>
-        <mat-form-field>
-          <mat-label>Selecciona una fecha</mat-label>
-          <input matInput [matDatepicker]="picker" [formControl]="date">
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button mat-button (click)="onCancel()">Cancelar</button>
-        <button mat-raised-button color="primary" (click)="onConfirm()">Confirmar</button>
-      </mat-dialog-actions>
-    </div>
-  `,
-  styles: [`
-    .dialog-container {
-      padding: 20px;
-      min-width: 300px;
-    }
-    
-    mat-form-field {
-      width: 100%;
-      margin-top: 16px;
-    }
-    
-    mat-dialog-actions {
-      margin-top: 24px;
-      padding-top: 16px;
-    }
-  `]
-})
-export class DatePickerDialog {
-  dialogRef = inject<MatDialogRef<DatePickerDialog>>(MatDialogRef<DatePickerDialog>);
-  data = inject(MAT_DIALOG_DATA);
-  readonly date = new FormControl(new Date());
-
-  constructor() {
-    if (this.data.selectedDate) {
-      this.date.setValue(this.data.selectedDate);
-    }
-  }
-
-  onCancel() {
-    this.dialogRef.close();
-  }
-
-  onConfirm() {
-    this.dialogRef.close(this.date.value);
-  }
+  
 }
