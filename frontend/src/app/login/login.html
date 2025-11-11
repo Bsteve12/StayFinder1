@@ -1,3 +1,6 @@
+<!-- src/app/login/login.html -->
+<p-toast></p-toast>
+
 <div class="login-container">
   <div class="login-card">
     <!-- Lado Izquierdo - Bienvenida -->
@@ -5,9 +8,9 @@
       <div class="welcome-content">
         <h1 class="welcome-title">Hola, bienvenido</h1>
         <p class="welcome-subtitle">¿No tienes una cuenta?</p>
-        <button 
-          pButton 
-          label="Regístrate" 
+        <button
+          pButton
+          label="Regístrate"
           class="register-button"
           (click)="goToRegister()"
         ></button>
@@ -25,13 +28,13 @@
         </div>
 
         <!-- Formulario -->
-        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+        <form [formGroup]="loginForm" class="login-form">
           <!-- Campo Usuario -->
           <div class="form-field">
             <div class="input-wrapper">
-              <input 
-                type="text" 
-                pInputText 
+              <input
+                type="text"
+                pInputText
                 formControlName="username"
                 placeholder="Usuario"
                 class="form-input"
@@ -47,9 +50,9 @@
           <!-- Campo Contraseña -->
           <div class="form-field">
             <div class="input-wrapper">
-              <input 
-                [type]="showPassword ? 'text' : 'password'" 
-                pInputText 
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                pInputText
                 formControlName="password"
                 placeholder="Contraseña"
                 class="form-input"
@@ -64,8 +67,8 @@
 
           <!-- Link olvidó contraseña -->
           <div class="forgot-password-wrapper">
-            <a 
-              class="forgot-password-link" 
+            <a
+              class="forgot-password-link"
               (click)="goToForgotPassword()"
             >
               ¿Has olvidado tu contraseña?
@@ -73,12 +76,13 @@
           </div>
 
           <!-- Botón Login -->
-          <button 
-            pButton 
-            type="submit" 
-            label="Login" 
+          <button
+            pButton
+            type="button"
+            label="Login"
             class="login-button"
             [disabled]="loginForm.invalid"
+            (click)="onLogin()"
           ></button>
         </form>
       </div>
