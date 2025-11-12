@@ -1,3 +1,6 @@
+<p-toast></p-toast>
+
+
 <div class="register-container">
   <div class="register-card">
     <!-- Lado Izquierdo - Formulario -->
@@ -14,9 +17,9 @@
           <!-- Campo Usuario -->
           <div class="form-field">
             <div class="input-wrapper">
-              <input 
-                type="text" 
-                pInputText 
+              <input
+                type="text"
+                pInputText
                 formControlName="username"
                 placeholder="Usuario"
                 class="form-input"
@@ -32,9 +35,9 @@
           <!-- Campo Email -->
           <div class="form-field">
             <div class="input-wrapper">
-              <input 
-                type="email" 
-                pInputText 
+              <input
+                type="email"
+                pInputText
                 formControlName="email"
                 placeholder="Email"
                 class="form-input"
@@ -50,9 +53,9 @@
           <!-- Campo Contraseña -->
           <div class="form-field">
             <div class="input-wrapper">
-              <input 
-                type="password" 
-                pInputText 
+              <input
+                type="password"
+                pInputText
                 formControlName="password"
                 placeholder="Contraseña"
                 class="form-input"
@@ -68,9 +71,9 @@
           <!-- Campo Teléfono -->
           <div class="form-field">
             <div class="input-wrapper">
-              <input 
-                type="tel" 
-                pInputText 
+              <input
+                type="tel"
+                pInputText
                 formControlName="phone"
                 placeholder="Teléfono"
                 class="form-input"
@@ -87,8 +90,8 @@
           <!-- Campo Fecha de Nacimiento -->
           <div class="form-field">
             <div class="input-wrapper">
-              <div 
-                class="date-input" 
+              <div
+                class="date-input"
                 [class.invalid]="isBirthdateInvalid"
                 (click)="openBirthdateDialog()"
               >
@@ -102,10 +105,10 @@
           </div>
 
           <!-- Botón Regístrate -->
-          <button 
-            pButton 
-            type="submit" 
-            label="Regístrate" 
+          <button
+            pButton
+            type="submit"
+            label="Regístrate"
             class="register-button"
             [disabled]="registerForm.invalid"
           ></button>
@@ -118,9 +121,9 @@
       <div class="welcome-content">
         <h1 class="welcome-title">¡Bienvenido de nuevo!</h1>
         <p class="welcome-subtitle">¿Ya tienes una cuenta?</p>
-        <button 
-          pButton 
-          label="Login" 
+        <button
+          pButton
+          label="Login"
           class="login-button"
           (click)="goToLogin()"
         ></button>
