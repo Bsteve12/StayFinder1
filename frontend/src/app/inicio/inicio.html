@@ -19,14 +19,19 @@
         >
           <ng-template let-destination pTemplate="item">
             <div class="destination-card">
+
+              <!-- Imagen principal -->
               <div class="card-image-wrapper">
                 <a routerLink="/detalle/{{ destination.id }}">
                   <img
-                    src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=400"
+                    [src]="destination.imagenes && destination.imagenes.length > 0
+                      ? destination.imagenes[0].url
+                      : 'https://via.placeholder.com/400x250?text=Sin+Imagen'"
                     [alt]="destination.nombre"
                     class="card-image"
                   />
                 </a>
+
                 <button
                   class="favorite-button"
                   [class.active]="destination.favorite"
@@ -35,12 +40,14 @@
                   <i class="pi pi-heart-fill"></i>
                 </button>
               </div>
+
+              <!-- Contenido -->
               <div class="card-content">
                 <div class="card-header">
                   <h3 class="card-title">{{ destination.nombre }}</h3>
                   <div class="card-rating">
                     <i class="pi pi-star-fill"></i>
-                    <span>{{ destination.rating }}</span>
+                    <span>{{ destination.rating || 4.5 }}</span>
                   </div>
                 </div>
                 <p class="card-location">
@@ -51,6 +58,7 @@
                   <strong>${{ destination.precio | number }}</strong> / noche
                 </p>
               </div>
+
             </div>
           </ng-template>
         </p-carousel>

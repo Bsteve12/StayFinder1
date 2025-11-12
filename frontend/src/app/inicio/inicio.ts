@@ -14,12 +14,13 @@ import { AlojamientosService } from '../services/alojamientos';
 
 interface Destination {
   id: number;
-  name: string;
-  image: string;
-  location: string;
-  price: number;
-  rating: number;
-  favorite: boolean;
+  nombre: string;
+  direccion: string;
+  precio: number;
+  descripcion: string;
+  imagenes: { id: number; url: string; alojamientoId: number }[];
+  rating?: number;
+  favorite?: boolean;
 }
 
 interface Testimonial {
@@ -68,54 +69,7 @@ export class Inicio {
     });
   }
 
-  // Destinos populares
-  destinationsTest: Destination[] = [
-    {
-      id: 1,
-      name: 'Casa en la Playa',
-      image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=400',
-      location: 'Cartagena, Colombia',
-      price: 150000,
-      rating: 4.8,
-      favorite: false
-    },
-    {
-      id: 2,
-      name: 'Apartamento Moderno',
-      image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400',
-      location: 'Bogotá, Colombia',
-      price: 120000,
-      rating: 4.6,
-      favorite: false
-    },
-    {
-      id: 3,
-      name: 'Cabaña en la Montaña',
-      image: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=400',
-      location: 'Eje Cafetero, Colombia',
-      price: 180000,
-      rating: 4.9,
-      favorite: false
-    },
-    {
-      id: 4,
-      name: 'Villa Campestre',
-      image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400',
-      location: 'Medellín, Colombia',
-      price: 200000,
-      rating: 5.0,
-      favorite: false
-    },
-    {
-      id: 5,
-      name: 'Loft en el Centro',
-      image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400',
-      location: 'Cali, Colombia',
-      price: 95000,
-      rating: 4.5,
-      favorite: false
-    }
-  ];
+
 
   // Testimonios
   testimonials: Testimonial[] = [
@@ -189,5 +143,5 @@ export class Inicio {
     destination.favorite = !destination.favorite;
   }
 
-  
+
 }

@@ -13,4 +13,5 @@ public interface AlojamientoServiceInterface{
     void eliminar(Long alojamientoId, Long ownerId);
     AlojamientoResponseDTO obtenerPorId(Long id);
     List<AlojamientoResponseDTO> listarAlojamientosActivos();
+    List<AlojamientoResponseDTO> obtenerAlojamientosDeOwner(Long ownerId);
 }

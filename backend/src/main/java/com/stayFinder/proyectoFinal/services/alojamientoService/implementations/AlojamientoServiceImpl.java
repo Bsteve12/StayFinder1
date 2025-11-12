@@ -2,6 +2,7 @@ package com.stayFinder.proyectoFinal.services.alojamientoService.implementations
 
 import com.stayFinder.proyectoFinal.dto.inputDTO.AlojamientoRequestDTO;
 import com.stayFinder.proyectoFinal.dto.outputDTO.AlojamientoResponseDTO;
+import com.stayFinder.proyectoFinal.dto.outputDTO.ImagenAlojamientoResponseDTO;
 import com.stayFinder.proyectoFinal.entity.Alojamiento;
 import com.stayFinder.proyectoFinal.entity.Usuario;
 import com.stayFinder.proyectoFinal.entity.enums.EstadoReserva;
@@ -47,14 +48,14 @@ public class AlojamientoServiceImpl implements AlojamientoServiceInterface {
 
         alojamientoRepo.save(alojamiento);
 
-        return new AlojamientoResponseDTO(
-                alojamiento.getId(),
-                alojamiento.getNombre(),
-                alojamiento.getDireccion(),
-                alojamiento.getPrecio(),
-                alojamiento.getDescripcion(),
-                alojamiento.getOwner().getId()
-        );
+        AlojamientoResponseDTO dto = new AlojamientoResponseDTO();
+        dto.setId(alojamiento.getId());
+        dto.setNombre(alojamiento.getNombre());
+        dto.setDireccion(alojamiento.getDireccion());
+        dto.setPrecio(alojamiento.getPrecio());
+        dto.setDescripcion(alojamiento.getDescripcion());
+        dto.setOwnerId(alojamiento.getOwner().getId());
+        return dto;
     }
 
     @Override
@@ -78,42 +79,78 @@ public class AlojamientoServiceImpl implements AlojamientoServiceInterface {
 
         alojamientoRepo.save(alojamiento);
 
-        return new AlojamientoResponseDTO(
-                alojamiento.getId(),
-                alojamiento.getNombre(),
-                alojamiento.getDireccion(),
-                alojamiento.getPrecio(),
-                alojamiento.getDescripcion(),
-                alojamiento.getOwner().getId()
-        );
+        AlojamientoResponseDTO dto = new AlojamientoResponseDTO();
+        dto.setId(alojamiento.getId());
+        dto.setNombre(alojamiento.getNombre());
+        dto.setDireccion(alojamiento.getDireccion());
+        dto.setPrecio(alojamiento.getPrecio());
+        dto.setDescripcion(alojamiento.getDescripcion());
+        dto.setOwnerId(alojamiento.getOwner().getId());
+        return dto;
     }
 
     public List<AlojamientoResponseDTO> obtenerAlojamientosDeOwner(Long ownerId) {
         return alojamientoRepo.findByOwnerIdAndEliminadoFalse(ownerId).stream()
-                .map(a -> new AlojamientoResponseDTO(
-                        a.getId(),
-                        a.getNombre(),
-                        a.getDireccion(),
-                        a.getPrecio(),
-                        a.getDescripcion(),
-                        a.getOwner().getId()
-                ))
+                .map(a -> {
+                    AlojamientoResponseDTO dto = new AlojamientoResponseDTO();
+                    dto.setId(a.getId());
+                    dto.setNombre(a.getNombre());
+                    dto.setDireccion(a.getDireccion());
+                    dto.setPrecio(a.getPrecio());
+                    dto.setDescripcion(a.getDescripcion());
+                    dto.setOwnerId(a.getOwner().getId());
+
+                    // Mapeamos las imágenes si existen
+                    if (a.getImagenes() != null && !a.getImagenes().isEmpty()) {
+                        List<ImagenAlojamientoResponseDTO> imagenes = a.getImagenes().stream()
+                                .map(img -> {
+                                    ImagenAlojamientoResponseDTO imgDto = new ImagenAlojamientoResponseDTO();
+                                    imgDto.setId(img.getId());
+                                    imgDto.setUrl(img.getUrl());
+                                    imgDto.setAlojamientoId(a.getId());
+                                    return imgDto;
+                                })
+                                .toList();
+                        dto.setImagenes(imagenes);
+                    }
+                    return dto;
+                })
                 .toList();
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<AlojamientoResponseDTO> listarAlojamientosActivos() {
         return alojamientoRepo.findByEliminadoFalse().stream()
-                .map(a -> new AlojamientoResponseDTO(
-                        a.getId(),
-                        a.getNombre(),
-                        a.getDireccion(),
-                        a.getPrecio(),
-                        a.getDescripcion(),
-                        a.getOwner().getId()
-                ))
+                .map(a -> {
+                    AlojamientoResponseDTO dto = new AlojamientoResponseDTO();
+                    dto.setId(a.getId());
+                    dto.setNombre(a.getNombre());
+                    dto.setDireccion(a.getDireccion());
+                    dto.setPrecio(a.getPrecio());
+                    dto.setDescripcion(a.getDescripcion());
+                    dto.setOwnerId(a.getOwner().getId());
+
+                    // 🔹 Mapeamos las imágenes asociadas al alojamiento
+                    if (a.getImagenes() != null && !a.getImagenes().isEmpty()) {
+                        List<ImagenAlojamientoResponseDTO> imagenes = a.getImagenes().stream()
+                                .map(img -> {
+                                    ImagenAlojamientoResponseDTO imgDto = new ImagenAlojamientoResponseDTO();
+                                    imgDto.setId(img.getId());
+                                    imgDto.setUrl(img.getUrl());
+                                    imgDto.setAlojamientoId(a.getId());
+                                    return imgDto;
+                                })
+                                .toList();
+                        dto.setImagenes(imagenes);
+                    }
+
+                    return dto;
+                })
                 .toList();
     }
+
+
     @Override
     public void eliminar(Long alojamientoId, Long ownerId) {
         Alojamiento alojamiento = alojamientoRepo.findById(alojamientoId)
@@ -147,13 +184,28 @@ public class AlojamientoServiceImpl implements AlojamientoServiceInterface {
             throw new RuntimeException("Este alojamiento está eliminado");
         }
 
-        return new AlojamientoResponseDTO(
-                alojamiento.getId(),
-                alojamiento.getNombre(),
-                alojamiento.getDireccion(),
-                alojamiento.getPrecio(),
-                alojamiento.getDescripcion(),
-                alojamiento.getOwner().getId()
-        );
+        AlojamientoResponseDTO dto = new AlojamientoResponseDTO();
+        dto.setId(alojamiento.getId());
+        dto.setNombre(alojamiento.getNombre());
+        dto.setDireccion(alojamiento.getDireccion());
+        dto.setPrecio(alojamiento.getPrecio());
+        dto.setDescripcion(alojamiento.getDescripcion());
+        dto.setOwnerId(alojamiento.getOwner().getId());
+
+        // 👇 Mapeamos las imágenes
+        if (alojamiento.getImagenes() != null && !alojamiento.getImagenes().isEmpty()) {
+            List<ImagenAlojamientoResponseDTO> imagenes = alojamiento.getImagenes().stream()
+                    .map(img -> {
+                        ImagenAlojamientoResponseDTO imgDto = new ImagenAlojamientoResponseDTO();
+                        imgDto.setId(img.getId());
+                        imgDto.setUrl(img.getUrl());
+                        imgDto.setAlojamientoId(alojamiento.getId());
+                        return imgDto;
+                    })
+                    .toList();
+            dto.setImagenes(imagenes);
+        }
+
+        return dto;
     }
 }

@@ -68,4 +68,9 @@ public class AlojamientoController {
         return ResponseEntity.ok(activos);
     }
 
+
+
+
+
+
 }
