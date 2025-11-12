@@ -5,6 +5,7 @@ import { Detalle } from './detalle/detalle';
 import { Login } from './login/login';
 import { Register } from './register/register';
 import { Password } from './password/password';
+import { MiCuenta } from './mi-cuenta/mi-cuenta';
 
 export const routes: Routes = [
     { path: '', component: Inicio },
@@ -14,5 +15,6 @@ export const routes: Routes = [
     { path: 'login', component: Login },
     { path: 'register', component: Register },
     { path: 'forgot-password', component: Password },
+    { path: 'mi-cuenta', component: MiCuenta }
 
 ];
