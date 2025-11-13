@@ -10,17 +10,22 @@ import { Anfitrion } from './anfitrion/anfitrion';
 import { Administrador } from './administrador/administrador';
 import { ConvertirseAnfitrion } from './convertirse-anfitrion/convertirse-anfitrion';
 
-export const routes: Routes = [
-    { path: '', component: Inicio },
-    { path: 'soporte', component: Soporte },
-    { path: 'inicio', component: Inicio },
-    { path: 'detalle/:id', component: Detalle },
-    { path: 'login', component: Login },
-    { path: 'register', component: Register },
-    { path: 'forgot-password', component: Password },
-    { path: 'mi-cuenta', component: MiCuenta },
-    { path: 'anfitrion', component: Anfitrion },
-    { path: 'administrador', component: Administrador },
-    { path: 'convertirse-anfitrion', component: ConvertirseAnfitrion }
 
+import { InicioMiCuenta } from './inicio-mi-cuenta/inicio-mi-cuenta';
+
+export const routes: Routes = [
+  { path: '', component: Inicio },
+  { path: 'soporte', component: Soporte },
+  { path: 'inicio', component: Inicio },
+  { path: 'detalle/:id', component: Detalle },
+  { path: 'login', component: Login },
+  { path: 'register', component: Register },
+  { path: 'forgot-password', component: Password },
+  { path: 'mi-cuenta', component: MiCuenta },
+  { path: 'anfitrion', component: Anfitrion },
+  { path: 'administrador', component: Administrador },
+  { path: 'convertirse-anfitrion', component: ConvertirseAnfitrion },
+
+
+  { path: 'inicio-mi-cuenta', component: InicioMiCuenta }
 ];
