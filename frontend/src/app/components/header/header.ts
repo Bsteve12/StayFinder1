@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { RouterLink, RouterModule } from "@angular/router";
 import { DatePickerDialog } from '../date-picker-dialog/date-picker-dialog';
+import { Menu } from "../menu/menu";
 
 @Component({
   selector: 'app-header',
@@ -21,8 +22,9 @@ import { DatePickerDialog } from '../date-picker-dialog/date-picker-dialog';
     InputNumberModule,
     FormsModule,
     MatButtonModule,
-    RouterModule
-  ],
+    RouterModule,
+    Menu
+],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })

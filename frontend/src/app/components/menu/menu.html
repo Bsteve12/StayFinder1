@@ -1,1 +1,16 @@
-<p>menu works!</p>
+<div class="user-menu-container">
+  <button 
+    #menuButton
+    pButton 
+    icon="pi pi-bars" 
+    class="p-button-rounded menu-button"
+    (click)="menu.toggle($event)"
+  ></button>
+  
+  <p-menu 
+    #menu 
+    [model]="menuItems" 
+    [popup]="true"
+    styleClass="custom-menu"
+  ></p-menu>
+</div>
