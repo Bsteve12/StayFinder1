@@ -8,6 +8,7 @@ import { Password } from './password/password';
 import { MiCuenta } from './mi-cuenta/mi-cuenta';
 import { Anfitrion } from './anfitrion/anfitrion';
 import { Administrador } from './administrador/administrador';
+import { ConvertirseAnfitrion } from './convertirse-anfitrion/convertirse-anfitrion';
 
 export const routes: Routes = [
     { path: '', component: Inicio },
@@ -19,6 +20,7 @@ export const routes: Routes = [
     { path: 'forgot-password', component: Password },
     { path: 'mi-cuenta', component: MiCuenta },
     { path: 'anfitrion', component: Anfitrion },
-    { path: 'administrador', component: Administrador }
+    { path: 'administrador', component: Administrador },
+    { path: 'convertirse-anfitrion', component: ConvertirseAnfitrion }
 
 ];

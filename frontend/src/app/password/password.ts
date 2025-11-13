@@ -44,7 +44,7 @@ export class Password {
 
   goToLogin() {
     console.log('Ir a login');
-    // this.router.navigate(['/login']);
+    this.router.navigate(['/login']);
   }
 
   // Helpers para validación

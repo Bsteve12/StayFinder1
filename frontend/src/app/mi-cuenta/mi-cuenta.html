@@ -45,6 +45,15 @@
           <i class="pi pi-history"></i>
           <span>Historial de viajes</span>
         </button>
+
+         <button 
+          class="menu-item"
+          [class.active]="currentView === 'historial'"
+          (click)="changeView('historial')"
+        >
+          <i class="pi pi-search"></i>
+          <span>Mis solicitudes</span>
+        </button>
       </nav>
     </div>
   </aside>

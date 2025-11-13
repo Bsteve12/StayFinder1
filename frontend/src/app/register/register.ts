@@ -130,7 +130,7 @@ export class Register {
 
   getUsernameError() { if (this.username?.hasError('required')) return 'El usuario es requerido'; if (this.username?.hasError('minlength')) return 'Mínimo 3 caracteres'; return ''; }
   getEmailError() { if (this.email?.hasError('required')) return 'El email es requerido'; if (this.email?.hasError('email')) return 'Email inválido'; return ''; }
-  getPasswordError() { if (this.password?.hasError('required')) return 'La contraseña es requerida'; if (this.password?.hasError('minlength')) return 'Mínimo 6 caracteres'; return ''; }
+  getPasswordError() { if (this.password?.hasError('required')) return 'La contraseña es requerida'; if (this.password?.hasError('minlength')) return 'Mínimo 8 caracteres'; return ''; }
   getPhoneError() { if (this.phone?.hasError('required')) return 'El teléfono es requerido'; if (this.phone?.hasError('pattern')) return 'Debe tener 10 dígitos'; return ''; }
   getBirthdateError() { if (this.birthdate?.hasError('required')) return 'La fecha es requerida'; return ''; }
   getMaxDate(): Date { const today = new Date(); today.setFullYear(today.getFullYear() - 18); return today; }

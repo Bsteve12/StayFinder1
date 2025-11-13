@@ -35,15 +35,15 @@
               <input
                 type="text"
                 pInputText
-                formControlName="username"
-                placeholder="Usuario"
+                formControlName="email"
+                placeholder="Email"
                 class="form-input"
                 [class.invalid]="isUsernameInvalid"
               />
-              <i class="pi pi-user input-icon"></i>
+              <i class="pi pi-envelope input-icon"></i>
             </div>
             <small class="error-message" *ngIf="isUsernameInvalid">
-              El usuario es requerido
+              El email es requerido
             </small>
           </div>
 
@@ -61,7 +61,7 @@
               <i class="pi pi-lock input-icon"></i>
             </div>
             <small class="error-message" *ngIf="isPasswordInvalid">
-              La contraseña debe tener al menos 6 caracteres
+              La contraseña debe tener al menos 8 caracteres
             </small>
           </div>
 
