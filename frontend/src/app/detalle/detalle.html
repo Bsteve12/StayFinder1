@@ -5,13 +5,14 @@
   <main class="main-content">
     <div class="detail-wrapper">
       <!-- Título -->
-      <h2 class="accommodation-title">{{ alojamiento.nombre }}</h2>
+      <h2 class="accommodation-title">{{ accommodation.title }}</h2>
 
       <!-- Grid Layout -->
       <div class="detail-grid">
         <!-- Columna Izquierda: Carrusel de Imágenes -->
         <div class="left-column">
           <div class="images-section">
+            <div class="images-label">Images</div>
             <p-carousel
               [value]="accommodation.images"
               [numVisible]="1"
@@ -31,16 +32,16 @@
 
           <!-- Botón de Reserva -->
           <div class="reserve-section">
-            <button pButton label="Reserva" class="reserve-button" (click)="onReserve()"></button>
+            <button pButton label="Reserva" icon="pi pi-calendar-plus" class="reserve-button" (click)="onReserve()"></button>
           </div>
         </div>
 
         <!-- Columna Derecha: Información -->
         <div class="right-column">
           <div class="info-card">
-            <h3 class="info-title">{{ alojamiento.direccion }}</h3>
+            <h3 class="info-title">{{ accommodation.location }}</h3>
             <p class="info-subtitle">
-              {{ accommodation.bedrooms }} camas - {{ accommodation.bathrooms }}
+              {{ accommodation.bedrooms }} habitaciones - {{ accommodation.bathrooms }}
             </p>
 
             <!-- Líneas de información -->
@@ -61,7 +62,7 @@
 
             <div class="description-section">
               <h4>Descripción</h4>
-              <p>{{ alojamiento.descripcion }}</p>
+              <p>{{ accommodation.description }}</p>
             </div>
 
             <div class="info-line"></div>
@@ -80,7 +81,7 @@
 
             <div class="price-section">
               <span class="price-label">Precio por noche</span>
-              <span class="price-value">${{ alojamiento.precio | number }}</span>
+              <span class="price-value">\${{ accommodation.price | number }}</span>
             </div>
           </div>
         </div>

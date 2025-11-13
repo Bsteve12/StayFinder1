@@ -44,6 +44,10 @@
     border-radius: 24px;
     padding: 32px;
     position: relative;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .images-label {
         position: absolute;
@@ -58,61 +62,90 @@
     }
 
     ::ng-deep .p-carousel {
-        .p-carousel-content {
-            .carousel-image-container {
-                width: 100%;
-                height: 400px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 16px;
-                overflow: hidden;
-                background: #0f0f1e;
+        width: 100%;
+        max-width: 100%;
 
-                .carousel-image {
+        .p-carousel-content {
+            overflow: hidden;
+
+            .p-carousel-container {
+                .p-carousel-items-content {
+                    overflow: visible;
+                }
+
+                .carousel-image-wrapper {
                     width: 100%;
-                    height: 100%;
-                    object-fit: cover;
+                    height: 300px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0 50px;
+
+                    img {
+                        max-width: 100%;
+                        max-height: 300px;
+                        height: 300px;
+                        width: auto;
+                        object-fit: cover;
+                        border-radius: 12px;
+                    }
                 }
             }
 
             .p-carousel-prev,
             .p-carousel-next {
-                background: rgba(91, 33, 182, 0.8) !important;
+                background: rgba(91, 33, 182, 0.9) !important;
                 color: white !important;
-                width: 48px !important;
-                height: 48px !important;
+                width: 40px !important;
+                height: 40px !important;
                 border-radius: 50% !important;
-                margin: 0 8px !important;
+                border: none !important;
+                z-index: 2;
+                position: absolute !important;
 
                 &:hover {
-                    background: rgba(124, 58, 237, 0.9) !important;
+                    background: rgba(124, 58, 237, 1) !important;
                 }
 
-                .p-carousel-prev-icon,
-                .p-carousel-next-icon {
-                    font-size: 20px !important;
+                .p-icon {
+                    font-size: 18px !important;
+                    width: 18px !important;
+                    height: 18px !important;
                 }
+            }
+
+            .p-carousel-prev {
+                left: 10px !important;
+            }
+
+            .p-carousel-next {
+                right: 10px !important;
             }
         }
 
         .p-carousel-indicators {
             padding: 16px 0 0;
+            position: relative;
+            z-index: 2;
 
             .p-carousel-indicator {
                 button {
-                    background: rgba(255, 255, 255, 0.3) !important;
-                    width: 12px !important;
-                    height: 12px !important;
+                    background: rgba(255, 255, 255, 0.4) !important;
+                    width: 10px !important;
+                    height: 10px !important;
                     border-radius: 50% !important;
+                    border: none !important;
+                    transition: all 0.3s ease;
 
                     &:hover {
-                        background: rgba(255, 255, 255, 0.5) !important;
+                        background: rgba(255, 255, 255, 0.6) !important;
                     }
                 }
 
                 &.p-highlight button {
                     background: white !important;
+                    width: 12px !important;
+                    height: 12px !important;
                 }
             }
         }
@@ -136,11 +169,22 @@
         font-size: 20px !important;
         font-weight: 700 !important;
         transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
 
         &:hover {
             background: #6d28d9 !important;
             transform: translateY(-2px);
             box-shadow: 0 8px 16px rgba(124, 58, 237, 0.4);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+
+        .p-button-icon {
+            font-size: 22px;
         }
     }
 }
@@ -149,6 +193,7 @@
 .right-column {
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .info-card {
@@ -270,19 +315,9 @@
     .detail-grid {
         grid-template-columns: 1fr;
     }
-
-    .search-row {
-        grid-template-columns: repeat(2, 1fr) !important;
-
-        .search-button {
-            grid-column: 1 / -1;
-            width: 100%;
-        }
-    }
 }
 
 @media (max-width: 768px) {
-
     .main-content {
         padding: 40px 16px;
     }
@@ -296,18 +331,35 @@
     }
 
     .images-section {
-        padding: 16px;
+        padding: 20px;
+        min-height: 200px;
 
         .images-label {
-            font-size: 36px;
+            font-size: 32px;
         }
 
         ::ng-deep .p-carousel {
             .p-carousel-content {
-                .carousel-image-container {
-                    height: 250px;
+                .p-carousel-container {
+                    .carousel-image-wrapper {
+                        height: 180px;
+                        padding: 0 30px;
+
+                        img {
+                            height: 180px;
+                            max-height: 180px;
+                        }
+                    }
                 }
             }
+        }
+    }
+
+    .reserve-section {
+        .reserve-button {
+            width: 100%;
+            padding: 14px 32px !important;
+            font-size: 18px !important;
         }
     }
 
