@@ -53,7 +53,7 @@ export class Login {
     }
 
     const credentials = {
-      email: this.loginForm.value.username,
+      email: this.loginForm.value.email,
       contrasena: this.loginForm.value.password
     };
 
