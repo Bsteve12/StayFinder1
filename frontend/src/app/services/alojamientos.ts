@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AlojamientosService {
   
-  ruta = "http://localhost:8080/api/alojamientos";
+  ruta = "https://stayfinder1-production.up.railway.app/api/alojamientos";
 
   constructor(private http: HttpClient) {}
 

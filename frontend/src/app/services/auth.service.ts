@@ -15,7 +15,7 @@ export interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/usuario';
+  private apiUrl = 'https://stayfinder1-production.up.railway.app/api/usuario';
 
   constructor(private http: HttpClient) {}
 
