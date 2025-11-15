@@ -5,10 +5,9 @@ import { Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast'; // ✅ Solo necesitas este
+import { ToastModule } from 'primeng/toast';
 import { AuthService, LoginResponse } from '../services/auth.service';
 import { MessageService } from 'primeng/api';
-
 
 @Component({
   selector: 'app-login',
@@ -19,7 +18,7 @@ import { MessageService } from 'primeng/api';
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    ToastModule // ✅ módulo necesario para <p-toast>
+    ToastModule
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
@@ -29,7 +28,6 @@ export class Login {
   loginForm: FormGroup;
   showPassword = false;
   loading = false;
-
 
   constructor(
     private fb: FormBuilder,
@@ -43,10 +41,8 @@ export class Login {
     });
   }
 
-
   onLogin() {
     console.log('🟢 Intentando iniciar sesión...');
-
 
     if (this.loginForm.invalid) {
       Object.keys(this.loginForm.controls).forEach(key => {
@@ -55,36 +51,25 @@ export class Login {
       return;
     }
 
-
     const credentials = {
       email: this.loginForm.value.email,
       contrasena: this.loginForm.value.password
     };
 
-
     this.loading = true;
-
 
     this.authService.login(credentials).subscribe({
       next: (response: LoginResponse) => {
-        console.log('✅ Login exitoso. Token:', response.token);
+        console.log('🟢 Login exitoso:', response.token);
 
-
-        // ✅ Mensaje de éxito
         this.messageService.add({
           severity: 'success',
           summary: 'Inicio de sesión exitoso',
-          detail: `Token: ${response.token.substring(0, 25)}...`
+          detail: `Bienvenido a StayFinder`
         });
 
-
-        // ✅ Guarda el token
-        localStorage.setItem('token', response.token);
-
-
-        // ✅ Redirige al inicio después de 1.5 seg
         setTimeout(() => {
-          this.router.navigate(['/inicio']);
+          this.router.navigate(['/inicio']); // Redirigir al inicio
         }, 1500);
       },
       error: (err: any) => {
@@ -99,15 +84,12 @@ export class Login {
     });
   }
 
-
   goToRegister() { this.router.navigate(['/register']); }
   goToForgotPassword() { this.router.navigate(['/forgot-password']); }
   togglePasswordVisibility() { this.showPassword = !this.showPassword; }
-
 
   get username() { return this.loginForm.get('username'); }
   get password() { return this.loginForm.get('password'); }
   get isUsernameInvalid() { return this.username?.invalid && this.username?.touched; }
   get isPasswordInvalid() { return this.password?.invalid && this.password?.touched; }
 }
-
