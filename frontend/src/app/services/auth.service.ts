@@ -3,18 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
-
 export interface LoginRequest {
   email: string;
   contrasena: string;
 }
 
-
 export interface LoginResponse {
-  token: string;
-  user: User;  // Ajustado para recibir usuario desde el backend
+  token: string; // Solo recibes el token desde el backend
 }
-
 
 export interface User {
   id: number;
@@ -24,114 +20,97 @@ export interface User {
   foto?: string;
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiUrl = 'https://stayfinder1-production.up.railway.app/api/usuario';
 
-
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private currentUserSubject = new BehaviorSubject<User | null>(null);
 
-
   public isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
   public currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
-
 
   constructor(private http: HttpClient, private router: Router) {
     this.checkInitialAuth();
   }
 
-
-  // -------------------------------
-  // 🔐 Verificar sesión al recargar
-  // -------------------------------
   private checkInitialAuth() {
     const token = localStorage.getItem('token');
-    const userStr = localStorage.getItem('user');
-
-
-    if (token && userStr) {
-      try {
-        const user = JSON.parse(userStr);
+    if (token) {
+      const user = this.buildUserFromToken(token);
+      if (user) {
         this.isAuthenticatedSubject.next(true);
         this.currentUserSubject.next(user);
-      } catch (error) {
-        console.error('Error al parsear usuario:', error);
+      } else {
         this.logout();
       }
     }
   }
 
-
-  // -------------------------------
-  // 🔑 Login con API real
-  // -------------------------------
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
-        // Guardar token y usuario
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        localStorage.setItem('role', response.user.role);
+        const token = response.token;
+        localStorage.setItem('token', token);
 
-
-        this.isAuthenticatedSubject.next(true);
-        this.currentUserSubject.next(response.user);
+        const user = this.buildUserFromToken(token);
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('role', user.role);
+          this.isAuthenticatedSubject.next(true);
+          this.currentUserSubject.next(user);
+        } else {
+          this.logout();
+        }
       })
     );
   }
 
-
-  // -------------------------------
-  // 🚪 Logout
-  // -------------------------------
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('role');
-
-
     this.isAuthenticatedSubject.next(false);
     this.currentUserSubject.next(null);
-
-
     this.router.navigate(['/login']);
   }
 
-
-  // -------------------------------
-  // 👤 Obtener usuario actual
-  // -------------------------------
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
 
-
-  // -------------------------------
-  // 🔒 Verificar si está autenticado
-  // -------------------------------
   isAuthenticated(): boolean {
     return this.isAuthenticatedSubject.value;
   }
 
-
-  // -------------------------------
-  // 🎭 Obtener rol actual
-  // -------------------------------
   getUserRole(): 'CLIENT' | 'OWNER' | 'ADMIN' | null {
-    const user = this.getCurrentUser();
-    return user ? user.role : null;
+    return this.currentUserSubject.value?.role ?? null;
   }
 
-
-  // -------------------------------
-  // 🔄 Actualizar usuario
-  // -------------------------------
   updateUser(user: User) {
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSubject.next(user);
+  }
+
+  // 🧠 Decodificamos el token para sacar el JSON del usuario
+  private buildUserFromToken(token: string): User | null {
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+      const payload = JSON.parse(payloadJson);
+
+      const role = payload.role?.toUpperCase();
+      return {
+        id: payload.usuarioId,
+        email: payload.email || payload.sub,
+        nombre: payload.nombre || payload.email,
+        role: role as 'CLIENT' | 'OWNER' | 'ADMIN'
+      };
+    } catch (error) {
+      console.error('❌ Error decodificando token:', error);
+      return null;
+    }
   }
 }

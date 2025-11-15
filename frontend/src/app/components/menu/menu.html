@@ -8,6 +8,8 @@
     <span class="user-name">{{ userName || 'Usuario' }}</span>
     <i class="pi pi-chevron-down"></i>
   </div>
+
+
   <!-- Usuario NO Autenticado: Mostrar botón de menú -->
   <button
     *ngIf="!isAuthenticated"
@@ -17,6 +19,8 @@
     class="p-button-rounded menu-button"
     (click)="menu.toggle($event)"
   ></button>
+
+
   <p-menu
     #menu
     [model]="menuItems"

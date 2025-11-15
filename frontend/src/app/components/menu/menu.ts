@@ -1,9 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core'; // 👈 Agregado OnChanges y SimpleChanges
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
+
+
 @Component({
   selector: 'app-menu',
   imports: [
@@ -14,19 +16,35 @@ import { MenuItem } from 'primeng/api';
   templateUrl: './menu.html',
   styleUrls: ['./menu.scss'],
 })
-export class Menu implements OnInit {
+export class Menu implements OnInit, OnChanges { // 👈 Implementación de OnChanges
   @Input() isAuthenticated: boolean = false;
   @Input() userRole: 'CLIENT' | 'OWNER' | 'ADMIN' | null = null;
   @Input() userName: string = '';
   @Input() userPhoto: string = '';
+
+
   menuItems: MenuItem[] = [];
+
+
   constructor(private router: Router) {}
+
+
   ngOnInit() {
     this.setupMenuItems();
   }
+
+
+  // 👇 Nuevo: Detecta cambios en @Input()
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['isAuthenticated'] || changes['userRole']) {
+      this.setupMenuItems();
+    }
+  }
+
+
   setupMenuItems() {
     if (!this.isAuthenticated) {
-// Usuario NO autenticado
+      // Usuario NO autenticado
       this.menuItems = [
         {
           label: 'Iniciar sesión',
@@ -54,7 +72,7 @@ export class Menu implements OnInit {
         }
       ];
     } else {
-// Usuario AUTENTICADO
+      // Usuario AUTENTICADO
       this.menuItems = [
         {
           label: 'Mi cuenta',
@@ -64,7 +82,9 @@ export class Menu implements OnInit {
           }
         }
       ];
-// Agregar opciones según el rol
+
+
+      // Agregar opciones según el rol
       if (this.userRole === 'CLIENT') {
         this.menuItems.push(
           {
@@ -117,7 +137,9 @@ export class Menu implements OnInit {
           }
         );
       }
-// Opciones comunes para todos los autenticados
+
+
+      // Opciones comunes para todos los autenticados
       this.menuItems.push(
         {
           separator: true
@@ -143,14 +165,20 @@ export class Menu implements OnInit {
       );
     }
   }
+
+
   goToLogin() {
     this.router.navigate(['/login']);
   }
+
+
   goToRegister() {
     this.router.navigate(['/register']);
   }
+
+
   goToAccount() {
-// Redirigir según el rol
+    // Redirigir según el rol
     if (this.userRole === 'CLIENT') {
       this.router.navigate(['/mi-cuenta']);
     } else if (this.userRole === 'OWNER') {
@@ -159,17 +187,27 @@ export class Menu implements OnInit {
       this.router.navigate(['/administrador']);
     }
   }
+
+
   goToSupport() {
     this.router.navigate(['/soporte']);
   }
+
+
   logout() {
-// Lógica de logout
+    // Lógica de logout
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('role');
-// Redirigir al login
+
+
+    // Redirigir al login
     this.router.navigate(['/login']);
-// Opcional: Mostrar mensaje
+
+
+    // Opcional: Mostrar mensaje
     alert('Sesión cerrada exitosamente');
   }
+
+
 }

@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast'; // ✅ Solo necesitas este
-import { AuthService, LoginResponse } from '../services/auth.service';
+import { ToastModule } from 'primeng/toast';
+import { AuthService } from '../services/auth.service';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -18,7 +18,7 @@ import { MessageService } from 'primeng/api';
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    ToastModule // ✅ módulo necesario para <p-toast>
+    ToastModule
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
@@ -42,8 +42,6 @@ export class Login {
   }
 
   onLogin() {
-    console.log('🟢 Intentando iniciar sesión...');
-
     if (this.loginForm.invalid) {
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
@@ -59,26 +57,17 @@ export class Login {
     this.loading = true;
 
     this.authService.login(credentials).subscribe({
-      next: (response: LoginResponse) => {
-        console.log('🟢 Login exitoso. Token:', response.token);
-
-        // 🚫 Ya NO guardamos el token aquí, lo hace `auth.service`
-        // Guardado automático de token, user y role ocurre en `AuthService`
-
-        // 🔔 Mostrar mensaje de éxito
+      next: () => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Inicio de sesión exitoso',
-          detail: `Bienvenido de nuevo 👋`
+          summary: '¡Bienvenido!',
+          detail: `Inicio de sesión exitoso`
         });
-
-        // 🔁 Redirigir después de 1.5s
         setTimeout(() => {
           this.router.navigate(['/inicio']);
-        }, 1500);
+        }, 1200);
       },
-      error: (err: any) => {
-        console.error('❌ Error en login:', err);
+      error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -92,9 +81,4 @@ export class Login {
   goToRegister() { this.router.navigate(['/register']); }
   goToForgotPassword() { this.router.navigate(['/forgot-password']); }
   togglePasswordVisibility() { this.showPassword = !this.showPassword; }
-
-  get username() { return this.loginForm.get('username'); }
-  get password() { return this.loginForm.get('password'); }
-  get isUsernameInvalid() { return this.username?.invalid && this.username?.touched; }
-  get isPasswordInvalid() { return this.password?.invalid && this.password?.touched; }
 }
