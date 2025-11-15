@@ -81,4 +81,9 @@ export class Login {
   goToRegister() { this.router.navigate(['/register']); }
   goToForgotPassword() { this.router.navigate(['/forgot-password']); }
   togglePasswordVisibility() { this.showPassword = !this.showPassword; }
+
+  get email() { return this.loginForm.get('email'); }
+  get password() { return this.loginForm.get('password'); }
+  get isEmailInvalid() { return this.email?.invalid && this.email?.touched; }
+  get isPasswordInvalid() { return this.password?.invalid && this.password?.touched; }
 }
