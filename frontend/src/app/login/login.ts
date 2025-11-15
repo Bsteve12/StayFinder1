@@ -68,23 +68,9 @@ export class Login {
         });
 
         setTimeout(() => {
-          const userRole = localStorage.getItem('role');
-
-          switch (userRole) {
-            case 'ADMIN':
-              this.router.navigate(['/administrador']);
-              break;
-            case 'OWNER':
-              this.router.navigate(['/anfitrion']);
-              break;
-            case 'CLIENT':
-              this.router.navigate(['/mi-cuenta']);
-              break;
-            default:
-              this.router.navigate(['/inicio']);
-              break;
-          }
+          this.router.navigate(['/inicio']);
         }, 1500);
+
 
       },
       error: (err: any) => {
