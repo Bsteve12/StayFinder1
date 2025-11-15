@@ -74,19 +74,12 @@ export class Menu implements OnInit {
       if (this.userRole === 'CLIENT') {
         this.menuItems.push(
           {
-            label: 'Mis Reservas',
-            icon: 'pi pi-calendar',
-            command: () => {
-              this.router.navigate(['/dashboard/reservas']);
-            }
-          },
-          {
-            label: 'Favoritos',
-            icon: 'pi pi-heart',
-            command: () => {
-              this.router.navigate(['/dashboard/favoritos']);
-            }
+          label: 'Ayuda y Soporte',
+          icon: 'pi pi-question-circle',
+          command: () => {
+            this.goToSupport();
           }
+        }
         );
       } else if (this.userRole === 'OWNER') {
         this.menuItems.push(
@@ -94,23 +87,16 @@ export class Menu implements OnInit {
             label: 'Dashboard Anfitrión',
             icon: 'pi pi-chart-line',
             command: () => {
-              this.router.navigate(['/owner-dashboard']);
+              this.router.navigate(['/anfitrion']);
             }
           },
           {
-            label: 'Mis Alojamientos',
-            icon: 'pi pi-home',
-            command: () => {
-              this.router.navigate(['/owner-dashboard/gestion']);
-            }
-          },
-          {
-            label: 'Reservas Recibidas',
-            icon: 'pi pi-calendar-plus',
-            command: () => {
-              this.router.navigate(['/owner-dashboard/historial']);
-            }
+          label: 'Ayuda y Soporte',
+          icon: 'pi pi-question-circle',
+          command: () => {
+            this.goToSupport();
           }
+        }
         );
       } else if (this.userRole === 'ADMIN') {
         this.menuItems.push(
@@ -118,23 +104,16 @@ export class Menu implements OnInit {
             label: 'Panel Admin',
             icon: 'pi pi-shield',
             command: () => {
-              this.router.navigate(['/admin-dashboard']);
+              this.router.navigate(['/administrador']);
             }
           },
           {
-            label: 'Gestionar Usuarios',
-            icon: 'pi pi-users',
-            command: () => {
-              this.router.navigate(['/admin-dashboard/usuarios']);
-            }
-          },
-          {
-            label: 'Solicitudes',
-            icon: 'pi pi-inbox',
-            command: () => {
-              this.router.navigate(['/admin-dashboard/solicitudes']);
-            }
+          label: 'Ayuda y Soporte',
+          icon: 'pi pi-question-circle',
+          command: () => {
+            this.goToSupport();
           }
+        }
         );
       }
 
@@ -176,14 +155,12 @@ export class Menu implements OnInit {
   goToAccount() {
     // Redirigir según el rol
     if (this.userRole === 'CLIENT') {
-      this.router.navigate(['/dashboard/perfil']);
-    } else if (this.userRole === 'OWNER') {
-      this.router.navigate(['/owner-dashboard/perfil']);
-    } else if (this.userRole === 'ADMIN') {
-      this.router.navigate(['/admin-dashboard/perfil']);
-    } else {
       this.router.navigate(['/mi-cuenta']);
-    }
+    } else if (this.userRole === 'OWNER') {
+      this.router.navigate(['/anfitrion']);
+    } else if (this.userRole === 'ADMIN') {
+      this.router.navigate(['/administrador']);
+    } 
   }
 
   goToSupport() {
