@@ -60,9 +60,9 @@ export class Header implements OnInit {
   onBecomeHost() {
     if (!this.isAuthenticated) {
       alert('Debes iniciar sesión para convertirte en anfitrión.');
-      this.router.navigate(['/login'], { queryParams: { returnUrl: '/conviertete-anfitrion' } });
+      this.router.navigate(['/login'], { queryParams: { returnUrl: '/convertirse-anfitrion' } });
     } else {
-      this.router.navigate(['/conviertete-anfitrion']);
+      this.router.navigate(['/convertirse-anfitrion']);
     }
   }
 

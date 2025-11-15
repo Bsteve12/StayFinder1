@@ -125,14 +125,14 @@ export class Menu implements OnInit, OnChanges { // 👈 Implementación de OnCh
             label: 'Gestionar Usuarios',
             icon: 'pi pi-users',
             command: () => {
-              this.router.navigate(['/admin-dashboard/usuarios']);
+              this.router.navigate(['/administrador']);
             }
           },
           {
             label: 'Solicitudes',
             icon: 'pi pi-inbox',
             command: () => {
-              this.router.navigate(['/admin-dashboard/solicitudes']);
+              this.router.navigate(['/administrador']);
             }
           }
         );
