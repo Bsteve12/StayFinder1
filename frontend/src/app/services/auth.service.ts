@@ -25,7 +25,7 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://stayfinder1-production.up.railway.app/api/usuario'; // 🔗 API real
+  private apiUrl = 'https://stayfinder1-production.up.railway.app/api/usuario';
 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private currentUserSubject = new BehaviorSubject<User | null>(null);
@@ -37,7 +37,7 @@ export class AuthService {
     this.checkInitialAuth();
   }
 
-  // 🟡 Cargar sesión desde localStorage
+  // Cargar sesión desde localStorage sin redirigir automáticamente
   private checkInitialAuth() {
     const token = localStorage.getItem('token');
     if (token) {
@@ -48,18 +48,25 @@ export class AuthService {
         return;
       }
     }
+    // Si no hay token válido, simplemente establecer estado no autenticado.
     this.isAuthenticatedSubject.next(false);
     this.currentUserSubject.next(null);
-
+    // NO llamar a logout() ni navegar aquí. Logout debe ser llamado explícitamente (por ejemplo, al cerrar sesión).
   }
 
-  // 🔐 Login con backend
+  // Login con backend (espera { token })
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
         const token = response.token;
+        if (!token) {
+          throw new Error('No token recibido en login');
+        }
+
+        // Guardar token
         localStorage.setItem('token', token);
 
+        // Construir user desde token
         const user = this.buildUserFromToken(token);
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
@@ -67,19 +74,24 @@ export class AuthService {
           this.isAuthenticatedSubject.next(true);
           this.currentUserSubject.next(user);
         } else {
-          this.logout();
+          // Si no podemos decodificar, limpiar e informar
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          localStorage.removeItem('role');
+          this.isAuthenticatedSubject.next(false);
+          this.currentUserSubject.next(null);
         }
       })
     );
   }
 
-  // 🚪 Logout
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('role');
     this.isAuthenticatedSubject.next(false);
     this.currentUserSubject.next(null);
+    // logout sí redirige
     this.router.navigate(['/login']);
   }
 
@@ -96,27 +108,30 @@ export class AuthService {
     return user?.role ?? null;
   }
 
-  // 🧠 Decodificar el JWT para obtener el usuario
+  // Decodificar JWT (payload) en objeto User
   private buildUserFromToken(token: string): User | null {
     try {
       const payloadBase64 = token.split('.')[1];
+      if (!payloadBase64) return null;
       const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
       const payload = JSON.parse(payloadJson);
 
-      const role = payload.role?.toUpperCase();
+      const role = (payload.role || payload.authorities || '').toString().toUpperCase();
       if (!['CLIENT', 'OWNER', 'ADMIN'].includes(role)) {
-        console.warn('⚠ Rol inválido en token:', role);
-        return null;
+        // Si el backend devuelve roles distintos, aquí puedes ajustar la lógica.
+        console.warn('Rol no reconocido en token:', role);
+        // No devolvemos null para evitar bloquear; devolvemos role string solo si coincide.
+        // Si quieres estrictitud, devuelve null aquí.
       }
 
       return {
-        id: payload.usuarioId,
-        email: payload.email || payload.sub,
-        nombre: payload.nombre || payload.email,
-        role: role as 'CLIENT' | 'OWNER' | 'ADMIN'
+        id: payload.usuarioId ?? payload.id ?? undefined,
+        email: payload.email ?? payload.sub ?? undefined,
+        nombre: payload.nombre ?? payload.name ?? payload.email ?? undefined,
+        role: (['CLIENT', 'OWNER', 'ADMIN'].includes(role) ? (role as 'CLIENT' | 'OWNER' | 'ADMIN') : undefined)
       };
     } catch (error) {
-      console.error('❌ Error decodificando token JWT:', error);
+      console.error('Error decodificando token JWT:', error);
       return null;
     }
   }
