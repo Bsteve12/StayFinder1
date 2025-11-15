@@ -74,11 +74,13 @@
 // Estilos personalizados para el menú
 ::ng-deep {
     .custom-menu {
+        position: fixed !important; // Cambiar a fixed para evitar desplazamiento
         border-radius: 16px !important;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
         border: 1px solid #e5e7eb !important;
         overflow: hidden;
         min-width: 220px;
+        z-index: 9999 !important; // Asegurar que esté por encima de todo
 
         .p-menu-list {
             padding: 8px !important;
