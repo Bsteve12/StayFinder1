@@ -1,3 +1,4 @@
+// src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
@@ -16,7 +17,7 @@ export interface User {
   id?: number;
   nombre?: string;
   email?: string;
-  role?: 'CLIENT' | 'OWNER' | 'ADMIN'; // 👈 Solo roles válidos
+  role?: 'CLIENT' | 'OWNER' | 'ADMIN';
   foto?: string;
 }
 
@@ -24,7 +25,8 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8000/api/usuario';
+  private apiUrl = 'https://stayfinder1-production.up.railway.app/api/usuario'; // 🔗 API real
+
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private currentUserSubject = new BehaviorSubject<User | null>(null);
 
@@ -35,6 +37,7 @@ export class AuthService {
     this.checkInitialAuth();
   }
 
+  // 🟡 Cargar sesión desde localStorage
   private checkInitialAuth() {
     const token = localStorage.getItem('token');
     if (token) {
@@ -45,11 +48,10 @@ export class AuthService {
         return;
       }
     }
-    this.isAuthenticatedSubject.next(false);
-    this.currentUserSubject.next(null);
-    localStorage.removeItem('token');
+    this.logout();
   }
 
+  // 🔐 Login con backend
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
@@ -69,6 +71,7 @@ export class AuthService {
     );
   }
 
+  // 🚪 Logout
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -91,13 +94,13 @@ export class AuthService {
     return user?.role ?? null;
   }
 
+  // 🧠 Decodificar el JWT para obtener el usuario
   private buildUserFromToken(token: string): User | null {
     try {
       const payloadBase64 = token.split('.')[1];
       const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
       const payload = JSON.parse(payloadJson);
 
-      // Validar role estrictamente
       const role = payload.role?.toUpperCase();
       if (!['CLIENT', 'OWNER', 'ADMIN'].includes(role)) {
         console.warn('⚠ Rol inválido en token:', role);

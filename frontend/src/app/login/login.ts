@@ -43,8 +43,6 @@ export class Login {
   }
 
   onLogin() {
-    console.log('🟢 Intentando iniciar sesión...');
-
     if (this.loginForm.invalid) {
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
