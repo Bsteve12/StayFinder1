@@ -1,5 +1,5 @@
-// src/app/menu/menu.ts
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core'; // 👈 Agregado OnChanges y SimpleChanges
+// src/app/components/menu/menu.ts
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MenuModule } from 'primeng/menu';
@@ -16,7 +16,7 @@ import { MenuItem } from 'primeng/api';
   templateUrl: './menu.html',
   styleUrls: ['./menu.scss'],
 })
-export class Menu implements OnInit, OnChanges { // 👈 Implementación de OnChanges
+export class Menu implements OnInit, OnChanges {
   @Input() isAuthenticated: boolean = false;
   @Input() userRole: 'CLIENT' | 'OWNER' | 'ADMIN' | null = null;
   @Input() userName: string = '';
@@ -27,138 +27,79 @@ export class Menu implements OnInit, OnChanges { // 👈 Implementación de OnCh
   constructor(private router: Router) {}
 
   ngOnInit() {
+    // inicializar menú
     this.setupMenuItems();
   }
 
-  // 👇 Nuevo: Detecta cambios en @Input()
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['isAuthenticated'] || changes['userRole']) {
+    // Si cambió el estado de autenticación o el usuario, reconstruir el menú.
+    if (changes['isAuthenticated'] || changes['userRole'] || changes['userName'] || changes['userPhoto']) {
       this.setupMenuItems();
     }
   }
 
   setupMenuItems() {
+    // ---------- USUARIO NO AUTENTICADO (igual que tenías) ----------
     if (!this.isAuthenticated) {
-      // Usuario NO autenticado
       this.menuItems = [
         {
           label: 'Iniciar sesión',
           icon: 'pi pi-sign-in',
-          command: () => {
-            this.goToLogin();
-          }
+          command: () => { this.goToLogin(); }
         },
         {
           label: 'Registrarse',
           icon: 'pi pi-user-plus',
-          command: () => {
-            this.goToRegister();
-          }
+          command: () => { this.goToRegister(); }
         },
-        {
-          separator: true
-        },
+        { separator: true },
         {
           label: 'Ayuda y Soporte',
           icon: 'pi pi-question-circle',
-          command: () => {
-            this.goToSupport();
-          }
+          command: () => { this.goToSupport(); }
         }
       ];
-    } else {
-      // Usuario AUTENTICADO
-      this.menuItems = [
-        {
-          label: 'Mi cuenta',
-          icon: 'pi pi-user',
-          command: () => {
-            this.goToAccount();
-          }
-        }
-      ];
-
-      // Agregar opciones según el rol
-      if (this.userRole === 'CLIENT') {
-        this.menuItems.push(
-          {
-            label: 'Mis Reservas',
-            icon: 'pi pi-calendar',
-            command: () => {
-              this.router.navigate(['mi-cuenta']);
-            }
-          },
-          {
-            label: 'Favoritos',
-            icon: 'pi pi-heart',
-            command: () => {
-              this.router.navigate(['mi-cuenta']);
-            }
-          }
-        );
-      } else if (this.userRole === 'OWNER') {
-        this.menuItems.push(
-          {
-            label: 'Dashboard Anfitrión',
-            icon: 'pi pi-chart-line',
-            command: () => {
-              this.router.navigate(['/anfitrion']);
-            }
-          }
-        );
-      } else if (this.userRole === 'ADMIN') {
-        this.menuItems.push(
-          {
-            label: 'Panel Admin',
-            icon: 'pi pi-shield',
-            command: () => {
-              this.router.navigate(['/administrador']);
-            }
-          },
-          {
-            label: 'Gestionar Usuarios',
-            icon: 'pi pi-users',
-            command: () => {
-              this.router.navigate(['/admin-dashboard/usuarios']);
-            }
-          },
-          {
-            label: 'Solicitudes',
-            icon: 'pi pi-inbox',
-            command: () => {
-              this.router.navigate(['/admin-dashboard/solicitudes']);
-            }
-          }
-        );
-      }
-
-      // Opciones comunes para todos los autenticados
-      this.menuItems.push(
-        {
-          separator: true
-        },
-        {
-          label: 'Ayuda y Soporte',
-          icon: 'pi pi-question-circle',
-          command: () => {
-            this.goToSupport();
-          }
-        },
-        {
-          separator: true
-        },
-        {
-          label: 'Cerrar sesión',
-          icon: 'pi pi-sign-out',
-          styleClass: 'logout-item',
-          command: () => {
-            this.logout();
-          }
-        }
-      );
+      return;
     }
+
+    // ---------- USUARIO AUTENTICADO: menú simple con nombre + Mi cuenta / Soporte ----------
+    // Primer item: un "header" no clickeable que muestra el nombre (estilizado con class)
+    const headerLabel = this.userName ? this.userName : 'Usuario';
+
+    this.menuItems = [
+      {
+        label: headerLabel,
+        icon: this.userPhoto ? undefined : 'pi pi-user', // si tienes foto, el avatar ya aparece en el DOM (menu.html)
+        // deshabilitado para que sea solo informativo
+        disabled: true,
+        styleClass: 'menu-user-header'
+      },
+      { separator: true },
+      {
+        label: 'Mi cuenta',
+        icon: 'pi pi-user',
+        command: () => { this.goToAccount(); }
+      },
+      {
+        label: 'Ayuda y Soporte',
+        icon: 'pi pi-question-circle',
+        command: () => { this.goToSupport(); }
+      },
+      { separator: true },
+      {
+        label: 'Cerrar sesión',
+        icon: 'pi pi-sign-out',
+        styleClass: 'logout-item',
+        command: () => { this.logout(); }
+      }
+    ];
+
+    // ---- Si más adelante quieres items según rol, puedes añadirlos aquí (ejemplo comentado) ----
+    // if (this.userRole === 'OWNER') { ... }
+    // if (this.userRole === 'ADMIN') { ... }
   }
 
+  // Rutas / acciones (mantengo exactamente tus funciones)
   goToLogin() {
     this.router.navigate(['/login']);
   }
@@ -168,13 +109,16 @@ export class Menu implements OnInit, OnChanges { // 👈 Implementación de OnCh
   }
 
   goToAccount() {
-    // Redirigir según el rol
+    // Redirigir según el rol (si en el futuro quieres redirigir distinto por rol)
     if (this.userRole === 'CLIENT') {
       this.router.navigate(['/mi-cuenta']);
     } else if (this.userRole === 'OWNER') {
       this.router.navigate(['/anfitrion']);
     } else if (this.userRole === 'ADMIN') {
       this.router.navigate(['/administrador']);
+    } else {
+      // fallback
+      this.router.navigate(['/mi-cuenta']);
     }
   }
 
@@ -183,16 +127,13 @@ export class Menu implements OnInit, OnChanges { // 👈 Implementación de OnCh
   }
 
   logout() {
-    // Lógica de logout
+    // Lógica de logout: limpiar y redirigir al login
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('role');
 
-    // Redirigir al login
+    // Si tienes un AuthService con observable sería mejor llamarlo aquí, pero mantengo tu lógica simple:
     this.router.navigate(['/login']);
-
-    // Opcional: Mostrar mensaje
     alert('Sesión cerrada exitosamente');
   }
-
 }
