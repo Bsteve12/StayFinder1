@@ -10,14 +10,14 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string;
-  user: User;  // Ajustado para recibir usuario desde el backend
+  // Tu backend devuelve solo token; aquí decodificamos para obtener user
 }
 
 export interface User {
-  id: number;
-  nombre: string;
-  email: string;
-  role: 'CLIENT' | 'OWNER' | 'ADMIN';
+  id?: number;              // optional porque token puede traer usuarioId
+  nombre?: string;          // puede que no venga en token -> usar email
+  email?: string;
+  role?: 'CLIENT' | 'OWNER' | 'ADMIN' | string;
   foto?: string;
 }
 
@@ -25,7 +25,8 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://stayfinder1-production.up.railway.app/api/usuario';
+  // Ajusta a tu backend local (me dijiste que corre en 8000)
+  private apiUrl = 'http://localhost:8000/api/usuario';
 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private currentUserSubject = new BehaviorSubject<User | null>(null);
@@ -37,45 +38,44 @@ export class AuthService {
     this.checkInitialAuth();
   }
 
-  // -------------------------------
-  // 🔐 Verificar sesión al recargar
-  // -------------------------------
+  // --- init on reload
   private checkInitialAuth() {
     const token = localStorage.getItem('token');
-    const userStr = localStorage.getItem('user');
-
-    if (token && userStr) {
-      try {
-        const user = JSON.parse(userStr);
+    if (token) {
+      const user = this.buildUserFromToken(token);
+      if (user) {
         this.isAuthenticatedSubject.next(true);
         this.currentUserSubject.next(user);
-      } catch (error) {
-        console.error('Error al parsear usuario:', error);
-        this.logout();
+        return;
       }
     }
+    this.isAuthenticatedSubject.next(false);
+    this.currentUserSubject.next(null);
   }
 
-  // -------------------------------
-  // 🔑 Login con API real
-  // -------------------------------
+  // --- login: POST /api/usuario/login -> { token }
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
-        // Guardar token y usuario
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        localStorage.setItem('role', response.user.role);
+        const token = response.token;
+        // guarda token
+        localStorage.setItem('token', token);
 
-        this.isAuthenticatedSubject.next(true);
-        this.currentUserSubject.next(response.user);
+        // decodifica token y crea user
+        const user = this.buildUserFromToken(token);
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('role', (user.role || '') as string);
+          this.isAuthenticatedSubject.next(true);
+          this.currentUserSubject.next(user);
+        } else {
+          // Si no puede decodificar, limpia (no debería pasar)
+          this.logout();
+        }
       })
     );
   }
 
-  // -------------------------------
-  // 🚪 Logout
-  // -------------------------------
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -83,37 +83,47 @@ export class AuthService {
 
     this.isAuthenticatedSubject.next(false);
     this.currentUserSubject.next(null);
-
     this.router.navigate(['/login']);
   }
 
-  // -------------------------------
-  // 👤 Obtener usuario actual
-  // -------------------------------
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
 
-  // -------------------------------
-  // 🔒 Verificar si está autenticado
-  // -------------------------------
   isAuthenticated(): boolean {
     return this.isAuthenticatedSubject.value;
   }
 
-  // -------------------------------
-  // 🎭 Obtener rol actual
-  // -------------------------------
   getUserRole(): 'CLIENT' | 'OWNER' | 'ADMIN' | null {
     const user = this.getCurrentUser();
-    return user ? user.role : null;
+    return user?.role ? (user.role as any) : null;
   }
 
-  // -------------------------------
-  // 🔄 Actualizar usuario
-  // -------------------------------
   updateUser(user: User) {
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSubject.next(user);
+  }
+
+  // -------- helpers --------
+  private buildUserFromToken(token: string): User | null {
+    try {
+      // JWT = header.payload.signature
+      const payloadBase64 = token.split('.')[1];
+      const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+      const payload = JSON.parse(payloadJson);
+
+      // Aquí asumimos que el backend incluye claims: usuarioId, email, role (según tu backend)
+      const user: User = {
+        id: payload.usuarioId ?? undefined,
+        email: payload.email ?? payload.sub ?? undefined,
+        nombre: payload.nombre ?? payload.email ?? undefined,
+        role: payload.role ?? payload.authorities ?? undefined
+      };
+
+      return user;
+    } catch (error) {
+      console.error('Error decodificando token JWT:', error);
+      return null;
+    }
   }
 }
