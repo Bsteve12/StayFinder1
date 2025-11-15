@@ -9,14 +9,12 @@ import { MiCuenta } from './mi-cuenta/mi-cuenta';
 import { Anfitrion } from './anfitrion/anfitrion';
 import { Administrador } from './administrador/administrador';
 import { ConvertirseAnfitrion } from './convertirse-anfitrion/convertirse-anfitrion';
-
-
 import { InicioMiCuenta } from './inicio-mi-cuenta/inicio-mi-cuenta';
 
 export const routes: Routes = [
-  { path: '', component: Inicio },
+  { path: '', redirectTo: 'inicio', pathMatch: 'full' }, // Ruta principal
+  { path: 'inicio', component: Inicio },                  //  Página de inicio principal
   { path: 'soporte', component: Soporte },
-  { path: 'inicio', component: Inicio },
   { path: 'detalle/:id', component: Detalle },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
@@ -25,7 +23,5 @@ export const routes: Routes = [
   { path: 'anfitrion', component: Anfitrion },
   { path: 'administrador', component: Administrador },
   { path: 'convertirse-anfitrion', component: ConvertirseAnfitrion },
-
-
-  { path: 'inicio-mi-cuenta', component: InicioMiCuenta }
+  { path: 'inicio-mi-cuenta', component: InicioMiCuenta },
 ];
