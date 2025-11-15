@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+// src/app/menu/menu.ts
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core'; // 👈 Agregado OnChanges y SimpleChanges
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MenuModule } from 'primeng/menu';
@@ -15,18 +16,25 @@ import { MenuItem } from 'primeng/api';
   templateUrl: './menu.html',
   styleUrls: ['./menu.scss'],
 })
-export class Menu implements OnInit {
+export class Menu implements OnInit, OnChanges { // 👈 Implementación de OnChanges
   @Input() isAuthenticated: boolean = false;
   @Input() userRole: 'CLIENT' | 'OWNER' | 'ADMIN' | null = null;
   @Input() userName: string = '';
   @Input() userPhoto: string = '';
-  
+
   menuItems: MenuItem[] = [];
 
   constructor(private router: Router) {}
 
   ngOnInit() {
     this.setupMenuItems();
+  }
+
+  // 👇 Nuevo: Detecta cambios en @Input()
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['isAuthenticated'] || changes['userRole']) {
+      this.setupMenuItems();
+    }
   }
 
   setupMenuItems() {
@@ -167,7 +175,7 @@ export class Menu implements OnInit {
       this.router.navigate(['/anfitrion']);
     } else if (this.userRole === 'ADMIN') {
       this.router.navigate(['/administrador']);
-    } 
+    }
   }
 
   goToSupport() {
@@ -179,10 +187,10 @@ export class Menu implements OnInit {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('role');
-    
+
     // Redirigir al login
     this.router.navigate(['/login']);
-    
+
     // Opcional: Mostrar mensaje
     alert('Sesión cerrada exitosamente');
   }

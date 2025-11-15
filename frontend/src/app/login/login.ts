@@ -68,8 +68,24 @@ export class Login {
         });
 
         setTimeout(() => {
-          this.router.navigate(['/inicio']);
+          const userRole = localStorage.getItem('role');
+
+          switch (userRole) {
+            case 'ADMIN':
+              this.router.navigate(['/administrador']);
+              break;
+            case 'OWNER':
+              this.router.navigate(['/anfitrion']);
+              break;
+            case 'CLIENT':
+              this.router.navigate(['/mi-cuenta']);
+              break;
+            default:
+              this.router.navigate(['/inicio']);
+              break;
+          }
         }, 1500);
+
       },
       error: (err: any) => {
         console.error('❌ Error en login:', err);
