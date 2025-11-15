@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast';
-import { AuthService } from '../services/auth.service';
+import { ToastModule } from 'primeng/toast'; // ✅ Solo necesitas este
+import { AuthService, LoginResponse } from '../services/auth.service';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -18,7 +18,7 @@ import { MessageService } from 'primeng/api';
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    ToastModule
+    ToastModule // ✅ módulo necesario para <p-toast>
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
@@ -36,12 +36,14 @@ export class Login {
     private messageService: MessageService
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required]],
+      email: ['', [Validators.required]], // Cambiado de "username" a "email"
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
   onLogin() {
+    console.log('🟢 Intentando iniciar sesión...');
+
     if (this.loginForm.invalid) {
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
@@ -57,17 +59,26 @@ export class Login {
     this.loading = true;
 
     this.authService.login(credentials).subscribe({
-      next: () => {
+      next: (response: LoginResponse) => {
+        console.log('✅ Login exitoso. Token:', response.token);
+
+        // 🔐 Guardar token
+        localStorage.setItem('token', response.token);
+
+        // 🔔 Mostrar mensaje de éxito
         this.messageService.add({
           severity: 'success',
-          summary: '¡Bienvenido!',
-          detail: `Inicio de sesión exitoso`
+          summary: 'Inicio de sesión exitoso',
+          detail: `Token: ${response.token.substring(0, 25)}...`
         });
+
+        // 🔁 Redirigir después de 1.5s
         setTimeout(() => {
           this.router.navigate(['/inicio']);
-        }, 1200);
+        }, 1500);
       },
-      error: () => {
+      error: (err: any) => {
+        console.error('❌ Error en login:', err);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -82,6 +93,7 @@ export class Login {
   goToForgotPassword() { this.router.navigate(['/forgot-password']); }
   togglePasswordVisibility() { this.showPassword = !this.showPassword; }
 
+  // 🟢 GETTERS corregidos: Email en lugar de Username
   get email() { return this.loginForm.get('email'); }
   get password() { return this.loginForm.get('password'); }
   get isEmailInvalid() { return this.email?.invalid && this.email?.touched; }
