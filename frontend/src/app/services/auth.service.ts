@@ -48,7 +48,9 @@ export class AuthService {
         return;
       }
     }
-    this.logout();
+    this.isAuthenticatedSubject.next(false);
+    this.currentUserSubject.next(null);
+
   }
 
   // 🔐 Login con backend
