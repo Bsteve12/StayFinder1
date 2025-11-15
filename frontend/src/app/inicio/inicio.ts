@@ -12,6 +12,7 @@ import { RouterLink } from "@angular/router";
 import { Header } from "../components/header/header";
 import { AlojamientosService } from '../services/alojamientos';
 
+
 interface Destination {
   id: number;
   nombre: string;
@@ -23,6 +24,7 @@ interface Destination {
   favorite?: boolean;
 }
 
+
 interface Testimonial {
   id: number;
   name: string;
@@ -31,6 +33,7 @@ interface Testimonial {
   rating: number;
   date: string;
 }
+
 
 @Component({
   selector: 'app-inicio',
@@ -44,18 +47,21 @@ interface Testimonial {
     MatButtonModule,
     RouterLink,
     Header
-],
+  ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './inicio.html',
   styleUrl: './inicio.scss',
 })
 export class Inicio {
 
+
   destinations: Destination[] = [];
+
 
   constructor(private alojamientosService: AlojamientosService) {
     this.getAlojamientosActivos();
   }
+
 
   getAlojamientosActivos() {
     this.alojamientosService.obtenerAlojamientosActivos().subscribe({
@@ -68,6 +74,9 @@ export class Inicio {
       }
     });
   }
+
+
+
 
 
 
@@ -115,6 +124,7 @@ export class Inicio {
     }
   ];
 
+
   // Opciones del carrusel
   responsiveOptions = [
     {
@@ -139,9 +149,12 @@ export class Inicio {
     }
   ];
 
+
   toggleFavorite(destination: Destination) {
     destination.favorite = !destination.favorite;
   }
+
+
 
 
 }

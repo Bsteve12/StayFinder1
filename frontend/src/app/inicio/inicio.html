@@ -1,11 +1,13 @@
 <div class="home-container">
   <app-header></app-header>
 
+
   <!-- Main Content -->
   <main class="main-content">
     <!-- Destinos Populares -->
     <section class="destinations-section">
       <h2 class="section-title">Destinos populares</h2>
+
 
       <div class="carousel-wrapper">
         <p-carousel
@@ -20,17 +22,19 @@
           <ng-template let-destination pTemplate="item">
             <div class="destination-card">
 
+
               <!-- Imagen principal -->
               <div class="card-image-wrapper">
                 <a routerLink="/detalle/{{ destination.id }}">
                   <img
                     [src]="destination.imagenes && destination.imagenes.length > 0
-                      ? destination.imagenes[0].url
-                      : 'https://via.placeholder.com/400x250?text=Sin+Imagen'"
+                     ? destination.imagenes[0].url
+                     : 'https://via.placeholder.com/400x250?text=Sin+Imagen'"
                     [alt]="destination.nombre"
                     class="card-image"
                   />
                 </a>
+
 
                 <button
                   class="favorite-button"
@@ -40,6 +44,7 @@
                   <i class="pi pi-heart-fill"></i>
                 </button>
               </div>
+
 
               <!-- Contenido -->
               <div class="card-content">
@@ -59,15 +64,18 @@
                 </p>
               </div>
 
+
             </div>
           </ng-template>
         </p-carousel>
       </div>
     </section>
 
+
     <!-- Testimonios -->
     <section class="testimonials-section">
       <h2 class="section-title">Testimonios de usuarios</h2>
+
 
       <div class="carousel-wrapper">
         <p-carousel
