@@ -9,7 +9,6 @@ import { ToastModule } from 'primeng/toast'; // ✅ Solo necesitas este
 import { AuthService, LoginResponse } from '../services/auth.service';
 import { MessageService } from 'primeng/api';
 
-
 @Component({
   selector: 'app-login',
   imports: [
@@ -30,7 +29,6 @@ export class Login {
   showPassword = false;
   loading = false;
 
-
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -43,10 +41,8 @@ export class Login {
     });
   }
 
-
   onLogin() {
     console.log('🟢 Intentando iniciar sesión...');
-
 
     if (this.loginForm.invalid) {
       Object.keys(this.loginForm.controls).forEach(key => {
@@ -55,34 +51,28 @@ export class Login {
       return;
     }
 
-
     const credentials = {
       email: this.loginForm.value.email,
       contrasena: this.loginForm.value.password
     };
 
-
     this.loading = true;
-
 
     this.authService.login(credentials).subscribe({
       next: (response: LoginResponse) => {
-        console.log('✅ Login exitoso. Token:', response.token);
+        console.log('🟢 Login exitoso. Token:', response.token);
 
+        // 🚫 Ya NO guardamos el token aquí, lo hace `auth.service`
+        // Guardado automático de token, user y role ocurre en `AuthService`
 
-        // ✅ Mensaje de éxito
+        // 🔔 Mostrar mensaje de éxito
         this.messageService.add({
           severity: 'success',
           summary: 'Inicio de sesión exitoso',
-          detail: `Token: ${response.token.substring(0, 25)}...`
+          detail: `Bienvenido de nuevo 👋`
         });
 
-
-        // ✅ Guarda el token
-        localStorage.setItem('token', response.token);
-
-
-        // ✅ Redirige al inicio después de 1.5 seg
+        // 🔁 Redirigir después de 1.5s
         setTimeout(() => {
           this.router.navigate(['/inicio']);
         }, 1500);
@@ -99,11 +89,9 @@ export class Login {
     });
   }
 
-
   goToRegister() { this.router.navigate(['/register']); }
   goToForgotPassword() { this.router.navigate(['/forgot-password']); }
   togglePasswordVisibility() { this.showPassword = !this.showPassword; }
-
 
   get username() { return this.loginForm.get('username'); }
   get password() { return this.loginForm.get('password'); }
