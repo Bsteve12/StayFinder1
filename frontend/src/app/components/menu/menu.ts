@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MenuModule } from 'primeng/menu';
@@ -15,54 +15,192 @@ import { MenuItem } from 'primeng/api';
   templateUrl: './menu.html',
   styleUrls: ['./menu.scss'],
 })
-export class Menu {
-  menuItems: MenuItem[];
-  authService: any;
+export class Menu implements OnInit {
+  @Input() isAuthenticated: boolean = false;
+  @Input() userRole: 'CLIENT' | 'OWNER' | 'ADMIN' | null = null;
+  @Input() userName: string = '';
+  @Input() userPhoto: string = '';
+  
+  menuItems: MenuItem[] = [];
 
-  constructor(private router: Router) {
-    this.menuItems = [
-      {
-        label: 'Mi cuenta',
-        icon: 'pi pi-user',
-        command: () => {
-          this.goToAccount();
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.setupMenuItems();
+  }
+
+  setupMenuItems() {
+    if (!this.isAuthenticated) {
+      // Usuario NO autenticado
+      this.menuItems = [
+        {
+          label: 'Iniciar sesión',
+          icon: 'pi pi-sign-in',
+          command: () => {
+            this.goToLogin();
+          }
+        },
+        {
+          label: 'Registrarse',
+          icon: 'pi pi-user-plus',
+          command: () => {
+            this.goToRegister();
+          }
+        },
+        {
+          separator: true
+        },
+        {
+          label: 'Ayuda y Soporte',
+          icon: 'pi pi-question-circle',
+          command: () => {
+            this.goToSupport();
+          }
         }
-      },
-      {
-        label: 'Ayuda y Soporte',
-        icon: 'pi pi-question-circle',
-        command: () => {
-          this.goToSupport();
+      ];
+    } else {
+      // Usuario AUTENTICADO
+      this.menuItems = [
+        {
+          label: 'Mi cuenta',
+          icon: 'pi pi-user',
+          command: () => {
+            this.goToAccount();
+          }
         }
-      },
-      {
-        separator: true
-      },
-      {
-        label: 'Cerrar sesión',
-        icon: 'pi pi-sign-out',
-        command: () => {
-          this.logout();
-        }
+      ];
+
+      // Agregar opciones según el rol
+      if (this.userRole === 'CLIENT') {
+        this.menuItems.push(
+          {
+            label: 'Mis Reservas',
+            icon: 'pi pi-calendar',
+            command: () => {
+              this.router.navigate(['/dashboard/reservas']);
+            }
+          },
+          {
+            label: 'Favoritos',
+            icon: 'pi pi-heart',
+            command: () => {
+              this.router.navigate(['/dashboard/favoritos']);
+            }
+          }
+        );
+      } else if (this.userRole === 'OWNER') {
+        this.menuItems.push(
+          {
+            label: 'Dashboard Anfitrión',
+            icon: 'pi pi-chart-line',
+            command: () => {
+              this.router.navigate(['/owner-dashboard']);
+            }
+          },
+          {
+            label: 'Mis Alojamientos',
+            icon: 'pi pi-home',
+            command: () => {
+              this.router.navigate(['/owner-dashboard/gestion']);
+            }
+          },
+          {
+            label: 'Reservas Recibidas',
+            icon: 'pi pi-calendar-plus',
+            command: () => {
+              this.router.navigate(['/owner-dashboard/historial']);
+            }
+          }
+        );
+      } else if (this.userRole === 'ADMIN') {
+        this.menuItems.push(
+          {
+            label: 'Panel Admin',
+            icon: 'pi pi-shield',
+            command: () => {
+              this.router.navigate(['/admin-dashboard']);
+            }
+          },
+          {
+            label: 'Gestionar Usuarios',
+            icon: 'pi pi-users',
+            command: () => {
+              this.router.navigate(['/admin-dashboard/usuarios']);
+            }
+          },
+          {
+            label: 'Solicitudes',
+            icon: 'pi pi-inbox',
+            command: () => {
+              this.router.navigate(['/admin-dashboard/solicitudes']);
+            }
+          }
+        );
       }
-    ];
+
+      // Opciones comunes para todos los autenticados
+      this.menuItems.push(
+        {
+          separator: true
+        },
+        {
+          label: 'Ayuda y Soporte',
+          icon: 'pi pi-question-circle',
+          command: () => {
+            this.goToSupport();
+          }
+        },
+        {
+          separator: true
+        },
+        {
+          label: 'Cerrar sesión',
+          icon: 'pi pi-sign-out',
+          styleClass: 'logout-item',
+          command: () => {
+            this.logout();
+          }
+        }
+      );
+    }
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']);
+  }
+
+  goToRegister() {
+    this.router.navigate(['/register']);
   }
 
   goToAccount() {
-    console.log('Ir a Mi cuenta');
-    this.router.navigate(['/mi-cuenta']);
+    // Redirigir según el rol
+    if (this.userRole === 'CLIENT') {
+      this.router.navigate(['/dashboard/perfil']);
+    } else if (this.userRole === 'OWNER') {
+      this.router.navigate(['/owner-dashboard/perfil']);
+    } else if (this.userRole === 'ADMIN') {
+      this.router.navigate(['/admin-dashboard/perfil']);
+    } else {
+      this.router.navigate(['/mi-cuenta']);
+    }
   }
 
   goToSupport() {
-    console.log('Ir a Ayuda y Soporte');
     this.router.navigate(['/soporte']);
   }
 
   logout() {
-    console.log('Cerrar sesión');
     // Lógica de logout
-    this.authService.logout();
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('role');
+    
+    // Redirigir al login
     this.router.navigate(['/login']);
+    
+    // Opcional: Mostrar mensaje
+    alert('Sesión cerrada exitosamente');
   }
 
 }
