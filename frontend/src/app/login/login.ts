@@ -36,7 +36,7 @@ export class Login {
     private messageService: MessageService
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required]], // Cambiado de "username" a "email"
+      email: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -58,21 +58,19 @@ export class Login {
 
     this.loading = true;
 
+    // Nota: backend devuelve { token }, AuthService ahora decodifica el token y publica user
     this.authService.login(credentials).subscribe({
       next: (response: LoginResponse) => {
-        console.log('✅ Login exitoso. Token:', response.token);
+        console.log('✅ Login exitoso. Token recibido');
 
-        // 🔐 Guardar token
-        localStorage.setItem('token', response.token);
-
-        // 🔔 Mostrar mensaje de éxito
+        // Mensaje de éxito
         this.messageService.add({
           severity: 'success',
           summary: 'Inicio de sesión exitoso',
-          detail: `Token: ${response.token.substring(0, 25)}...`
+          detail: 'Bienvenido a StayFinder'
         });
 
-        // 🔁 Redirigir después de 1.5s
+        // Redirigir al inicio (tu comportamiento anterior)
         setTimeout(() => {
           this.router.navigate(['/inicio']);
         }, 1500);
@@ -82,7 +80,7 @@ export class Login {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Credenciales inválidas o usuario no encontrado'
+          detail: err?.error?.message ?? 'Credenciales inválidas o usuario no encontrado'
         });
       },
       complete: () => (this.loading = false)
@@ -93,7 +91,7 @@ export class Login {
   goToForgotPassword() { this.router.navigate(['/forgot-password']); }
   togglePasswordVisibility() { this.showPassword = !this.showPassword; }
 
-  // 🟢 GETTERS corregidos: Email en lugar de Username
+  // GETTERS para la plantilla (no tocados)
   get email() { return this.loginForm.get('email'); }
   get password() { return this.loginForm.get('password'); }
   get isEmailInvalid() { return this.email?.invalid && this.email?.touched; }
