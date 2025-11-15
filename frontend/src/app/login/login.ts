@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast'; // ✅ Solo necesitas este
+import { ToastModule } from 'primeng/toast';
 import { AuthService, LoginResponse } from '../services/auth.service';
 import { MessageService } from 'primeng/api';
 
@@ -19,7 +19,7 @@ import { MessageService } from 'primeng/api';
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    ToastModule // ✅ módulo necesario para <p-toast>
+    ToastModule
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
@@ -61,19 +61,14 @@ export class Login {
 
     this.authService.login(credentials).subscribe({
       next: (response: LoginResponse) => {
-        console.log('✅ Login exitoso. Token:', response.token);
+        console.log('🟢 Login exitoso:', response.token);
 
-        // ✅ Mensaje de éxito
         this.messageService.add({
           severity: 'success',
           summary: 'Inicio de sesión exitoso',
-          detail: `Token: ${response.token.substring(0, 25)}...`
+          detail: `Bienvenido a StayFinder`
         });
 
-        // ✅ Guarda el token
-        localStorage.setItem('token', response.token);
-
-        // ✅ Redirige al inicio después de 1.5 seg
         setTimeout(() => {
           this.router.navigate(['/inicio']);
         }, 1500);
