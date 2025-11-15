@@ -1,4 +1,3 @@
-// src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
@@ -11,13 +10,14 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string;
+  user: User; // El backend debe enviarlo en este formato
 }
 
 export interface User {
-  id?: number;
-  nombre?: string;
-  email?: string;
-  role?: 'CLIENT' | 'OWNER' | 'ADMIN';
+  id: number;
+  nombre: string;
+  email: string;
+  role: 'CLIENT' | 'OWNER' | 'ADMIN';
   foto?: string;
 }
 
@@ -37,102 +37,85 @@ export class AuthService {
     this.checkInitialAuth();
   }
 
-  // Cargar sesión desde localStorage sin redirigir automáticamente
+  // -------------------------------
+  // 🔐 Verificar sesión al recargar
+  // -------------------------------
   private checkInitialAuth() {
     const token = localStorage.getItem('token');
-    if (token) {
-      const user = this.buildUserFromToken(token);
-      if (user) {
+    const userStr = localStorage.getItem('user');
+
+    if (token && userStr) {
+      try {
+        const user: User = JSON.parse(userStr);
         this.isAuthenticatedSubject.next(true);
         this.currentUserSubject.next(user);
-        return;
+      } catch (error) {
+        console.error('❌ Error al parsear usuario:', error);
+        this.logout(false); // No redirigir al login aquí
       }
     }
-    // Si no hay token válido, simplemente establecer estado no autenticado.
-    this.isAuthenticatedSubject.next(false);
-    this.currentUserSubject.next(null);
-    // NO llamar a logout() ni navegar aquí. Logout debe ser llamado explícitamente (por ejemplo, al cerrar sesión).
   }
 
-  // Login con backend (espera { token })
+  // -------------------------------
+  // 🔑 Login con API real
+  // -------------------------------
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
-        const token = response.token;
-        if (!token) {
-          throw new Error('No token recibido en login');
-        }
+        // Guardar token y usuario
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        localStorage.setItem('role', response.user.role);
 
-        // Guardar token
-        localStorage.setItem('token', token);
-
-        // Construir user desde token
-        const user = this.buildUserFromToken(token);
-        if (user) {
-          localStorage.setItem('user', JSON.stringify(user));
-          localStorage.setItem('role', user.role || '');
-          this.isAuthenticatedSubject.next(true);
-          this.currentUserSubject.next(user);
-        } else {
-          // Si no podemos decodificar, limpiar e informar
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          localStorage.removeItem('role');
-          this.isAuthenticatedSubject.next(false);
-          this.currentUserSubject.next(null);
-        }
+        this.isAuthenticatedSubject.next(true);
+        this.currentUserSubject.next(response.user);
       })
     );
   }
 
-  logout() {
+  // -------------------------------
+  // 🚪 Logout
+  // -------------------------------
+  logout(redirect: boolean = true) {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('role');
+
     this.isAuthenticatedSubject.next(false);
     this.currentUserSubject.next(null);
-    // logout sí redirige
-    this.router.navigate(['/login']);
+
+    if (redirect) {
+      this.router.navigate(['/inicio']); // ⬅️ redirigir a Inicio DE FORMA CORRECTA
+    }
   }
 
+  // -------------------------------
+  // 👤 Obtener usuario actual
+  // -------------------------------
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
 
+  // -------------------------------
+  // 🔒 Verificar si está autenticado
+  // -------------------------------
   isAuthenticated(): boolean {
     return this.isAuthenticatedSubject.value;
   }
 
+  // -------------------------------
+  // 🎭 Obtener rol actual
+  // -------------------------------
   getUserRole(): 'CLIENT' | 'OWNER' | 'ADMIN' | null {
     const user = this.getCurrentUser();
-    return user?.role ?? null;
+    return user ? user.role : null;
   }
 
-  // Decodificar JWT (payload) en objeto User
-  private buildUserFromToken(token: string): User | null {
-    try {
-      const payloadBase64 = token.split('.')[1];
-      if (!payloadBase64) return null;
-      const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
-      const payload = JSON.parse(payloadJson);
-
-      const role = (payload.role || payload.authorities || '').toString().toUpperCase();
-      if (!['CLIENT', 'OWNER', 'ADMIN'].includes(role)) {
-        // Si el backend devuelve roles distintos, aquí puedes ajustar la lógica.
-        console.warn('Rol no reconocido en token:', role);
-        // No devolvemos null para evitar bloquear; devolvemos role string solo si coincide.
-        // Si quieres estrictitud, devuelve null aquí.
-      }
-
-      return {
-        id: payload.usuarioId ?? payload.id ?? undefined,
-        email: payload.email ?? payload.sub ?? undefined,
-        nombre: payload.nombre ?? payload.name ?? payload.email ?? undefined,
-        role: (['CLIENT', 'OWNER', 'ADMIN'].includes(role) ? (role as 'CLIENT' | 'OWNER' | 'ADMIN') : undefined)
-      };
-    } catch (error) {
-      console.error('Error decodificando token JWT:', error);
-      return null;
-    }
+  // -------------------------------
+  // 🔄 Actualizar usuario en perfil
+  // -------------------------------
+  updateUser(user: User) {
+    localStorage.setItem('user', JSON.stringify(user));
+    this.currentUserSubject.next(user);
   }
 }
