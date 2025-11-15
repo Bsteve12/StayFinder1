@@ -9,6 +9,7 @@ import { ToastModule } from 'primeng/toast'; // ✅ Solo necesitas este
 import { AuthService, LoginResponse } from '../services/auth.service';
 import { MessageService } from 'primeng/api';
 
+
 @Component({
   selector: 'app-login',
   imports: [
@@ -29,6 +30,7 @@ export class Login {
   showPassword = false;
   loading = false;
 
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -41,8 +43,10 @@ export class Login {
     });
   }
 
+
   onLogin() {
     console.log('🟢 Intentando iniciar sesión...');
+
 
     if (this.loginForm.invalid) {
       Object.keys(this.loginForm.controls).forEach(key => {
@@ -51,26 +55,34 @@ export class Login {
       return;
     }
 
+
     const credentials = {
       email: this.loginForm.value.email,
       contrasena: this.loginForm.value.password
     };
 
+
     this.loading = true;
 
-    // Nota: backend devuelve { token }, AuthService ahora decodifica el token y publica user
+
     this.authService.login(credentials).subscribe({
       next: (response: LoginResponse) => {
-        console.log('✅ Login exitoso. Token recibido');
+        console.log('✅ Login exitoso. Token:', response.token);
 
-        // Mensaje de éxito
+
+        // ✅ Mensaje de éxito
         this.messageService.add({
           severity: 'success',
           summary: 'Inicio de sesión exitoso',
-          detail: 'Bienvenido a StayFinder'
+          detail: `Token: ${response.token.substring(0, 25)}...`
         });
 
-        // Redirigir al inicio (tu comportamiento anterior)
+
+        // ✅ Guarda el token
+        localStorage.setItem('token', response.token);
+
+
+        // ✅ Redirige al inicio después de 1.5 seg
         setTimeout(() => {
           this.router.navigate(['/inicio']);
         }, 1500);
@@ -80,20 +92,21 @@ export class Login {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: err?.error?.message ?? 'Credenciales inválidas o usuario no encontrado'
+          detail: 'Credenciales inválidas o usuario no encontrado'
         });
       },
       complete: () => (this.loading = false)
     });
   }
 
+
   goToRegister() { this.router.navigate(['/register']); }
   goToForgotPassword() { this.router.navigate(['/forgot-password']); }
   togglePasswordVisibility() { this.showPassword = !this.showPassword; }
 
-  // GETTERS para la plantilla (no tocados)
-  get email() { return this.loginForm.get('email'); }
+
+  get username() { return this.loginForm.get('username'); }
   get password() { return this.loginForm.get('password'); }
-  get isEmailInvalid() { return this.email?.invalid && this.email?.touched; }
+  get isUsernameInvalid() { return this.username?.invalid && this.username?.touched; }
   get isPasswordInvalid() { return this.password?.invalid && this.password?.touched; }
 }
